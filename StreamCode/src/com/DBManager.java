@@ -2,6 +2,8 @@ package com;
 
 import java.sql.*;
 
+//cose aggiunte da me
+
 import com.mysql.jdbc.PreparedStatement;
 import com.mysql.jdbc.Statement;
 
