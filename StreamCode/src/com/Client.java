@@ -12,12 +12,18 @@ public class Client {
   public static void main(String[] args) throws NotBoundException, IOException {
   		System.setSecurityManager(new RMISecurityManager());
 
-  		User cli = new User();
-
+  		//locate registry and get an instance of remote server
   		Registry registry = LocateRegistry.getRegistry("localhost");
   		ServerImpl server = (ServerImpl) registry.lookup("server");
-
-      server.registerObserver(cli);
-//
+  		//input da tastiera
+ 		String username = "";
+ 		String password = "";
+ 		
+ 		int userId = server.check(username, password); //se non è presente viene sollevata una eccezione all'interno di SQL
+ 		User client = new User(userId);
+ 		
+  		//add me to the server list
+  		server.registerObserver(client);
+  		
   	}
 }

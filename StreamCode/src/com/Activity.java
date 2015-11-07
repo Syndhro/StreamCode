@@ -5,8 +5,9 @@ import java.util.ArrayList;
 public class Activity {
 
 	private static int activityIdCounter;
-	private int id;
+	private int activityId;
 	private String name;
+	private String description;
 	private ArrayList<User> user; //corretto che siano oggetti in modo da chiamare il metodo update di ognuno quando necessario
 	private boolean isCompleted;
 	private boolean isActive;
@@ -15,7 +16,7 @@ public class Activity {
 		this.isCompleted = false; //uncompleted
 		this.isActive = false; //unactive
 		activityIdCounter++;
-		this.id = Activity.activityIdCounter; //id generato progressivamente	
+		this.activityId = Activity.activityIdCounter; //id generato progressivamente	
 	}
 	public void complete() {
 		this.isCompleted = true;

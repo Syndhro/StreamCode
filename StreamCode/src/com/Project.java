@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 public class Project {
 
-	private static String projectID;
+	private int projectId;
 	private String title;
 	private String description;
 	private Category category;

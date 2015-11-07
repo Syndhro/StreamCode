@@ -54,9 +54,9 @@ public class ServerImpl implements Subject, ServerInterface {
 	/**
 	 * @see Server#check(java.lang.String, java.lang.String)
 	 */
-	public Boolean check(String username, String password) {
+	public int check(String username, String password) {
 		//return true if the user and the password are present in the DB and they are correct
-		return null;
+		return 0;
 	}
 	/**
 	 * @see Server#createProject(java.lang.String, java.lang.String, Category, int)

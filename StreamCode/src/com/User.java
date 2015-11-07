@@ -2,12 +2,11 @@ package com;
 
 public class User implements Observer {
 
-	private static int userId = 0;
+	private int userId;
 	private String username;
 
-	public User(){
-		User.userId++;
-		this.userId = User.userId;
+	public User(int id){
+		this.userId = id;
 	}
 	
 	public int getID() {
