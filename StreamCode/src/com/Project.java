@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 public class Project {
 
-	private int projectId;
+	private static int projectId;
 	private String title;
 	private String description;
 	private Category category;
@@ -54,4 +54,29 @@ public class Project {
 	public void setCategory(Category category) {
 		this.category = category;
 	}
+	
+	public String getTitle() {
+		return this.title;
+	}
+
+	public String getDescription() {
+		return this.description;
+	}
+
+	public Category getCategory() {
+		return this.category;
+	}
+	
+	public int getId() {
+		return this.projectId;
+	}
+	
+	public int getAdminInt() {
+		return this.adminId;
+	}
+	
+	public ProjectState getState() {
+		return this.state;
+	}
+	
 }

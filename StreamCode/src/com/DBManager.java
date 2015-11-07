@@ -2,13 +2,14 @@ package com;
 
 import java.sql.*;
 
-//cose aggiunte da me
-
 import com.mysql.jdbc.PreparedStatement;
 import com.mysql.jdbc.Statement;
 
 public class DBManager {
 //db stuff
+	
+	private Connection connection;
+	
 	private String dbusername;
 
 	private String dbpassword;
@@ -17,8 +18,8 @@ public class DBManager {
 		connect();
 	}
 
-	public Connection connect(){
-		Connection connection = null;
+	public void connect(){
+		this.connection = null;
 		try {
 		     Class.forName("com.mysql.jdbc.Driver");
 		     
@@ -30,14 +31,41 @@ public class DBManager {
 	    catch(SQLException e) {
 	      e.printStackTrace();
 	    }
+	}
+
+	public void addUser(String username, String password) {
 		
-		return connection;
+		PreparedStatement statement = null;
+	    
+	    try {
+			 String query = "INSERT INTO user (username, password) VALUES (?,?)";
+		     statement = (PreparedStatement) connection.prepareStatement(query);         
+		     statement.setString(1, username);
+		     statement.setString(2, password);
+		     statement.executeUpdate();
+		    }catch(Exception e){
+		    	e.printStackTrace();
+		    }
+		
 	}
 
-	public void addUser() {
-	}
-
-	public void addProject() {
+	public void addProject(Project p) {
+		
+PreparedStatement statement = null;
+	    
+	    try {
+			 String query = "INSERT INTO project (projectId, title, description, category, adminId, state) VALUES (?,?,?,?,?,?)";
+		     statement = (PreparedStatement) connection.prepareStatement(query);         
+		     statement.setInt(1, p.getId());
+		     statement.setString(2, p.getTitle());
+		     statement.setString(3, p.getDescription());
+		     statement.setString(4, p.getCategory().toString().toLowerCase());
+		     statement.setInt(5, p.getAdminInt());
+		     statement.setString(6, p.getState().toString().toLowerCase());
+		     statement.executeUpdate();
+		    }catch(Exception e){
+		    	e.printStackTrace();
+		    }
 	}
 
 	public void addActivity() {
@@ -58,22 +86,23 @@ public class DBManager {
 	public void removeNotification() {
 	}
 	
+	public void getUser() {
+	}
+
+	public void getProject() {
+	}
+
+	public void getActivity() {
+	}
+
+	public void getNotification() {
+	}
+	
 	public static void main(String[] args){
 		
-		DBManager dbmanager = new DBManager();
+		DBManager dbManager = new DBManager();
 		
-		Statement statement = null;
-	    ResultSet resultSet = null;
-		
-	    try {
-		 String query = "SELECT * FROM project";
-	     statement = (Statement) dbmanager.connect().createStatement();           
-	     resultSet = statement.executeQuery(query);
-	     while (resultSet.next())
-				System.out.println(resultSet.getString(1));
-	    }catch(Exception e){
-	    	e.printStackTrace();
-	    }
+		dbManager.addUser("aniel93", "bucio");
 		
 	}
 	
