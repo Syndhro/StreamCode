@@ -11,7 +11,7 @@ public class DBManager {
 //db stuff
 	
 	private Connection connection;
-	
+	private Credential credentials;
 	private String dbusername;
 
 	private String dbpassword;
@@ -25,7 +25,7 @@ public class DBManager {
 		try {
 		     Class.forName("com.mysql.jdbc.Driver");
 		     
-		     connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/streamdata", "root", "93Matrix");			      	
+		     connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/streamdata", credentials.getDbUsername(), credentials.getDbPassword());			      	
 	    }
 	    catch(ClassNotFoundException e) {
 	      e.printStackTrace();
