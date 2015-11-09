@@ -6,7 +6,7 @@ import com.mysql.jdbc.PreparedStatement;
 import com.mysql.jdbc.Statement;
 
 public class DBManager {
-//db stuff
+//gui branch modified
 	private String dbusername;
 
 	private String dbpassword;
