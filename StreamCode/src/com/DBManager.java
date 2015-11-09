@@ -17,6 +17,7 @@ public class DBManager {
 	private String dbpassword;
 	
 	public DBManager(){
+		credentials = new Credential();
 		connect();
 	}
 
@@ -139,9 +140,7 @@ public class DBManager {
 	public static void main(String[] args){
 		
 		DBManager dbManager = new DBManager();
-		
-		System.out.println(dbManager.getUser("aniel93", "ciao"));
-		
+
 	}
 	
 }
