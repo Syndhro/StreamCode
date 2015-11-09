@@ -2,6 +2,8 @@ package com;
 
 import java.sql.*;
 
+import javax.print.attribute.standard.RequestingUserName;
+
 import com.mysql.jdbc.PreparedStatement;
 import com.mysql.jdbc.Statement;
 
@@ -38,6 +40,7 @@ public class DBManager {
 		PreparedStatement statement = null;
 	    
 	    try {
+	    	//modifica della madonna
 			 String query = "INSERT INTO user (username, password) VALUES (?,?)";
 		     statement = (PreparedStatement) connection.prepareStatement(query);         
 		     statement.setString(1, username);
@@ -51,7 +54,7 @@ public class DBManager {
 
 	public void addProject(Project p) {
 		
-PreparedStatement statement = null;
+		PreparedStatement statement = null;
 	    
 	    try {
 			 String query = "INSERT INTO project (projectId, title, description, category, adminId, state) VALUES (?,?,?,?,?,?)";
@@ -75,6 +78,7 @@ PreparedStatement statement = null;
 	}
 
 	public void removeUser() {
+		
 	}
 
 	public void removeProject() {
@@ -86,7 +90,41 @@ PreparedStatement statement = null;
 	public void removeNotification() {
 	}
 	
-	public void getUser() {
+	public int getUser(String username, String password) {
+		
+		PreparedStatement statement = null;
+		ResultSet resultSet = null;
+		int returnedId = 0;
+		
+		try{
+			String query = "SELECT * FROM user WHERE username = ?";
+			statement = (PreparedStatement) connection.prepareStatement(query);
+			statement.setString(1, username);
+			resultSet = statement.executeQuery();
+			
+			if(resultSet.next()){
+				if(resultSet.getString(3).equals(password)){
+					returnedId = resultSet.getInt(1);
+				}
+				else{
+					throw new WrongPasswordException();
+				}
+			}
+			else{
+				throw new UserNotFoundException();
+			}
+			
+		}catch(SQLException e){
+			e.printStackTrace();
+		}catch(UserNotFoundException u){
+			u.PrintError();
+			return -1;
+		}catch(WrongPasswordException w){
+			w.printError();
+			return -2;
+		}
+		
+		return returnedId;
 	}
 
 	public void getProject() {
@@ -102,7 +140,7 @@ PreparedStatement statement = null;
 		
 		DBManager dbManager = new DBManager();
 		
-		dbManager.addUser("aniel93", "bucio");
+		System.out.println(dbManager.getUser("aniel93", "ciao"));
 		
 	}
 	
