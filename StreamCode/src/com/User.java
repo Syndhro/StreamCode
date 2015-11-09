@@ -5,8 +5,9 @@ public class User implements Observer {
 	private int userId;
 	private String username;
 
-	public User(int id){
+	public User(int id, String username){
 		this.userId = id;
+		this.username = username;
 	}
 	
 	public int getID() {

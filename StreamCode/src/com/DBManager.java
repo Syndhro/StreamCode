@@ -118,10 +118,8 @@ public class DBManager {
 		}catch(SQLException e){
 			e.printStackTrace();
 		}catch(UserNotFoundException u){
-			u.PrintError();
 			return -1;
 		}catch(WrongPasswordException w){
-			w.printError();
 			return -2;
 		}
 		
@@ -135,12 +133,6 @@ public class DBManager {
 	}
 
 	public void getNotification() {
-	}
-	
-	public static void main(String[] args){
-		
-		DBManager dbManager = new DBManager();
-
 	}
 	
 }

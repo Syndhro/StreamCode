@@ -80,7 +80,18 @@ public class Graphics {
 				String username = textField.getText();
 				String password = passwordField.getText();
 				//devo darli al server
-				System.out.println(username + password);
+				DBManager dbManager = new DBManager();
+				int valueFromCheck = dbManager.getUser(username, password);
+				User connectedUser;
+				if (valueFromCheck != -1 && valueFromCheck != -2){
+					connectedUser = new User(valueFromCheck, username);
+				}
+				else if (valueFromCheck == -1){
+					System.out.println("Invalid Username");
+				}
+				else if (valueFromCheck == -2){
+					System.out.println("Invalid Password");
+				}
 			}
 		});
 		springLayout.putConstraint(SpringLayout.NORTH, btnLogin, 20, SpringLayout.SOUTH, passwordField);

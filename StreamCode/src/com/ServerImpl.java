@@ -56,7 +56,11 @@ public class ServerImpl implements Subject, ServerInterface {
 	 */
 	public int check(String username, String password) {
 		//return true if the user and the password are present in the DB and they are correct
-		return 0;
+		int returnedId;
+		
+		returnedId = dbManager.getUser(username, password);
+		
+		return returnedId;
 	}
 	/**
 	 * @see Server#createProject(java.lang.String, java.lang.String, Category, int)

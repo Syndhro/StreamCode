@@ -18,12 +18,6 @@ public class Client {
   		//input da tastiera
  		String username = "";
  		String password = "";
- 		
- 		int userId = server.check(username, password); //se non è presente viene sollevata una eccezione all'interno di SQL
- 		User client = new User(userId);
- 		
-  		//add me to the server list
-  		server.registerObserver(client);
   		
   	}
 }
