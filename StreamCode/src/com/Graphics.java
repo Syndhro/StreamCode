@@ -82,9 +82,9 @@ public class Graphics {
 				//devo darli al server
 				DBManager dbManager = new DBManager();
 				int valueFromCheck = dbManager.getUser(username, password);
-				User connectedUser;
+			
 				if (valueFromCheck != -1 && valueFromCheck != -2){
-					connectedUser = new User(valueFromCheck, username);
+					User connectedUser = new User(valueFromCheck, username);
 				}
 				else if (valueFromCheck == -1){
 					System.out.println("Invalid Username");
