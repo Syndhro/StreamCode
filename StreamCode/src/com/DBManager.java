@@ -8,19 +8,27 @@ import com.mysql.jdbc.PreparedStatement;
 import com.mysql.jdbc.Statement;
 
 public class DBManager {
-//db stuff
 	
+	private static DBManager uniqueInstance;
 	private Connection connection;
 	private Credential credentials;
-	private String dbusername;
-
-	private String dbpassword;
 	
-	public DBManager(){
+	//constructor
+	
+	private DBManager(){
 		credentials = new Credential();
 		connect();
 	}
+	
+	public static DBManager getInstance() {
+		if (uniqueInstance == null){
+			uniqueInstance = new DBManager();
+		}
+		return uniqueInstance;
+	}
 
+	//connect to database
+	
 	public void connect(){
 		this.connection = null;
 		try {
@@ -35,13 +43,14 @@ public class DBManager {
 	      e.printStackTrace();
 	    }
 	}
+	
+	//add to database
 
 	public void addUser(String username, String password) {
 		
 		PreparedStatement statement = null;
 	    
 	    try {
-	    	//modifica della madonna
 			 String query = "INSERT INTO user (username, password) VALUES (?,?)";
 		     statement = (PreparedStatement) connection.prepareStatement(query);         
 		     statement.setString(1, username);
@@ -53,42 +62,42 @@ public class DBManager {
 		
 	}
 
-	public void addProject(Project p) {
+	public void addProject(Project project) {
 		
 		PreparedStatement statement = null;
 	    
 	    try {
 			 String query = "INSERT INTO project (projectId, title, description, category, adminId, state) VALUES (?,?,?,?,?,?)";
 		     statement = (PreparedStatement) connection.prepareStatement(query);         
-		     statement.setInt(1, p.getId());
-		     statement.setString(2, p.getTitle());
-		     statement.setString(3, p.getDescription());
-		     statement.setString(4, p.getCategory().toString().toLowerCase());
-		     statement.setInt(5, p.getAdminInt());
-		     statement.setString(6, p.getState().toString().toLowerCase());
+		     statement.setInt(1, project.getId());
+		     statement.setString(2, project.getTitle());
+		     statement.setString(3, project.getDescription());
+		     statement.setString(4, project.getCategory().toString().toLowerCase());
+		     statement.setInt(5, project.getAdminInt());
+		     statement.setString(6, project.getState().toString().toLowerCase());
 		     statement.executeUpdate();
 		    }catch(Exception e){
 		    	e.printStackTrace();
 		    }
 	}
 
-	public void addActivity() {
+	public void addActivity(Activity activity) {
 	}
 
 	public void addNotification() {
 	}
 
-	public void removeUser() {
+	public void removeUser(String username, String password) {
 		
 	}
 
-	public void removeProject() {
+	public void removeProject(Project project) {
 	}
 
-	public void removeActivity() {
+	public void removeActivity(Activity activity) {
 	}
 
-	public void removeNotification() {
+	public void removeNotification(Notification notification ) {
 	}
 	
 	public int getUser(String username, String password) {
@@ -126,7 +135,7 @@ public class DBManager {
 		return returnedId;
 	}
 
-	public void getProject() {
+	public void getProject) {
 	}
 
 	public void getActivity() {
