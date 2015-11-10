@@ -15,8 +15,9 @@ public class Client {
   		//locate registry and get an instance of remote server
   		Registry registry = LocateRegistry.getRegistry("localhost");
   		ServerImpl server = (ServerImpl) registry.lookup("server");
- 		
- 		Graphics gui = new Graphics();
+  		//input da tastiera
+ 		String username = "";
+ 		String password = "";
   		
   	}
 }

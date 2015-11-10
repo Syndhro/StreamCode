@@ -11,11 +11,6 @@ import javax.swing.JButton;
 import javax.swing.JPasswordField;
 import javax.swing.JLabel;
 import java.awt.event.ActionListener;
-import java.rmi.NotBoundException;
-import java.rmi.RMISecurityManager;
-import java.rmi.RemoteException;
-import java.rmi.registry.LocateRegistry;
-import java.rmi.registry.Registry;
 import java.awt.event.ActionEvent;
 
 public class Graphics {
@@ -23,18 +18,11 @@ public class Graphics {
 	private JFrame frame;
 	private JTextField textField;
 	private JPasswordField passwordField;
+
 	/**
 	 * Launch the application.
-	 * @throws RemoteException 
-	 * @throws NotBoundException 
 	 */
-	public static void main(String[] args) throws RemoteException, NotBoundException {
-		System.setSecurityManager(new RMISecurityManager());
-
-  		//locate registry and get an instance of remote server
-  		Registry registry = LocateRegistry.getRegistry("localhost");
-  		ServerImpl server = (ServerImpl) registry.lookup("server");
-  		
+	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
@@ -51,7 +39,6 @@ public class Graphics {
 	 * Create the application.
 	 */
 	public Graphics() {
-		
 		initialize();
 	}
 
@@ -98,7 +85,7 @@ public class Graphics {
 				User connectedUser;
 				if (valueFromCheck != -1 && valueFromCheck != -2){
 					connectedUser = new User(valueFromCheck, username);
-				} 
+				}
 				else if (valueFromCheck == -1){
 					System.out.println("Invalid Username");
 				}

@@ -4,60 +4,29 @@ import java.util.ArrayList;
 
 public class Project {
 
-	private static int counter;
-	private int projectId;
+	private static int projectId;
 	private String title;
 	private String description;
 	private Category category;
 	private int adminId;
-	private ArrayList<Activity> projectActivities;
+	private ArrayList<Activity> activities;
 	private ArrayList<User> projectUsers;
 	private ProjectState state;
 	
-	//constructors
-	
-	public Project(User admin){
-		this.projectId = Project.counter+ 1;
-		counter++;
+	public Project(int adminId){
 		this.projectUsers = new ArrayList<User>();
-		this.projectActivities = new ArrayList<Activity>();
-		this.projectUsers.add(admin);							//add admin to project collaborators
+		this.activities = new ArrayList<Activity>();
 		this.state = ProjectState.INACTIVE;
-		this.adminId = admin.getUserId();
-	}
-	
-	public Project(String title, String description, Category cat, User admin){
-		this.projectId = Project.counter+ 1;
-		counter++;
-		this.projectUsers = new ArrayList<User>();
-		this.projectActivities = new ArrayList<Activity>();
-		this.projectUsers.add(admin);							//add admin to project collaborators
-		this.state = ProjectState.INACTIVE;
-		this.title = title;
-		this.description = description;
-		this.category = cat;
-		this.adminId = admin.getUserId();
-	}
-	
-	//add attribute
-
-	public void addCollaborator(User user) {
-		this.projectUsers.add(user);
+		this.adminId = adminId;
 	}
 
-	public void addActivity(Activity activity) {
-		this.projectActivities.add(activity);
-	}
-	
-	public void removeCollaborator(User user) {
-		this.projectUsers.remove(user);
+	public void addCollaborator(User u) {
+		this.projectUsers.add(u);
 	}
 
-	public void removeActivity(Activity activity) {
-		this.projectActivities.remove(activity);
+	public void addActivity(Activity a) {
+		this.activities.add(a);
 	}
-	
-	//start/end
 
 	public void startProject() {
 		this.state = ProjectState.ACTIVE;
@@ -66,8 +35,13 @@ public class Project {
 	public void endProject() {
 		this.state = ProjectState.COMPLETED;
 	}
-	
-	//setters
+
+	public void inviteFriends() {
+	}
+
+	public void modifyProject() {
+		//modify
+	}
 
 	public void setTitle(String title) {
 		this.title = title;
@@ -80,8 +54,6 @@ public class Project {
 	public void setCategory(Category category) {
 		this.category = category;
 	}
-	
-	//getters
 	
 	public String getTitle() {
 		return this.title;
@@ -105,14 +77,6 @@ public class Project {
 	
 	public ProjectState getState() {
 		return this.state;
-	}
-	
-	public ArrayList<Activity> getActivities() {
-		return this.projectActivities;
-	}
-	
-	public ArrayList<User> getUsers() {
-		return this.projectUsers;
 	}
 	
 }
