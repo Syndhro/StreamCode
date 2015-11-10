@@ -9,7 +9,7 @@ public class ServerImpl implements Subject, ServerInterface {
 	private ArrayList<Project> projects;
 	private ArrayList<Observer> users;
 
-	private void ServerImpl() {
+	private ServerImpl() {
 		this.dbManager = new DBManager();
 		this.projects = new ArrayList<Project>();
 		this.users = new ArrayList<Observer>();
@@ -65,12 +65,72 @@ public class ServerImpl implements Subject, ServerInterface {
 	/**
 	 * @see Server#createProject(java.lang.String, java.lang.String, Category, int)
 	 */
-	public void createProject(String title, String description, Category category, int adminId) {
-		Project project = new Project(adminId);
+	public void createProject(String title, String description, Category category, User user) {
+		Project project = new Project(user);
 		project.setTitle(title);
 		project.setDescription(description);
 		project.setCategory(category);
 	
 		projects.add(project);
+	}
+
+	@Override
+	public void registerUser(String username, String password) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void unregisterUser(User user) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public int login(String username, String password) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public void logout(User user) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void removeProject(Project project) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void addActivity(Project project, Activity activity) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void removeActivity(Project project, Activity activity) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public ArrayList<String> searchUser(String string) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void addFriend(User user) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void removeFriend(User user) {
+		// TODO Auto-generated method stub
+		
 	}
 }
