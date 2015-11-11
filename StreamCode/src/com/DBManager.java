@@ -138,12 +138,55 @@ public class DBManager {
 	
 	public ArrayList<Project> getAllProject(){
 		
+		Statement statement;
+		ResultSet resultSet;
+		ArrayList<Project> allProjects = new ArrayList<Project>();
+		try{
+			String query = "SELECT * FROM project";
+			statement = (Statement) connection.createStatement();
+			resultSet = statement.executeQuery(query);
+			
+			while (resultSet.next()){
+				allProjects.add(new Project(resultSet.getInt(1), resultSet.getString(2), resultSet.getString(3), Category.getCategory(resultSet.getString(4)), resultSet.getInt(5)));
+			}
+			
+		}catch(SQLException e){
+			e.printStackTrace();
+		}
 		
+		for(int i = 0; i < allProjects.size(); i++){
+			System.out.println(allProjects.get(i).toString());
+		}
 		
-		return null;
+		return allProjects;
+	}
+	
+	public ArrayList<User> getAllUser(){
+		
+		Statement statement;
+		ResultSet resultSet;
+		ArrayList<User> allUsers = new ArrayList<User>();
+		try{
+			String query = "SELECT * FROM user";
+			statement = (Statement) connection.createStatement();
+			resultSet = statement.executeQuery(query);
+			
+			while (resultSet.next()){
+				allUsers.add(new User(resultSet.getInt(1), resultSet.getString(2)));
+			}
+			
+		}catch(SQLException e){
+			e.printStackTrace();
+		}
+		
+		for(int i = 0; i < allUsers.size(); i++){
+			System.out.println(allUsers.get(i).toString());
+		}
+		
+		return allUsers;
 	}
 
-	public ArrayList<Project> getProjectByUser(User user) {
+	/* public ArrayList<Project> getProjectByUser(User user) {
 		
 		PreparedStatement statement;
 		ResultSet resultSet;
@@ -184,7 +227,7 @@ public class DBManager {
 			}
 		}
 		
-	}
+	} */
 	
 	public void getActivity() {
 	}
@@ -194,6 +237,15 @@ public class DBManager {
 
 	public void addFriendship(String username, String username2) {
 	
+	}
+	
+	public static void main(String[] args){
+		
+		DBManager db = DBManager.getInstance();
+		
+		db.getAllProject();
+		db.getAllUser();
+		
 	}
 	
 }

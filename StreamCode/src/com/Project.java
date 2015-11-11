@@ -34,6 +34,16 @@ public class Project {
 		this.adminId = admin.getUserId();
 	}
 	
+	public Project(int projectId, String title, String description, Category cat, int adminId){
+		this.projectUsers = new ArrayList<User>();
+		this.projectActivities = new ArrayList<Activity>();
+		this.state = ProjectState.INACTIVE;
+		this.title = title;
+		this.description = description;
+		this.category = cat;
+		this.adminId = adminId;
+	}
+	
 	//add attribute
 
 	public void addCollaborator(User user) {
@@ -109,5 +119,14 @@ public class Project {
 	public ArrayList<User> getUsers() {
 		return this.projectUsers;
 	}
+
+	@Override
+	public String toString() {
+		return "Project [projectId=" + projectId + ", \ntitle=" + title + ", \ndescription=" + description + ", \ncategory="
+				+ category + ", \nadminId=" + adminId + ", \nprojectActivities=" + projectActivities + ", \nprojectUsers="
+				+ projectUsers + ", \nstate=" + state + "]\n\n";
+	}
+	
+	
 	
 }

@@ -59,6 +59,14 @@ public class User implements Observer {
 		this.userActivities = userActivities;
 	}
 
+	@Override
+	public String toString() {
+		return "User [userId=" + userId + ", \nusername=" + username + ", \nuserProjects=" + userProjects
+				+ ", \nuserActivities=" + userActivities + ", \nuserFriend=" + userFriend + "]\n\n";
+	}
+	
+	
+
 	public void addFriend(User user2) {
 		// TODO Auto-generated method stub
 		
