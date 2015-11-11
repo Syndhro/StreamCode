@@ -8,7 +8,7 @@ public class Project {
 	private String title;
 	private String description;
 	private Category category;
-	private int adminId;
+	private User admin;
 	private ArrayList<Activity> projectActivities;
 	private ArrayList<User> projectUsers;
 	private ProjectState state;
@@ -20,28 +20,21 @@ public class Project {
 		this.projectActivities = new ArrayList<Activity>();
 		this.projectUsers.add(admin);							//add admin to project collaborators
 		this.state = ProjectState.INACTIVE;
-		this.adminId = admin.getUserId();
-	}
-	
-	public Project(int projectId, String title, String description, Category cat, User admin){
-		this.projectUsers = new ArrayList<User>();
-		this.projectActivities = new ArrayList<Activity>();
-		this.projectUsers.add(admin);							//add admin to project collaborators
-		this.state = ProjectState.INACTIVE;
-		this.title = title;
-		this.description = description;
-		this.category = cat;
-		this.adminId = admin.getUserId();
+		this.admin = admin;
 	}
 	
 	public Project(int projectId, String title, String description, Category cat, int adminId){
+		this.projectId = projectId;
 		this.projectUsers = new ArrayList<User>();
 		this.projectActivities = new ArrayList<Activity>();
 		this.state = ProjectState.INACTIVE;
 		this.title = title;
 		this.description = description;
 		this.category = cat;
-		this.adminId = adminId;
+		for(int i = 0; i < projectUsers.size(); i++){
+			if(projectUsers.get(i).getUserId() == adminId)
+				this.admin = projectUsers.get(i);
+		}
 	}
 	
 	//add attribute
@@ -104,8 +97,8 @@ public class Project {
 		return this.projectId;
 	}
 	
-	public int getAdminInt() {
-		return this.adminId;
+	public User getAdmin() {
+		return this.admin;
 	}
 	
 	public ProjectState getState() {
@@ -123,7 +116,7 @@ public class Project {
 	@Override
 	public String toString() {
 		return "Project [projectId=" + projectId + ", \ntitle=" + title + ", \ndescription=" + description + ", \ncategory="
-				+ category + ", \nadminId=" + adminId + ", \nprojectActivities=" + projectActivities + ", \nprojectUsers="
+				+ category + ", \nadminId=" + admin + ", \nprojectActivities=" + projectActivities + ", \nprojectUsers="
 				+ projectUsers + ", \nstate=" + state + "]\n\n";
 	}
 	

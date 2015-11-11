@@ -51,8 +51,8 @@ public class User implements Observer {
 		this.username = username;
 	}
 
-	public void setUserProjects(ArrayList<Project> userProjects) {
-		this.userProjects = userProjects;
+	public void addUserProjects(Project project) {
+		this.userProjects.add(project);
 	}
 
 	public void setUserActivities(ArrayList<Activity> userActivities) {

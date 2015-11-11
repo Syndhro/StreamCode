@@ -7,14 +7,16 @@ public class ServerImpl implements Subject, ServerInterface {
 	private static ServerImpl uniqueInstance;
 	private DBManager dbManager;
 	private ArrayList<Project> projects;
-	private ArrayList<User> registeredUser;
+	private ArrayList<User> registeredUsers;
 	private ArrayList<Observer> loggedUsers;
 
 	private ServerImpl() {
 		this.dbManager = DBManager.getInstance();
 		this.loggedUsers = new ArrayList<Observer>();
-		retrieveAllProjects();
 		retrieveAllUsers();
+		retrieveAllProjects();
+		linkProjectToUser();
+		
 	}
 	
 	public void retrieveAllProjects(){
@@ -22,7 +24,24 @@ public class ServerImpl implements Subject, ServerInterface {
 	}
 	
 	public void retrieveAllUsers(){
-		this.registeredUser = dbManager.getAllUsers();
+		this.registeredUsers = dbManager.getAllUsers();
+	}
+	
+	public void linkProjectToUser(){
+		
+		ArrayList<Integer> projectIds = new ArrayList<Integer>();
+		for (int i = 0; i < registeredUsers.size(); i++){
+			projectIds = dbManager.getProjectsIdByUserId(registeredUsers.get(i).getUserId());
+			for(int j = 0; j < projectIds.size(); j++){
+				for(int k = 0; k < projects.size(); k++){
+					if(projects.get(k).getId() == projectIds.get(j)){
+						registeredUsers.get(i).addUserProjects(projects.get(k));
+						projects.get(k).addCollaborator(registeredUsers.get(i));
+					}
+				}
+			}
+		}
+		
 	}
 
 	public static ServerImpl getInstance() {
@@ -88,10 +107,10 @@ public class ServerImpl implements Subject, ServerInterface {
 	@Override
 	public User login(String username, String password) {
 		dbManager.getUserId(username, password); //se va male solleva eccezione SQL
-		for(int i = 0; i < registeredUser.size(); i++){
-			if(registeredUser.get(i).getUsername().equals(username)){
-				registerObserver(registeredUser.get(i));//aggiungimi a utenti loggati
-				return registeredUser.get(i);
+		for(int i = 0; i < registeredUsers.size(); i++){
+			if(registeredUsers.get(i).getUsername().equals(username)){
+				registerObserver(registeredUsers.get(i));//aggiungimi a utenti loggati
+				return registeredUsers.get(i);
 			}
 		}
 		System.out.println("Utente non registrato");
@@ -131,9 +150,9 @@ public class ServerImpl implements Subject, ServerInterface {
 	@Override
 	public ArrayList<String> searchUser(String string) {
 		ArrayList<String> matchedUsers = new ArrayList<String>();
-		for(int i = 0; i < registeredUser.size(); i++){
-			if(registeredUser.get(i).getUsername().contains(string)){
-				matchedUsers.add(registeredUser.get(i).getUsername());
+		for(int i = 0; i < registeredUsers.size(); i++){
+			if(registeredUsers.get(i).getUsername().contains(string)){
+				matchedUsers.add(registeredUsers.get(i).getUsername());
 			}
 		}
 		return matchedUsers;
@@ -157,16 +176,20 @@ public class ServerImpl implements Subject, ServerInterface {
 		
 	}
 	
-	@Override
-	public String toString() {
-		return "ServerImpl [projects=" + projects.toString() + ", registeredUser=" + registeredUser.toString() + "]";
+	public ArrayList<User> getRegisteredUsers() {
+		return registeredUsers;
 	}
 
-	/*public static void main(String[] args){
+	@Override
+	public String toString() {
+		return "ServerImpl [projects=" + projects.toString() + ", registeredUser=" + registeredUsers.toString() + "]";
+	}
+
+	public static void main(String[] args){
 		
 		ServerImpl server = new ServerImpl();
 		
 		server.toString();
-	}*/
+	}
 	
 }

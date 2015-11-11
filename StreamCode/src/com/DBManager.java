@@ -74,7 +74,7 @@ public class DBManager {
 		     statement.setString(2, project.getTitle());
 		     statement.setString(3, project.getDescription());
 		     statement.setString(4, project.getCategory().toString().toLowerCase());
-		     statement.setInt(5, project.getAdminInt());
+		     statement.setInt(5, project.getAdmin().getUserId());
 		     statement.setString(6, project.getState().toString().toLowerCase());
 		     statement.executeUpdate();
 		    }catch(Exception e){
@@ -221,8 +221,8 @@ public class DBManager {
 		
 		DBManager db = DBManager.getInstance();
 		
-		db.getAllProjects();
-		db.getAllUsers();
+		//db.getAllProjects();
+		//db.getAllUsers();
 		
 	}
 	
