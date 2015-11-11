@@ -4,7 +4,6 @@ import java.util.ArrayList;
 
 public class Project {
 
-	private static int counter;
 	private int projectId;
 	private String title;
 	private String description;
@@ -17,8 +16,6 @@ public class Project {
 	//constructors
 	
 	public Project(User admin){
-		this.projectId = Project.counter+ 1;
-		counter++;
 		this.projectUsers = new ArrayList<User>();
 		this.projectActivities = new ArrayList<Activity>();
 		this.projectUsers.add(admin);							//add admin to project collaborators
@@ -26,9 +23,7 @@ public class Project {
 		this.adminId = admin.getUserId();
 	}
 	
-	public Project(String title, String description, Category cat, User admin){
-		this.projectId = Project.counter+ 1;
-		counter++;
+	public Project(int projectId, String title, String description, Category cat, User admin){
 		this.projectUsers = new ArrayList<User>();
 		this.projectActivities = new ArrayList<Activity>();
 		this.projectUsers.add(admin);							//add admin to project collaborators

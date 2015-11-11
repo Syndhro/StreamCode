@@ -1,6 +1,7 @@
 package com;
 
 import java.sql.*;
+import java.util.ArrayList;
 
 import javax.print.attribute.standard.RequestingUserName;
 
@@ -134,13 +135,60 @@ public class DBManager {
 		
 		return returnedId;
 	}
-
-	public void getProject() {
+	
+	public ArrayList<Project> getAllProject(){
+		
+		
+		
+		return null;
 	}
 
+	public ArrayList<Project> getProjectByUser(User user) {
+		
+		PreparedStatement statement;
+		ResultSet resultSet;
+		ArrayList<Project> projectsByUser = new ArrayList<Project>();
+		try{
+			String query = "SELECT * FROM projectmembership JOIN project ON membership.projectId = project.projectId WHERE userId = ?";
+			statement = (PreparedStatement) connection.prepareStatement(query);
+			statement.setInt(1, user.getUserId());
+			resultSet = statement.executeQuery();
+		}catch(SQLException e){
+			e.printStackTrace();
+		}
+		
+		try{
+			while(resultSet.next()){
+				Project projectToBeFilled = new Project(resultSet.getInt(1), resultSet.getString(2), resultSet.getString(3), Category.getCategory(resultSet.getString(4)), user);
+				ResultSet projectUsers;
+				PreparedStatement projectUsersStatement;
+				String projectUsersQuery = "SELECT * FROM projectmembership WHERE projectId = ?";
+				projectUsersStatement = (PreparedStatement) connection.prepareStatement(projectUsersQuery);
+				statement.setInt(1, projectToBeFilled.getId());
+				projectUsers = statement.executeQuery();
+				while(projectUsers.next()){
+				}
+				
+				PreparedStatement innerStatement;
+				String innerQuery = "SELECT * FROM activity WHERE projectId = ?";
+				innerStatement = (PreparedStatement) connection.prepareStatement(innerQuery);
+				statement.setString(1, resultSet.getString(2));
+				innerResultSet = innerStatement.executeQuery();
+				
+				while(innerResultSet.next()){
+					Activity activityToBeFilled = new Activity();
+				}
+				
+				projectsByUser.add(projectToBeFilled);
+				
+			}
+		}
+		
+	}
+	
 	public void getActivity() {
 	}
-
+	
 	public void getNotification() {
 	}
 	

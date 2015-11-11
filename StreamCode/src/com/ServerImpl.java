@@ -7,12 +7,13 @@ public class ServerImpl implements Subject, ServerInterface {
 	private static ServerImpl uniqueInstance;
 	private DBManager dbManager;
 	private ArrayList<Project> projects;
-	private ArrayList<Observer> users;
+	private ArrayList<User> registeredUser;
+	private ArrayList<Observer> loggedUsers;
 
 	private ServerImpl() {
 		this.dbManager = DBManager.getInstance();
-		this.projects = new ArrayList<Project>();
-		this.users = new ArrayList<Observer>();
+		//this.projects = new ArrayList<Project>();
+		this.loggedUsers = new ArrayList<Observer>();
 	}
 
 	public static ServerImpl getInstance() {
@@ -27,7 +28,7 @@ public class ServerImpl implements Subject, ServerInterface {
 	 *
 	 */
 	public void registerObserver(Observer o) {
-		users.add(o);
+		loggedUsers.add(o);
 	}
 	/**
 	 * @see Subject#removeObserver(Observer)
@@ -35,9 +36,9 @@ public class ServerImpl implements Subject, ServerInterface {
 	 *
 	 */
 	public void removeObserver(Observer o) {
-		int i = users.indexOf(o);
+		int i = loggedUsers.indexOf(o);
 		if(i >= 0){
-			users.remove(i);
+			loggedUsers.remove(i);
 		}
 
 	}
@@ -47,8 +48,8 @@ public class ServerImpl implements Subject, ServerInterface {
 	 *
 	 */
 	public void notifyObservers() {
-		for (int i=0; i < users.size(); i++){
-			users.get(i).update();
+		for (int i=0; i < loggedUsers.size(); i++){
+			loggedUsers.get(i).update();
 		}
 	}
 	/**
@@ -70,8 +71,8 @@ public class ServerImpl implements Subject, ServerInterface {
 		project.setTitle(title);
 		project.setDescription(description);
 		project.setCategory(category);
-	
-		projects.add(project);
+		
+		//projects.add(project);
 	}
 
 	@Override
@@ -87,9 +88,15 @@ public class ServerImpl implements Subject, ServerInterface {
 	}
 
 	@Override
-	public int login(String username, String password) {
-		// TODO Auto-generated method stub
-		return 0;
+	public User login(String username, String password) {
+		int userId = dbManager.getUserId(username, password);
+		if (userId == -1){
+			
+		}
+		
+		
+		
+		return null;
 	}
 
 	@Override
@@ -130,6 +137,12 @@ public class ServerImpl implements Subject, ServerInterface {
 
 	@Override
 	public void removeFriend(User user) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void addProject(String title, String description, Category category, User user) {
 		// TODO Auto-generated method stub
 		
 	}
