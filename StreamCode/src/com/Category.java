@@ -11,6 +11,9 @@ public enum Category {
 		
 		Category cat = null;
 		
+		if (string.equals(null))
+			return null;
+		
 		switch (string){
 		case "sport":
 			cat = SPORT;

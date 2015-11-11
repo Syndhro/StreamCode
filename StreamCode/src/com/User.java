@@ -58,6 +58,14 @@ public class User implements Observer {
 	public void setUserActivities(ArrayList<Activity> userActivities) {
 		this.userActivities = userActivities;
 	}
+
+	@Override
+	public String toString() {
+		return "User [userId=" + userId + ", \nusername=" + username + ", \nuserProjects=" + userProjects
+				+ ", \nuserActivities=" + userActivities + ", \nuserFriend=" + userFriend + "]\n\n";
+	}
+	
+	
 	
 	
 
