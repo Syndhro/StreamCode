@@ -58,7 +58,7 @@ public class ServerImpl implements Subject, ServerInterface {
 		//return true if the user and the password are present in the DB and they are correct
 		int returnedId;
 		
-		returnedId = dbManager.getUser(username, password);
+		returnedId = dbManager.getUserId(username, password);
 		
 		return returnedId;
 	}
