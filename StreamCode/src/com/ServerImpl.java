@@ -13,10 +13,6 @@ public class ServerImpl implements Subject, ServerInterface {
 	private ServerImpl() {
 		this.dbManager = DBManager.getInstance();
 		this.loggedUsers = new ArrayList<Observer>();
-		retrieveAllUsers();
-		retrieveAllProjects();
-		linkProjectToUser();
-		
 	}
 	
 	public void retrieveAllProjects(){
@@ -180,16 +176,24 @@ public class ServerImpl implements Subject, ServerInterface {
 		return registeredUsers;
 	}
 
-	@Override
-	public String toString() {
-		return "ServerImpl [projects=" + projects.toString() + ", registeredUser=" + registeredUsers.toString() + "]";
+	public void stampa() {
+		for(int i = 0; i < projects.size(); i++){
+		System.out.println("ServerImpl [projects=" + projects.get(i).getTitle());
+		}
+		for(int i = 0; i < registeredUsers.size(); i++){
+		System.out.println("ServerImpl [projects=" + registeredUsers.get(i).getUsername());
+		}
 	}
-
+	
+	
 	public static void main(String[] args){
 		
-		ServerImpl server = new ServerImpl();
+		ServerImpl server = ServerImpl.getInstance();
+		server.retrieveAllUsers();
+		server.retrieveAllProjects();
+		server.linkProjectToUser();
 		
-		server.toString();
+		server.stampa();
 	}
 	
 }

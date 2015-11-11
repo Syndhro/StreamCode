@@ -147,9 +147,17 @@ public class DBManager {
 			resultSet = statement.executeQuery(query);
 			
 			while (resultSet.next()){
-				allProjects.add(new Project(resultSet.getInt(1), resultSet.getString(2), resultSet.getString(3), Category.getCategory(resultSet.getString(4)), resultSet.getInt(5)));
+				int adminId = resultSet.getInt(5);
+				User admin = null;
+				for(int i = 0; i < ServerImpl.getInstance().getRegisteredUsers().size(); i++){
+					User user = ServerImpl.getInstance().getRegisteredUsers().get(i);
+					int id = user.getUserId();
+					if(id == adminId){
+						admin = ServerImpl.getInstance().getRegisteredUsers().get(i);
+					}
+				}
+				allProjects.add(new Project(resultSet.getInt(1), resultSet.getString(2), resultSet.getString(3), Category.getCategory(resultSet.getString(4)), admin));
 			}
-			
 		}catch(SQLException e){
 			e.printStackTrace();
 		}

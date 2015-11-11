@@ -23,7 +23,7 @@ public class Project {
 		this.admin = admin;
 	}
 	
-	public Project(int projectId, String title, String description, Category cat, int adminId){
+	public Project(int projectId, String title, String description, Category cat, User admin){
 		this.projectId = projectId;
 		this.projectUsers = new ArrayList<User>();
 		this.projectActivities = new ArrayList<Activity>();
@@ -31,14 +31,24 @@ public class Project {
 		this.title = title;
 		this.description = description;
 		this.category = cat;
-		for(int i = 0; i < projectUsers.size(); i++){
-			if(projectUsers.get(i).getUserId() == adminId)
-				this.admin = projectUsers.get(i);
-		}
+		this.admin = admin;
 	}
 	
-	//add attribute
-
+	/*
+	public User setAdmin(int adminId) {
+		User admin = null;
+		for(int i = 0; i < projectUsers.size(); i++){
+			User user = projectUsers.get(i);
+			int id = user.getUserId();
+			if(id == adminId)
+				this.admin = projectUsers.get(i);
+			else{
+				System.out.println("Admin not found");
+			}
+		}
+		return admin;
+	}
+	*/
 	public void addCollaborator(User user) {
 		this.projectUsers.add(user);
 	}
