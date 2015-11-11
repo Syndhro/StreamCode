@@ -178,12 +178,22 @@ public class ServerImpl implements Subject, ServerInterface {
 
 	public void stampa() {
 		for(int i = 0; i < projects.size(); i++){
-		System.out.println("ServerImpl [projects=" + projects.get(i).getTitle());
+		System.out.println("Project=" + projects.get(i).getTitle());
+		System.out.println("Users:");
+			for(int j=0; j < projects.get(i).getUsers().size(); j++){
+				System.out.println(projects.get(i).getUsers().get(j).getUsername());
+			}
 		}
+		System.out.println();
 		for(int i = 0; i < registeredUsers.size(); i++){
-		System.out.println("ServerImpl [projects=" + registeredUsers.get(i).getUsername());
+			System.out.println("Users:" + registeredUsers.get(i).getUsername());
+			System.out.println("Projects:");
+			for(int j=0; j < registeredUsers.get(i).getUserProjects().size(); j++){
+				System.out.println(registeredUsers.get(i).getUserProjects().get(j).getTitle());
+			}
 		}
 	}
+	
 	
 	
 	public static void main(String[] args){
