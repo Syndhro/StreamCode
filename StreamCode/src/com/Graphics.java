@@ -80,8 +80,8 @@ public class Graphics {
 				String username = textField.getText();
 				String password = passwordField.getText();
 				//devo darli al server
-				DBManager dbManager = new DBManager();
-				int valueFromCheck = dbManager.getUser(username, password);
+				DBManager dbManager = DBManager.getInstance();
+				int valueFromCheck = dbManager.getUserId(username, password);
 			
 				if (valueFromCheck != -1 && valueFromCheck != -2){
 					User connectedUser = new User(valueFromCheck, username);

@@ -10,7 +10,7 @@ public class ServerImpl implements Subject, ServerInterface {
 	private ArrayList<Observer> users;
 
 	private ServerImpl() {
-		this.dbManager = new DBManager();
+		this.dbManager = DBManager.getInstance();
 		this.projects = new ArrayList<Project>();
 		this.users = new ArrayList<Observer>();
 	}

@@ -100,7 +100,7 @@ public class DBManager {
 	public void removeNotification(Notification notification ) {
 	}
 	
-	public int getUser(String username, String password) {
+	public int getUserId(String username, String password) {
 		
 		PreparedStatement statement = null;
 		ResultSet resultSet = null;
@@ -135,7 +135,7 @@ public class DBManager {
 		return returnedId;
 	}
 
-	public void getProject) {
+	public void getProject() {
 	}
 
 	public void getActivity() {
