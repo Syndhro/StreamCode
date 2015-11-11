@@ -12,8 +12,17 @@ public class ServerImpl implements Subject, ServerInterface {
 
 	private ServerImpl() {
 		this.dbManager = DBManager.getInstance();
-		//this.projects = new ArrayList<Project>();
 		this.loggedUsers = new ArrayList<Observer>();
+		retrieveAllProjects();
+		retrieveAllUsers();
+	}
+	
+	public void retrieveAllProjects(){
+		this.projects = dbManager.getAllProjects();
+	}
+	
+	public void retrieveAllUsers(){
+		this.registeredUser = dbManager.getAllUsers();
 	}
 
 	public static ServerImpl getInstance() {
@@ -62,17 +71,6 @@ public class ServerImpl implements Subject, ServerInterface {
 		returnedId = dbManager.getUserId(username, password);
 		
 		return returnedId;
-	}
-	/**
-	 * @see Server#createProject(java.lang.String, java.lang.String, Category, int)
-	 */
-	public void createProject(String title, String description, Category category, User user) {
-		Project project = new Project(user);
-		project.setTitle(title);
-		project.setDescription(description);
-		project.setCategory(category);
-		
-		//projects.add(project);
 	}
 
 	@Override
@@ -158,4 +156,17 @@ public class ServerImpl implements Subject, ServerInterface {
 		// TODO Auto-generated method stub
 		
 	}
+	
+	@Override
+	public String toString() {
+		return "ServerImpl [projects=" + projects.toString() + ", registeredUser=" + registeredUser.toString() + "]";
+	}
+
+	/*public static void main(String[] args){
+		
+		ServerImpl server = new ServerImpl();
+		
+		server.toString();
+	}*/
+	
 }

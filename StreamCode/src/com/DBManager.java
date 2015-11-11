@@ -136,7 +136,7 @@ public class DBManager {
 		return returnedId;
 	}
 	
-	public ArrayList<Project> getAllProject(){
+	public ArrayList<Project> getAllProjects(){
 		
 		Statement statement;
 		ResultSet resultSet;
@@ -161,7 +161,7 @@ public class DBManager {
 		return allProjects;
 	}
 	
-	public ArrayList<User> getAllUser(){
+	public ArrayList<User> getAllUsers(){
 		
 		Statement statement;
 		ResultSet resultSet;
@@ -186,48 +186,26 @@ public class DBManager {
 		return allUsers;
 	}
 
-	/* public ArrayList<Project> getProjectByUser(User user) {
+	public ArrayList<Integer> getProjectsIdByUserId(int userId) {
 		
-		PreparedStatement statement;
-		ResultSet resultSet;
-		ArrayList<Project> projectsByUser = new ArrayList<Project>();
+		PreparedStatement statement = null;
+		ResultSet resultSet = null;
+		ArrayList<Integer> projectIds = new ArrayList<Integer>();
 		try{
-			String query = "SELECT * FROM projectmembership JOIN project ON membership.projectId = project.projectId WHERE userId = ?";
+			String query = "SELECT projectId FROM project_membership WHERE userId = ?";
 			statement = (PreparedStatement) connection.prepareStatement(query);
-			statement.setInt(1, user.getUserId());
+			statement.setInt(1, userId);
 			resultSet = statement.executeQuery();
+			while(resultSet.next()){
+				projectIds.add(resultSet.getInt(1));
+			}
 		}catch(SQLException e){
 			e.printStackTrace();
 		}
 		
-		try{
-			while(resultSet.next()){
-				Project projectToBeFilled = new Project(resultSet.getInt(1), resultSet.getString(2), resultSet.getString(3), Category.getCategory(resultSet.getString(4)), user);
-				ResultSet projectUsers;
-				PreparedStatement projectUsersStatement;
-				String projectUsersQuery = "SELECT * FROM projectmembership WHERE projectId = ?";
-				projectUsersStatement = (PreparedStatement) connection.prepareStatement(projectUsersQuery);
-				statement.setInt(1, projectToBeFilled.getId());
-				projectUsers = statement.executeQuery();
-				while(projectUsers.next()){
-				}
-				
-				PreparedStatement innerStatement;
-				String innerQuery = "SELECT * FROM activity WHERE projectId = ?";
-				innerStatement = (PreparedStatement) connection.prepareStatement(innerQuery);
-				statement.setString(1, resultSet.getString(2));
-				innerResultSet = innerStatement.executeQuery();
-				
-				while(innerResultSet.next()){
-					Activity activityToBeFilled = new Activity();
-				}
-				
-				projectsByUser.add(projectToBeFilled);
-				
-			}
-		}
+		return projectIds;
 		
-	} */
+	}
 	
 	public void getActivity() {
 	}
@@ -243,8 +221,8 @@ public class DBManager {
 		
 		DBManager db = DBManager.getInstance();
 		
-		db.getAllProject();
-		db.getAllUser();
+		db.getAllProjects();
+		db.getAllUsers();
 		
 	}
 	
