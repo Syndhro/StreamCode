@@ -89,32 +89,35 @@ public class ServerImpl implements Subject, ServerInterface {
 
 	@Override
 	public User login(String username, String password) {
-		int userId = dbManager.getUserId(username, password);
-		if (userId == -1){
-			
+		dbManager.getUserId(username, password); //se va male solleva eccezione SQL
+		for(int i = 0; i < registeredUser.size(); i++){
+			if(registeredUser.get(i).getUsername().equals(username)){
+				registerObserver(registeredUser.get(i));//aggiungimi a utenti loggati
+				return registeredUser.get(i);
+			}
 		}
-		
-		
-		
+		System.out.println("Utente non registrato");
 		return null;
 	}
 
 	@Override
 	public void logout(User user) {
-		// TODO Auto-generated method stub
-		
+		removeObserver(user); //rimuovo utente dalla lista degli utenti loggati	
 	}
 
 	@Override
 	public void removeProject(Project project) {
-		// TODO Auto-generated method stub
-		
+		projects.remove(project);
 	}
 
 	@Override
 	public void addActivity(Project project, Activity activity) {
-		// TODO Auto-generated method stub
-		
+		for(int i = 0; i < projects.size(); i++){
+			if(projects.get(i).equals(project)){
+				Project myProject = projects.get(i);
+				myProject.addActivity(activity);
+			}
+		}	
 	}
 
 	@Override
