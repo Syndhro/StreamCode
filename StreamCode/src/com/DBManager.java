@@ -191,5 +191,9 @@ public class DBManager {
 	
 	public void getNotification() {
 	}
+
+	public void addFriendship(String username, String username2) {
+	
+	}
 	
 }

@@ -58,7 +58,9 @@ public class User implements Observer {
 	public void setUserActivities(ArrayList<Activity> userActivities) {
 		this.userActivities = userActivities;
 	}
-	
-	
 
+	public void addFriend(User user2) {
+		// TODO Auto-generated method stub
+		
+	}
 }

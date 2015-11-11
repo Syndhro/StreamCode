@@ -122,20 +122,29 @@ public class ServerImpl implements Subject, ServerInterface {
 
 	@Override
 	public void removeActivity(Project project, Activity activity) {
-		// TODO Auto-generated method stub
-		
+		for(int i = 0; i < projects.size(); i++){
+			if(projects.get(i).equals(project)){
+				Project myProject = projects.get(i);
+				myProject.getActivities().remove(activity);
+			}
+		}		
 	}
 
 	@Override
 	public ArrayList<String> searchUser(String string) {
-		// TODO Auto-generated method stub
-		return null;
+		ArrayList<String> matchedUsers = new ArrayList<String>();
+		for(int i = 0; i < registeredUser.size(); i++){
+			if(registeredUser.get(i).getUsername().contains(string)){
+				matchedUsers.add(registeredUser.get(i).getUsername());
+			}
+		}
+		return matchedUsers;
 	}
 
 	@Override
-	public void addFriend(User user) {
-		// TODO Auto-generated method stub
-		
+	public void addFriend(User user1, User user2) {
+		user1.addFriend(user2);
+		dbManager.addFriendship(user1.getUsername(), user2.getUsername());
 	}
 
 	@Override

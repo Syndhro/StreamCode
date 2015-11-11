@@ -15,7 +15,7 @@ public interface ServerInterface extends Remote {
 	public abstract void addActivity(Project project, Activity activity);
 	public abstract void removeActivity(Project project, Activity activity);
 	public abstract ArrayList<String> searchUser(String string);
-	public abstract void addFriend(User user);
+	public abstract void addFriend(User user1, User user2);
 	public abstract void removeFriend(User user);
 	
 }
