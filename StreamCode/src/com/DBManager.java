@@ -301,7 +301,7 @@ public ArrayList<Integer> getActivityIdByUserId(int userId) {
 				boolean active = resultSet.getBoolean(8);
 				Activity newActivity = new Activity(activityId, name, descr, place, dateTime, completed, active);
 				for(int i = 0; i < ServerImpl.getInstance().getRegisteredProjects().size(); i++){
-					int id = ServerImpl.getInstance().getRegisteredProjects().get(i).getId();
+					int id = ServerImpl.getInstance().getRegisteredProjects().get(i).getProjectId();
 					if(id == projectId){
 						parentProject = ServerImpl.getInstance().getRegisteredProjects().get(i);
 						parentProject.addActivity(newActivity);
