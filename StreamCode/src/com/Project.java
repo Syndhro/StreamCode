@@ -103,7 +103,7 @@ public class Project {
 		return this.category;
 	}
 	
-	public int getId() {
+	public int getProjectId() {
 		return this.projectId;
 	}
 	

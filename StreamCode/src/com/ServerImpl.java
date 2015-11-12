@@ -179,7 +179,7 @@ public class ServerImpl implements Subject, ServerInterface {
 	@Override
 	public void addFriend(User user1, User user2) {
 		user1.addFriend(user2);
-		dbManager.addFriendship(user1.getUsername(), user2.getUsername());
+		dbManager.addFriendship(user1.getUserId(), user2.getUserId());
 	}
 
 	@Override

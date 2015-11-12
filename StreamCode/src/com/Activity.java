@@ -66,7 +66,7 @@ public class Activity {
 		activityCollaborators.remove(user);
 	}
 	
-	//getter
+	//GETTERS
 
 	public int getActivityId() {
 		return activityId;
@@ -84,6 +84,14 @@ public class Activity {
 		return description;
 	}
 
+	public String getPlace() {
+		return place;
+	}
+
+	public String getDateTime() {
+		return dateTime;
+	}
+
 	public ArrayList<User> getActivityCollaborators() {
 		return activityCollaborators;
 	}
@@ -96,10 +104,14 @@ public class Activity {
 		return isActive;
 	}
 	
-	//setter
+	//SETTERS
 
 	public void setActivityId(int activityId) {
 		this.activityId = activityId;
+	}
+
+	public void setParentProject(Project parentProject) {
+		this.parentProject = parentProject;
 	}
 
 	public void setName(String name) {
@@ -108,6 +120,14 @@ public class Activity {
 
 	public void setDescription(String description) {
 		this.description = description;
+	}
+
+	public void setPlace(String place) {
+		this.place = place;
+	}
+
+	public void setDateTime(String dateTime) {
+		this.dateTime = dateTime;
 	}
 
 	public void setActivityCollaborators(ArrayList<User> activityCollaborators) {
@@ -122,7 +142,4 @@ public class Activity {
 		this.isActive = isActive;
 	}
 	
-	public void setParentProject(Project project) {
-		this.parentProject = project;
-	}
 }
