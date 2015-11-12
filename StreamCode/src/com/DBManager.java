@@ -70,7 +70,7 @@ public class DBManager {
 	    try {
 			 String query = "INSERT INTO project (projectId, title, description, category, adminId, state) VALUES (?,?,?,?,?,?)";
 		     statement = (PreparedStatement) connection.prepareStatement(query);         
-		     statement.setInt(1, project.getId());
+		     statement.setInt(1, project.getProjectId());
 		     statement.setString(2, project.getTitle());
 		     statement.setString(3, project.getDescription());
 		     statement.setString(4, project.getCategory().toString().toLowerCase());
@@ -83,9 +83,31 @@ public class DBManager {
 	}
 
 	public void addActivity(Activity activity) {
+		
+		PreparedStatement statement = null;
+		
+		try {
+			 String query = "INSERT INTO activity (activityId, projectId, name, description, place, dateTime, isActive, isComplete) VALUES (?,?,?,?,?,?,?,?)";
+		     statement = (PreparedStatement) connection.prepareStatement(query);         
+		     statement.setInt(1, activity.getActivityId());
+		     statement.setInt(2, activity.getParentProject().getProjectId());
+		     statement.setString(3, activity.getName());
+		     statement.setString(4, activity.getDescription());
+		     statement.setString(5, activity.getPlace());
+		     statement.setString(6, activity.getDateTime());
+		     statement.setBoolean(7, activity.isActive());
+		     statement.setBoolean(8, activity.isCompleted());
+		     statement.executeUpdate();
+		    }catch(Exception e){
+		    	e.printStackTrace();
+		    }
+		
 	}
 
-	public void addNotification() {
+	public void addNotification(Notification notification) {
+		
+		
+		
 	}
 
 	public void removeUser(String username, String password) {
@@ -99,6 +121,26 @@ public class DBManager {
 	}
 
 	public void removeNotification(Notification notification ) {
+	}
+	
+	public int getLastProjectId(){
+		int lastProjectId = 0;
+		Statement statement = null;
+		ResultSet resultSet = null;
+		
+		try{
+			String query = "SELECT MAX projectId FROM project";
+			statement = (Statement) connection.createStatement();
+			resultSet = statement.executeQuery(query);
+			
+			resultSet.next();
+			
+			lastProjectId = resultSet.getInt(1);
+			
+		}catch(SQLException e){
+			e.printStackTrace();
+		}
+		return lastProjectId;
 	}
 	
 	public int getUserId(String username, String password) {
@@ -282,8 +324,19 @@ public ArrayList<Integer> getActivityIdByUserId(int userId) {
 	public void getNotification() {
 	}
 
-	public void addFriendship(String username, String username2) {
-	
+	public void addFriendship(int userId1, int userId2) {
+		
+		PreparedStatement statement = null;
+	    
+	    try {
+			 String query = "INSERT INTO friendship (userId1, userId2) VALUES (?,?)";
+		     statement = (PreparedStatement) connection.prepareStatement(query);         
+		     statement.setInt(1, userId1);
+		     statement.setInt(2, userId2);
+		     statement.executeUpdate();
+		    }catch(Exception e){
+		    	e.printStackTrace();
+		    }
 	}
 	
 	public static void main(String[] args){

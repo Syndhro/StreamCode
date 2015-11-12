@@ -38,7 +38,7 @@ public class ServerImpl implements Subject, ServerInterface {
 			projectIds = dbManager.getProjectsIdByUserId(registeredUsers.get(i).getUserId());
 			for(int j = 0; j < projectIds.size(); j++){
 				for(int k = 0; k < registeredProjects.size(); k++){
-					if(registeredProjects.get(k).getId() == projectIds.get(j)){
+					if(registeredProjects.get(k).getProjectId() == projectIds.get(j)){
 						registeredUsers.get(i).addUserProjects(registeredProjects.get(k));
 						registeredProjects.get(k).addCollaborator(registeredUsers.get(i));
 					}
@@ -142,7 +142,7 @@ public class ServerImpl implements Subject, ServerInterface {
 	public Project getProjectById(int projectId){
 		Project project = null;
 		for(int i = 0; i < registeredProjects.size(); i++){
-			if(registeredProjects.get(i).getId() == projectId){
+			if(registeredProjects.get(i).getProjectId() == projectId){
 				project = registeredProjects.get(i);
 				return project;
 			}
@@ -182,6 +182,12 @@ public class ServerImpl implements Subject, ServerInterface {
 		return matchedUsers;
 	}
 
+
+	@Override
+	public void addFriend(User user1, User user2) {
+		user1.addFriend(user2);
+		dbManager.addFriendship(user1.getUserId(), user2.getUserId());
+	}
 
 	@Override
 	public void removeFriend(User user) {
@@ -248,10 +254,5 @@ public class ServerImpl implements Subject, ServerInterface {
 		server.stampa();
 	}
 
-	@Override
-	public void addFriend(User user1, User user2) {
-		// TODO Auto-generated method stub
-		
-	}
 	
 }
