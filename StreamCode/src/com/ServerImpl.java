@@ -14,6 +14,9 @@ public class ServerImpl implements Subject, ServerInterface {
 	private ServerImpl() {
 		this.dbManager = DBManager.getInstance();
 		this.loggedUsers = new ArrayList<Observer>();
+		this.registeredProjects = new ArrayList<Project>();
+		this.registeredActivities = new ArrayList<Activity>();
+		this.registeredUsers = new ArrayList<User>();
 	}
 	
 	public void retrieveAllProjects(){
@@ -41,8 +44,7 @@ public class ServerImpl implements Subject, ServerInterface {
 					}
 				}
 			}
-		}
-		
+		}	
 	}
 	
 	public void linkActivityToUser(){
@@ -58,8 +60,7 @@ public class ServerImpl implements Subject, ServerInterface {
 					}
 				}
 			}
-		}
-		
+		}	
 	}
 
 	public static ServerImpl getInstance() {
@@ -86,7 +87,6 @@ public class ServerImpl implements Subject, ServerInterface {
 		if(i >= 0){
 			loggedUsers.remove(i);
 		}
-
 	}
 	/**
 	 * @see Subject#notifyObservers()
@@ -101,25 +101,18 @@ public class ServerImpl implements Subject, ServerInterface {
 	/**
 	 * @see Server#check(java.lang.String, java.lang.String)
 	 */
-	public int check(String username, String password) {
-		//return true if the user and the password are present in the DB and they are correct
-		int returnedId;
-		
-		returnedId = dbManager.getUserId(username, password);
-		
-		return returnedId;
-	}
 
 	@Override
 	public void registerUser(String username, String password) {
-		// TODO Auto-generated method stub
-		
+		dbManager.addUser(username, password);
+		int id = dbManager.getUserId(username, password);
+		User user = new User(id, username);
+		registeredUsers.add(user);
 	}
 
 	@Override
 	public void unregisterUser(User user) {
-		registeredUsers.remove(user);
-		
+		registeredUsers.remove(user);	
 	}
 
 	@Override
@@ -141,10 +134,23 @@ public class ServerImpl implements Subject, ServerInterface {
 	}
 
 	@Override
-	public void removeProject(Project project) {
+	public void removeProject(int projectId) {
+		Project project = getProjectById(projectId);
 		registeredProjects.remove(project);
 	}
 
+	public Project getProjectById(int projectId){
+		Project project = null;
+		for(int i = 0; i < registeredProjects.size(); i++){
+			if(registeredProjects.get(i).getId() == projectId){
+				project = registeredProjects.get(i);
+				return project;
+			}
+		}
+		System.out.println("Project not found");
+		return project;
+	}
+	
 	@Override
 	public void addActivity(Project project, Activity activity) {
 		for(int i = 0; i < registeredProjects.size(); i++){
@@ -176,11 +182,6 @@ public class ServerImpl implements Subject, ServerInterface {
 		return matchedUsers;
 	}
 
-	@Override
-	public void addFriend(User user1, User user2) {
-		user1.addFriend(user2);
-		dbManager.addFriendship(user1.getUsername(), user2.getUsername());
-	}
 
 	@Override
 	public void removeFriend(User user) {
@@ -190,7 +191,7 @@ public class ServerImpl implements Subject, ServerInterface {
 
 	@Override
 	public void addProject(String title, String description, Category category, User user) {
-		// TODO Auto-generated method stub
+	
 		
 	}
 	
@@ -245,6 +246,12 @@ public class ServerImpl implements Subject, ServerInterface {
 		server.linkActivityToUser();
 		
 		server.stampa();
+	}
+
+	@Override
+	public void addFriend(User user1, User user2) {
+		// TODO Auto-generated method stub
+		
 	}
 	
 }

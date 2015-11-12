@@ -66,10 +66,8 @@ public class User implements Observer {
 	}
 	
 	
-
-	public void addFriend(User user2) {
-		// TODO Auto-generated method stub
-		
+	public void addFriend(User user) {
+		userFriend.add(user);	
 	}
 
 }
