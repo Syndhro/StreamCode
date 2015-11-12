@@ -6,7 +6,8 @@ public class ServerImpl implements Subject, ServerInterface {
 
 	private static ServerImpl uniqueInstance;
 	private DBManager dbManager;
-	private ArrayList<Project> projects;
+	private ArrayList<Project> registeredProjects;
+	private ArrayList<Activity> registeredActivities;
 	private ArrayList<User> registeredUsers;
 	private ArrayList<Observer> loggedUsers;
 
@@ -16,11 +17,15 @@ public class ServerImpl implements Subject, ServerInterface {
 	}
 	
 	public void retrieveAllProjects(){
-		this.projects = dbManager.getAllProjects();
+		this.registeredProjects = dbManager.getAllProjects();
 	}
 	
 	public void retrieveAllUsers(){
 		this.registeredUsers = dbManager.getAllUsers();
+	}
+	
+	public void retrieveAllActivity(){
+		this.registeredActivities = dbManager.getAllActivity();
 	}
 	
 	public void linkProjectToUser(){
@@ -29,10 +34,27 @@ public class ServerImpl implements Subject, ServerInterface {
 		for (int i = 0; i < registeredUsers.size(); i++){
 			projectIds = dbManager.getProjectsIdByUserId(registeredUsers.get(i).getUserId());
 			for(int j = 0; j < projectIds.size(); j++){
-				for(int k = 0; k < projects.size(); k++){
-					if(projects.get(k).getId() == projectIds.get(j)){
-						registeredUsers.get(i).addUserProjects(projects.get(k));
-						projects.get(k).addCollaborator(registeredUsers.get(i));
+				for(int k = 0; k < registeredProjects.size(); k++){
+					if(registeredProjects.get(k).getId() == projectIds.get(j)){
+						registeredUsers.get(i).addUserProjects(registeredProjects.get(k));
+						registeredProjects.get(k).addCollaborator(registeredUsers.get(i));
+					}
+				}
+			}
+		}
+		
+	}
+	
+	public void linkActivityToUser(){
+		
+		ArrayList<Integer> activityIds = new ArrayList<Integer>();
+		for (int i = 0; i < registeredUsers.size(); i++){
+			activityIds = dbManager.getActivityIdByUserId(registeredUsers.get(i).getUserId());
+			for(int j = 0; j < activityIds.size(); j++){
+				for(int k = 0; k < registeredActivities.size(); k++){
+					if(registeredActivities.get(k).getActivityId() == activityIds.get(j)){
+						registeredUsers.get(i).addUserActivities(registeredActivities.get(k));
+						registeredActivities.get(k).addCollaborator(registeredUsers.get(i));
 					}
 				}
 			}
@@ -120,14 +142,14 @@ public class ServerImpl implements Subject, ServerInterface {
 
 	@Override
 	public void removeProject(Project project) {
-		projects.remove(project);
+		registeredProjects.remove(project);
 	}
 
 	@Override
 	public void addActivity(Project project, Activity activity) {
-		for(int i = 0; i < projects.size(); i++){
-			if(projects.get(i).equals(project)){
-				Project myProject = projects.get(i);
+		for(int i = 0; i < registeredProjects.size(); i++){
+			if(registeredProjects.get(i).equals(project)){
+				Project myProject = registeredProjects.get(i);
 				myProject.addActivity(activity);
 			}
 		}	
@@ -135,9 +157,9 @@ public class ServerImpl implements Subject, ServerInterface {
 
 	@Override
 	public void removeActivity(Project project, Activity activity) {
-		for(int i = 0; i < projects.size(); i++){
-			if(projects.get(i).equals(project)){
-				Project myProject = projects.get(i);
+		for(int i = 0; i < registeredProjects.size(); i++){
+			if(registeredProjects.get(i).equals(project)){
+				Project myProject = registeredProjects.get(i);
 				myProject.getActivities().remove(activity);
 			}
 		}		
@@ -175,13 +197,21 @@ public class ServerImpl implements Subject, ServerInterface {
 	public ArrayList<User> getRegisteredUsers() {
 		return registeredUsers;
 	}
+	
+	public ArrayList<Project> getRegisteredProjects() {
+		return registeredProjects;
+	}
+	
+	public ArrayList<Activity> getRegisteredActivity() {
+		return registeredActivities;
+	}
 
 	public void stampa() {
-		for(int i = 0; i < projects.size(); i++){
-		System.out.println("Project=" + projects.get(i).getTitle());
+		for(int i = 0; i < registeredProjects.size(); i++){
+		System.out.println("Project=" + registeredProjects.get(i).getTitle());
 		System.out.println("Users:");
-			for(int j=0; j < projects.get(i).getUsers().size(); j++){
-				System.out.println(projects.get(i).getUsers().get(j).getUsername());
+			for(int j=0; j < registeredProjects.get(i).getUsers().size(); j++){
+				System.out.println(registeredProjects.get(i).getUsers().get(j).getUsername());
 			}
 		}
 		System.out.println();
@@ -190,6 +220,14 @@ public class ServerImpl implements Subject, ServerInterface {
 			System.out.println("Projects:");
 			for(int j=0; j < registeredUsers.get(i).getUserProjects().size(); j++){
 				System.out.println(registeredUsers.get(i).getUserProjects().get(j).getTitle());
+			}
+		}
+		System.out.println();
+		for(int i = 0; i < registeredUsers.size(); i++){
+			System.out.println("Users:" + registeredUsers.get(i).getUsername());
+			System.out.println("Activities:");
+			for(int j=0; j < registeredUsers.get(i).getUserActivities().size(); j++){
+				System.out.println(registeredUsers.get(i).getUserActivities().get(j).getName());
 			}
 		}
 	}
@@ -201,7 +239,10 @@ public class ServerImpl implements Subject, ServerInterface {
 		ServerImpl server = ServerImpl.getInstance();
 		server.retrieveAllUsers();
 		server.retrieveAllProjects();
+		server.retrieveAllActivity();
+		
 		server.linkProjectToUser();
+		server.linkActivityToUser();
 		
 		server.stampa();
 	}

@@ -140,6 +140,7 @@ public class DBManager {
 		
 		Statement statement;
 		ResultSet resultSet;
+		
 		ArrayList<Project> allProjects = new ArrayList<Project>();
 		try{
 			String query = "SELECT * FROM project";
@@ -215,7 +216,67 @@ public class DBManager {
 		
 	}
 	
-	public void getActivity() {
+public ArrayList<Integer> getActivityIdByUserId(int userId) {
+		
+		PreparedStatement statement = null;
+		ResultSet resultSet = null;
+		ArrayList<Integer> activityIds = new ArrayList<Integer>();
+		try{
+			String query = "SELECT activityId FROM activity_membership WHERE userId = ?";
+			statement = (PreparedStatement) connection.prepareStatement(query);
+			statement.setInt(1, userId);
+			resultSet = statement.executeQuery();
+			while(resultSet.next()){
+				activityIds.add(resultSet.getInt(1));
+			}
+		}catch(SQLException e){
+			e.printStackTrace();
+		}
+		
+		return activityIds;
+		
+	}
+	
+	public ArrayList<Activity> getAllActivity() {
+		
+		Statement statement;
+		ResultSet resultSet;
+		ArrayList<Activity> allActivity = new ArrayList<Activity>();
+		try{
+			String query = "SELECT * FROM activity";
+			statement = (Statement) connection.createStatement();
+			resultSet = statement.executeQuery(query);
+			
+			while (resultSet.next()){
+				Project parentProject = null;
+				int activityId = resultSet.getInt(1);
+				int projectId = resultSet.getInt(2);
+				String name = resultSet.getString(3);
+				String descr = resultSet.getString(4);
+				String place = resultSet.getString(5);
+				String dateTime = resultSet.getString(6);
+				boolean completed = resultSet.getBoolean(7);
+				boolean active = resultSet.getBoolean(8);
+				Activity newActivity = new Activity(activityId, name, descr, place, dateTime, completed, active);
+				for(int i = 0; i < ServerImpl.getInstance().getRegisteredProjects().size(); i++){
+					int id = ServerImpl.getInstance().getRegisteredProjects().get(i).getId();
+					if(id == projectId){
+						parentProject = ServerImpl.getInstance().getRegisteredProjects().get(i);
+						parentProject.addActivity(newActivity);
+						newActivity.setParentProject(parentProject);
+					}
+				}
+				allActivity.add(newActivity);
+			}
+		}catch(SQLException e){
+			e.printStackTrace();
+		}
+		
+		for(int i = 0; i < allActivity.size(); i++){
+			System.out.println(allActivity.get(i).toString());
+		}
+		
+		return allActivity;
 	}
 	
 	public void getNotification() {

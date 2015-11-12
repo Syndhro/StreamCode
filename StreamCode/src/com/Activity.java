@@ -8,6 +8,8 @@ public class Activity {
 	private Project parentProject;
 	private String name;
 	private String description;
+	private String place;
+	private String dateTime;
 	private ArrayList<User> activityCollaborators; //corretto che siano oggetti in modo da chiamare il metodo update di ognuno quando necessario
 	private boolean isCompleted;
 	private boolean isActive;
@@ -21,13 +23,27 @@ public class Activity {
 		this.isActive = false; //unactive	
 	}
 	
-	public Activity(Project parentProject, String name, String description){
+	public Activity(int activityId, Project parentProject, String name, String description, String place, String dateTime){
+		this.activityId = activityId;
 		this.parentProject = parentProject;
 		this.name = name;
 		this.description = description;
+		this.place = place;
+		this.dateTime = dateTime;
 		this.activityCollaborators = new ArrayList<User>();
 		this.isCompleted = false; //uncompleted
 		this.isActive = false; //unactive	
+	}
+	
+	public Activity(int activityId, String name, String description, String place, String dateTime, boolean isCompleted, boolean isActive){
+		this.activityId = activityId;
+		this.name = name;
+		this.description = description;
+		this.place = place;
+		this.dateTime = dateTime;
+		this.activityCollaborators = new ArrayList<User>();
+		this.isCompleted = isCompleted;
+		this.isActive = isActive;	
 	}
 	
 	//change status
@@ -104,5 +120,9 @@ public class Activity {
 
 	public void setActive(boolean isActive) {
 		this.isActive = isActive;
+	}
+	
+	public void setParentProject(Project project) {
+		this.parentProject = project;
 	}
 }
