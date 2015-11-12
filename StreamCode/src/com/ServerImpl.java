@@ -118,7 +118,7 @@ public class ServerImpl implements Subject, ServerInterface {
 
 	@Override
 	public void unregisterUser(User user) {
-		// TODO Auto-generated method stub
+		registeredUsers.remove(user);
 		
 	}
 

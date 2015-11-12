@@ -71,4 +71,5 @@ public class User implements Observer {
 		// TODO Auto-generated method stub
 		
 	}
+
 }
