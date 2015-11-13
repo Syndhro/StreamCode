@@ -9,7 +9,7 @@ public class User implements Observer {
 	private ArrayList<Project> collaborationProjects;
 	private ArrayList<Project> managedProject;
 	private ArrayList<Activity> userActivities;
-	private ArrayList<User> userFriend;
+	private ArrayList<User> userFriends;
 	
 
 	public User(int id, String username){
@@ -18,7 +18,7 @@ public class User implements Observer {
 		collaborationProjects = new ArrayList<Project>();
 		managedProject = new ArrayList<Project>();
 		userActivities = new ArrayList<Activity>();
-		userFriend = new ArrayList<User>();
+		userFriends = new ArrayList<User>();
 	}
 	
 	//chain of responsability
@@ -48,6 +48,10 @@ public class User implements Observer {
 	public ArrayList<Activity> getUserActivities() {
 		return userActivities;
 	}
+	
+	public ArrayList<User> getUserFriends() {
+		return userFriends;
+	}
 
 	public void setUsername(String username) {
 		this.username = username;
@@ -68,12 +72,12 @@ public class User implements Observer {
 	@Override
 	public String toString() {
 		return "User [userId=" + userId + ", \nusername=" + username + ", \nuserProjects=" + collaborationProjects
-				+ ", \nuserActivities=" + userActivities + ", \nuserFriend=" + userFriend + "]\n\n";
+				+ ", \nuserActivities=" + userActivities + ", \nuserFriend=" + userFriends + "]\n\n";
 	}
 	
 	
 	public void addFriend(User user) {
-		userFriend.add(user);	
+		userFriends.add(user);	
 	}
 
 }

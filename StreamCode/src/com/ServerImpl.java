@@ -213,9 +213,9 @@ public class ServerImpl implements Subject, ServerInterface {
 	}
 
 	@Override
-	public void removeFriend(User user) {
-		// TODO Auto-generated method stub
-		
+	public void removeFriend(User user1, User user2) {
+		user1.getUserFriends().remove(user2);
+		dbManager.removeFriend(user1.getUserId(), user2.getUserId());
 	}
 
 	@Override

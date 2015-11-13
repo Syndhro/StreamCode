@@ -104,14 +104,10 @@ public class DBManager {
 		
 	}
 
-	public void addNotification(Notification notification) {
-		
-		
-		
+	public void addNotification(Notification notification) {		
 	}
 
-	public void removeUser(String username, String password) {
-		
+	public void removeUser(String username, String password) {	
 	}
 
 	public void removeProject(Project project) {
@@ -121,6 +117,22 @@ public class DBManager {
 	}
 
 	public void removeNotification(Notification notification ) {
+	}
+	
+	public void removeFriend(int user1, int user2) {
+		PreparedStatement statement = null;
+		ResultSet resultSet = null;
+		
+		try{
+			String query = "DELETE from friendship WHERE userId1=? AND userId2=?";
+			statement = (PreparedStatement) connection.prepareStatement(query);
+			statement.setInt(1, user1);
+			statement.setInt(2, user2);
+			statement.executeUpdate();	
+
+		}catch(SQLException e){
+			e.printStackTrace();
+		}
 	}
 	
 	public int getLastProjectId(){
