@@ -58,11 +58,11 @@ public class Activity {
 	
 	//add & remove
 
-	public void addCollaborator(User user) {
+	public void addAgent(User user) {
 		activityCollaborators.add(user);
 	}
 	
-	public void removeCollaborator(User user) {
+	public void removeAgent(User user) {
 		activityCollaborators.remove(user);
 	}
 	
@@ -143,3 +143,4 @@ public class Activity {
 	}
 	
 }
+
