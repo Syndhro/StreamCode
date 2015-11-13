@@ -176,13 +176,12 @@ public class ServerImpl implements Subject, ServerInterface {
 	}
 	
 	@Override //da rifare, bisogna passare le stringhe
-	public void addActivity(Project project, Activity activity) {
-		for(int i = 0; i < registeredProjects.size(); i++){
-			if(registeredProjects.get(i).equals(project)){
-				Project myProject = registeredProjects.get(i);
-				myProject.addActivity(activity);
-			}
-		}	
+	public void addActivity(Project project, String name, String description, String place, String dateTime) {
+		int id = dbManager.getLastActivityId();
+		Activity activity = new Activity(id, project, name, description, place, dateTime);
+		project.addActivity(activity);
+		registeredActivities.add(activity);
+		dbManager.addActivity(activity);
 	}
 
 	@Override
@@ -223,7 +222,6 @@ public class ServerImpl implements Subject, ServerInterface {
 	public void addProject(String title, String description, String category, User user) {
 
 		int projectId = dbManager.getLastProjectId();
-		
 		Project project = new Project(projectId, title, description, Category.getCategory(category), user);
 		registeredProjects.add(project);
 		dbManager.addProject(project);
