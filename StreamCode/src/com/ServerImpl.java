@@ -39,7 +39,7 @@ public class ServerImpl implements Subject, ServerInterface {
 			for(int j = 0; j < projectIds.size(); j++){
 				for(int k = 0; k < registeredProjects.size(); k++){
 					if(registeredProjects.get(k).getProjectId() == projectIds.get(j)){
-						registeredUsers.get(i).addUserProjects(registeredProjects.get(k));
+						registeredUsers.get(i).addCollaborationProject(registeredProjects.get(k));
 						registeredProjects.get(k).addCollaborator(registeredUsers.get(i));
 					}
 				}
@@ -151,7 +151,31 @@ public class ServerImpl implements Subject, ServerInterface {
 		return project;
 	}
 	
-	@Override
+	public Activity getActivityById(int activityId){
+		Activity activity = null;
+		for(int i = 0; i < registeredActivities.size(); i++){
+			if(registeredActivities.get(i).getActivityId() == activityId){
+				activity = registeredActivities.get(i);
+				return activity;
+			}
+		}
+		System.out.println("Activity not found");
+		return activity;
+	}
+	
+	public User getUserById(int userId){
+		User user = null;
+		for(int i = 0; i < registeredUsers.size(); i++){
+			if(registeredUsers.get(i).getUserId() == userId){
+				user = registeredUsers.get(i);
+				return user;
+			}
+		}
+		System.out.println("User not found");
+		return user;
+	}
+	
+	@Override //da rifare, bisogna passare le stringhe
 	public void addActivity(Project project, Activity activity) {
 		for(int i = 0; i < registeredProjects.size(); i++){
 			if(registeredProjects.get(i).equals(project)){
@@ -196,9 +220,14 @@ public class ServerImpl implements Subject, ServerInterface {
 	}
 
 	@Override
-	public void addProject(String title, String description, Category category, User user) {
-	
+	public void addProject(String title, String description, String category, User user) {
+
+		int projectId = dbManager.getLastProjectId();
 		
+		Project project = new Project(projectId, title, description, Category.getCategory(category), user);
+		registeredProjects.add(project);
+		dbManager.addProject(project);
+		user.addManagedProject(project);
 	}
 	
 	public ArrayList<User> getRegisteredUsers() {

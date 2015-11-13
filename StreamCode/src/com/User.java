@@ -6,7 +6,8 @@ public class User implements Observer {
 
 	private int userId;
 	private String username;
-	private ArrayList<Project> userProjects;
+	private ArrayList<Project> collaborationProjects;
+	private ArrayList<Project> managedProject;
 	private ArrayList<Activity> userActivities;
 	private ArrayList<User> userFriend;
 	
@@ -14,7 +15,8 @@ public class User implements Observer {
 	public User(int id, String username){
 		this.userId = id;
 		this.username = username;
-		userProjects = new ArrayList<Project>();
+		collaborationProjects = new ArrayList<Project>();
+		managedProject = new ArrayList<Project>();
 		userActivities = new ArrayList<Activity>();
 		userFriend = new ArrayList<User>();
 	}
@@ -40,7 +42,7 @@ public class User implements Observer {
 	}
 
 	public ArrayList<Project> getUserProjects() {
-		return userProjects;
+		return collaborationProjects;
 	}
 
 	public ArrayList<Activity> getUserActivities() {
@@ -51,8 +53,12 @@ public class User implements Observer {
 		this.username = username;
 	}
 
-	public void addUserProjects(Project project) {
-		this.userProjects.add(project);
+	public void addCollaborationProject(Project project) {
+		this.collaborationProjects.add(project);
+	}
+	
+	public void addManagedProject(Project project) {
+		this.managedProject.add(project);
 	}
 
 	public void addUserActivities(Activity activity) {
@@ -61,7 +67,7 @@ public class User implements Observer {
 
 	@Override
 	public String toString() {
-		return "User [userId=" + userId + ", \nusername=" + username + ", \nuserProjects=" + userProjects
+		return "User [userId=" + userId + ", \nusername=" + username + ", \nuserProjects=" + collaborationProjects
 				+ ", \nuserActivities=" + userActivities + ", \nuserFriend=" + userFriend + "]\n\n";
 	}
 	
