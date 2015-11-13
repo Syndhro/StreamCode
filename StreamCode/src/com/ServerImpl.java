@@ -44,39 +44,40 @@ public class ServerImpl implements Subject, ServerInterface {
 		this.registeredActivities = dbManager.getAllActivities();
 	}
 	
-	public void linkProjectsToUsers(){
-		
+	public void linkProjectsToUsers(){		
 		ArrayList<Integer> projectIds = new ArrayList<Integer>();
 		for (int i = 0; i < registeredUsers.size(); i++){
 			projectIds = dbManager.getProjectsIdByUserId(registeredUsers.get(i).getUserId());
 			for(int j = 0; j < projectIds.size(); j++){
-				for(int k = 0; k < registeredProjects.size(); k++){
-					if(registeredProjects.get(k).getProjectId() == projectIds.get(j)){
-						registeredUsers.get(i).addCollaborationProject(registeredProjects.get(k));
-						registeredProjects.get(k).addCollaborator(registeredUsers.get(i));
-					}
-				}
+				Project project = getProjectById(projectIds.get(j));
+				registeredUsers.get(i).addCollaborationProject(project);
+				project.addCollaborator(registeredUsers.get(i));
 			}
 		}	
 	}
 	
-	public void linkActivitiesToUsers(){
-		
+	public void linkActivitiesToUsers(){	
 		ArrayList<Integer> activityIds = new ArrayList<Integer>();
 		for (int i = 0; i < registeredUsers.size(); i++){
 			activityIds = dbManager.getActivitiesIdByUserId(registeredUsers.get(i).getUserId());
 			for(int j = 0; j < activityIds.size(); j++){
-				for(int k = 0; k < registeredActivities.size(); k++){
-					if(registeredActivities.get(k).getActivityId() == activityIds.get(j)){
-						registeredUsers.get(i).addUserActivities(registeredActivities.get(k));
-						registeredActivities.get(k).addAgent(registeredUsers.get(i));
-					}
-				}
+				Activity activity = getActivityById(activityIds.get(j));	
+				registeredUsers.get(i).addUserActivities(activity);
+				activity.addAgent(registeredUsers.get(i));
 			}
 		}	
 	}
 	
-	public void linkFriends(){};
+	public void linkFriends(){
+		ArrayList<Integer> friendsIds = new ArrayList<Integer>();
+		for(int i = 0; i < registeredUsers.size(); i++){
+			friendsIds = dbManager.getFriendsIdByUserId(registeredUsers.get(i).getUserId());
+			for(int j = 0; j < friendsIds.size(); j++){
+				User user = getUserById(friendsIds.get(j));
+				registeredUsers.get(i).addFriend(user);
+				}
+		}
+	};
 	
 	//OBSERVER PATTERN
 	

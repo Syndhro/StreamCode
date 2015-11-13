@@ -425,6 +425,25 @@ public class DBManager {
 		return activityIds;
 	}
 	
+	//retrieve the ids of the friends of the user with the passed id
+	public ArrayList<Integer> getFriendsIdByUserId(int userId) {
+		PreparedStatement statement = null;
+		ResultSet resultSet = null;
+		ArrayList<Integer> friendsIds = new ArrayList<Integer>();
+		try{
+			String query = "SELECT userId2 FROM friendship WHERE userId1 = ?";
+			statement = (PreparedStatement) connection.prepareStatement(query);
+			statement.setInt(1, userId);
+			resultSet = statement.executeQuery();
+			while(resultSet.next()){
+				friendsIds.add(resultSet.getInt(1));
+			}
+		}catch(SQLException e){
+			e.printStackTrace();
+		}	
+		return friendsIds;
+	}
+	
 	public void getNotification() {
 	}
 
