@@ -109,6 +109,34 @@ public class DBManager {
 		    }
 	}
 	
+	//add project membership
+	public void addProjectMembership(int userId, Project project) {	
+		PreparedStatement statement = null;
+	    try {
+			 String query = "INSERT INTO project_membership (userId1, projectId) VALUES (?,?)";
+		     statement = (PreparedStatement) connection.prepareStatement(query);         
+		     statement.setInt(1, userId);
+		     statement.setInt(2, project.getProjectId());
+		     statement.executeUpdate();
+		    }catch(Exception e){
+		    	e.printStackTrace();
+		    }
+	}
+	
+	//add activity membership
+	public void addActivityMembership(int userId, Activity activity) {	
+		PreparedStatement statement = null;
+	    try {
+			 String query = "INSERT INTO activity_membership (userId1, projectId) VALUES (?,?)";
+		     statement = (PreparedStatement) connection.prepareStatement(query);         
+		     statement.setInt(1, userId);
+		     statement.setInt(2, activity.getActivityId());
+		     statement.executeUpdate();
+		    }catch(Exception e){
+		    	e.printStackTrace();
+		    }
+	}
+	
 	//
 	public void addNotification(Notification notification) {		
 	}
@@ -156,7 +184,7 @@ public class DBManager {
 	}
 	
 	//remove friendship from database
-	public void removeFriend(int user1, int user2) {
+	public void removeFriendship(int user1, int user2) {
 		PreparedStatement statement = null;		
 		try{
 			String query = "DELETE from friendship WHERE userId1=? AND userId2=?";
@@ -169,6 +197,33 @@ public class DBManager {
 		}
 	}
 	
+	//remove project membership
+	public void removeProjectMembership(int userId, int projectId) {
+		PreparedStatement statement = null;		
+		try{
+			String query = "DELETE from project_membership WHERE userId=? AND projectId=?";
+			statement = (PreparedStatement) connection.prepareStatement(query);
+			statement.setInt(1, userId);
+			statement.setInt(2, projectId);
+			statement.executeUpdate();	
+		}catch(SQLException e){
+			e.printStackTrace();
+		}
+	}
+	
+	//remove activity membership
+	public void removeActivityMembership(int userId, int activityId) {
+		PreparedStatement statement = null;		
+		try{
+			String query = "DELETE from activity_membership WHERE userId=? AND activityId=?";
+			statement = (PreparedStatement) connection.prepareStatement(query);
+			statement.setInt(1, userId);
+			statement.setInt(2, activityId);
+			statement.executeUpdate();	
+		}catch(SQLException e){
+			e.printStackTrace();
+		}
+	}
 	//remove notification from database when read
 	public void removeNotification(Notification notification ) {
 	}

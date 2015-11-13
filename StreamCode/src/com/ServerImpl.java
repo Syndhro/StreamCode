@@ -171,7 +171,7 @@ public class ServerImpl implements Subject, ServerInterface {
 	@Override
 	public void removeFriend(User user1, User user2) throws RemoteException {
 		user1.getUserFriends().remove(user2);
-		dbManager.removeFriend(user1.getUserId(), user2.getUserId());
+		dbManager.removeFriendship(user1.getUserId(), user2.getUserId());
 	}
 	
 	@Override
