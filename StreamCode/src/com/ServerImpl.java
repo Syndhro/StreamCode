@@ -191,8 +191,8 @@ public class ServerImpl implements Subject, ServerInterface {
 	@Override
 	public void removeProject(Project project) throws RemoteException {
 		project.getAdmin().getManagedProject().remove(project);
-		for(int i = 0; i < project.getUsers().size(); i++){
-			project.getUsers().get(i).getCollaborationProject().remove(project);
+		for(int i = 0; i < project.getCollaborators().size(); i++){
+			project.getCollaborators().get(i).getCollaborationProject().remove(project);
 		}
 		dbManager.removeProject(project);
 		registeredProjects.remove(project);
@@ -210,7 +210,7 @@ public class ServerImpl implements Subject, ServerInterface {
 	
 	@Override
 	public void removeCollaborator(Project project, User user) throws RemoteException {
-		project.getUsers().remove(user);
+		project.getCollaborators().remove(user);
 		user.getCollaborationProject().remove(project);
 		dbManager.removeProjectMembership(user.getUserId(), project.getProjectId());
 	}
@@ -290,8 +290,8 @@ public class ServerImpl implements Subject, ServerInterface {
 		for(int i = 0; i < registeredProjects.size(); i++){
 		System.out.println("Project=" + registeredProjects.get(i).getTitle());
 		System.out.println("Users:");
-			for(int j=0; j < registeredProjects.get(i).getUsers().size(); j++){
-				System.out.println(registeredProjects.get(i).getUsers().get(j).getUsername());
+			for(int j=0; j < registeredProjects.get(i).getCollaborators().size(); j++){
+				System.out.println(registeredProjects.get(i).getCollaborators().get(j).getUsername());
 			}
 		}
 		System.out.println();

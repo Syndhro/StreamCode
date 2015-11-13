@@ -10,22 +10,14 @@ public class Project {
 	private Category category;
 	private User admin;
 	private ArrayList<Activity> projectActivities;
-	private ArrayList<User> projectUsers;
+	private ArrayList<User> projectCollaborators;
 	private ProjectState state;
 	
 	//constructors
 	
-	public Project(User admin){
-		this.projectUsers = new ArrayList<User>();
-		this.projectActivities = new ArrayList<Activity>();
-		this.projectUsers.add(admin);							//add admin to project collaborators
-		this.state = ProjectState.INACTIVE;
-		this.admin = admin;
-	}
-	
 	public Project(int projectId, String title, String description, Category cat, User admin){
 		this.projectId = projectId;
-		this.projectUsers = new ArrayList<User>();
+		this.projectCollaborators = new ArrayList<User>();
 		this.projectActivities = new ArrayList<Activity>();
 		this.state = ProjectState.INACTIVE;
 		this.title = title;
@@ -34,57 +26,42 @@ public class Project {
 		this.admin = admin;
 	}
 	
-	/*
-	public User setAdmin(int adminId) {
-		User admin = null;
-		for(int i = 0; i < projectUsers.size(); i++){
-			User user = projectUsers.get(i);
-			int id = user.getUserId();
-			if(id == adminId)
-				this.admin = projectUsers.get(i);
-			else{
-				System.out.println("Admin not found");
-			}
-		}
-		return admin;
-	}
-	*/
 	public void addCollaborator(User user) {
-		this.projectUsers.add(user);
+		this.projectCollaborators.add(user);
 	}
-
+	
 	public void addActivity(Activity activity) {
 		this.projectActivities.add(activity);
 	}
 	
 	public void removeCollaborator(User user) {
-		this.projectUsers.remove(user);
+		this.projectCollaborators.remove(user);
 	}
-
+	
 	public void removeActivity(Activity activity) {
 		this.projectActivities.remove(activity);
 	}
 	
 	//start/end
-
+	
 	public void startProject() {
 		this.state = ProjectState.ACTIVE;
 	}
-
+	
 	public void endProject() {
 		this.state = ProjectState.COMPLETED;
 	}
 	
 	//setters
-
+	
 	public void setTitle(String title) {
 		this.title = title;
 	}
-
+	
 	public void setDescription(String description) {
 		this.description = description;
 	}
-
+	
 	public void setCategory(Category category) {
 		this.category = category;
 	}
@@ -94,11 +71,11 @@ public class Project {
 	public String getTitle() {
 		return this.title;
 	}
-
+	
 	public String getDescription() {
 		return this.description;
 	}
-
+	
 	public Category getCategory() {
 		return this.category;
 	}
@@ -119,17 +96,14 @@ public class Project {
 		return this.projectActivities;
 	}
 	
-	public ArrayList<User> getUsers() {
-		return this.projectUsers;
+	public ArrayList<User> getCollaborators() {
+		return this.projectCollaborators;
 	}
 
 	@Override
 	public String toString() {
 		return "Project [projectId=" + projectId + ", \ntitle=" + title + ", \ndescription=" + description + ", \ncategory="
 				+ category + ", \nadminId=" + admin + ", \nprojectActivities=" + projectActivities + ", \nprojectUsers="
-				+ projectUsers + ", \nstate=" + state + "]\n\n";
+				+ projectCollaborators + ", \nstate=" + state + "]\n\n";
 	}
-	
-	
-	
 }
