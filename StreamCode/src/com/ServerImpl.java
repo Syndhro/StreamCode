@@ -28,7 +28,7 @@ public class ServerImpl implements Subject, ServerInterface {
 	}
 	
 	public void retrieveAllActivity(){
-		this.registeredActivities = dbManager.getAllActivity();
+		this.registeredActivities = dbManager.getAllActivities();
 	}
 	
 	public void linkProjectToUser(){
@@ -51,7 +51,7 @@ public class ServerImpl implements Subject, ServerInterface {
 		
 		ArrayList<Integer> activityIds = new ArrayList<Integer>();
 		for (int i = 0; i < registeredUsers.size(); i++){
-			activityIds = dbManager.getActivityIdByUserId(registeredUsers.get(i).getUserId());
+			activityIds = dbManager.getActivitiesIdByUserId(registeredUsers.get(i).getUserId());
 			for(int j = 0; j < activityIds.size(); j++){
 				for(int k = 0; k < registeredActivities.size(); k++){
 					if(registeredActivities.get(k).getActivityId() == activityIds.get(j)){
@@ -175,7 +175,7 @@ public class ServerImpl implements Subject, ServerInterface {
 		return user;
 	}
 	
-	@Override //da rifare, bisogna passare le stringhe
+	@Override
 	public void addActivity(Project project, String name, String description, String place, String dateTime) {
 		int id = dbManager.getLastActivityId();
 		Activity activity = new Activity(id, project, name, description, place, dateTime);
@@ -220,7 +220,6 @@ public class ServerImpl implements Subject, ServerInterface {
 
 	@Override
 	public void addProject(String title, String description, String category, User user) {
-
 		int projectId = dbManager.getLastProjectId();
 		Project project = new Project(projectId, title, description, Category.getCategory(category), user);
 		registeredProjects.add(project);

@@ -15,7 +15,6 @@ public class DBManager {
 	private Credential credentials;
 	
 	//constructor
-	
 	private DBManager(){
 		credentials = new Credential();
 		connect();
@@ -28,8 +27,7 @@ public class DBManager {
 		return uniqueInstance;
 	}
 
-	//connect to database
-	
+	//connection to database
 	public void connect(){
 		this.connection = null;
 		try {
@@ -45,12 +43,9 @@ public class DBManager {
 	    }
 	}
 	
-	//add to database
-
+	//add user credentials to database in the registration process(only one time)
 	public void addUser(String username, String password) {
-		
 		PreparedStatement statement = null;
-	    
 	    try {
 			 String query = "INSERT INTO user (username, password) VALUES (?,?)";
 		     statement = (PreparedStatement) connection.prepareStatement(query);         
@@ -59,14 +54,12 @@ public class DBManager {
 		     statement.executeUpdate();
 		    }catch(Exception e){
 		    	e.printStackTrace();
-		    }
-		
+		    }	
 	}
-
-	public void addProject(Project project) {
-		
+	
+	//add project to database after the creation of his object with the id previously queried to db(last index in the table) 
+	public void addProject(Project project) {	
 		PreparedStatement statement = null;
-	    
 	    try {
 			 String query = "INSERT INTO project (projectId, title, description, category, adminId, state) VALUES (?,?,?,?,?,?)";
 		     statement = (PreparedStatement) connection.prepareStatement(query);         
@@ -82,10 +75,9 @@ public class DBManager {
 		    }
 	}
 
+	//add project to database after the creation of his object with the id previously queried to db(last index in the table) 
 	public void addActivity(Activity activity) {
-		
 		PreparedStatement statement = null;
-		
 		try {
 			 String query = "INSERT INTO activity (activityId, projectId, name, description, place, dateTime, isActive, isComplete) VALUES (?,?,?,?,?,?,?,?)";
 		     statement = (PreparedStatement) connection.prepareStatement(query);         
@@ -101,33 +93,47 @@ public class DBManager {
 		    }catch(Exception e){
 		    	e.printStackTrace();
 		    }
-		
 	}
-
+	
+	//add friendship to db with the two ids
+	public void addFriendship(int userId1, int userId2) {	
+		PreparedStatement statement = null;
+	    try {
+			 String query = "INSERT INTO friendship (userId1, userId2) VALUES (?,?)";
+		     statement = (PreparedStatement) connection.prepareStatement(query);         
+		     statement.setInt(1, userId1);
+		     statement.setInt(2, userId2);
+		     statement.executeUpdate();
+		    }catch(Exception e){
+		    	e.printStackTrace();
+		    }
+	}
+	
+	//
 	public void addNotification(Notification notification) {		
 	}
 
-	public void removeUser(String username, String password) {	
-	}
-
-	public void removeProject(Project project) {
-	}
-
-	public void removeActivity(Activity activity) {
-	}
-
-	public void removeNotification(Notification notification ) {
-	}
-	
-	public void removeFriend(int user1, int user2) {
+	//remove user from database into unregistration process(only one time)
+	public void removeUser(String username, String password) {
 		PreparedStatement statement = null;
-		ResultSet resultSet = null;
-		
 		try{
-			String query = "DELETE from friendship WHERE userId1=? AND userId2=?";
+			String query = "DELETE from user WHERE username=? AND password=?";
 			statement = (PreparedStatement) connection.prepareStatement(query);
-			statement.setInt(1, user1);
-			statement.setInt(2, user2);
+			statement.setString(1, username);
+			statement.setString(2, password);
+			statement.executeUpdate();	
+
+		}catch(SQLException e){
+			e.printStackTrace();
+		}
+	}
+	//remove project from database passing the object from where I call the function
+	public void removeProject(Project project) {
+		PreparedStatement statement = null;
+		try{
+			String query = "DELETE from project WHERE projectId=?";
+			statement = (PreparedStatement) connection.prepareStatement(query);
+			statement.setInt(1, project.getProjectId());
 			statement.executeUpdate();	
 
 		}catch(SQLException e){
@@ -135,58 +141,82 @@ public class DBManager {
 		}
 	}
 	
+	//remove activity from database passing the object from where I call the function
+	public void removeActivity(Activity activity) {
+		PreparedStatement statement = null;
+		try{
+			String query = "DELETE from activity WHERE activityId=?";
+			statement = (PreparedStatement) connection.prepareStatement(query);
+			statement.setInt(1, activity.getActivityId());
+			statement.executeUpdate();	
+
+		}catch(SQLException e){
+			e.printStackTrace();
+		}
+	}
+	
+	//remove friendship from database
+	public void removeFriend(int user1, int user2) {
+		PreparedStatement statement = null;		
+		try{
+			String query = "DELETE from friendship WHERE userId1=? AND userId2=?";
+			statement = (PreparedStatement) connection.prepareStatement(query);
+			statement.setInt(1, user1);
+			statement.setInt(2, user2);
+			statement.executeUpdate();	
+		}catch(SQLException e){
+			e.printStackTrace();
+		}
+	}
+	
+	//remove notification from database when read
+	public void removeNotification(Notification notification ) {
+	}
+
+	//getting the following id in the project table for the newcoming project
 	public int getLastProjectId(){
 		int lastProjectId = 0;
 		Statement statement = null;
-		ResultSet resultSet = null;
-		
+		ResultSet resultSet = null;		
 		try{
 			String query = "SELECT MAX projectId FROM project";
 			statement = (Statement) connection.createStatement();
-			resultSet = statement.executeQuery(query);
-			
-			resultSet.next();
-			
+			resultSet = statement.executeQuery(query);		
+			resultSet.next();		
 			lastProjectId = resultSet.getInt(1);
-			
 		}catch(SQLException e){
 			e.printStackTrace();
 		}
 		return lastProjectId;
 	}
 	
+	//getting the following id in the activity table for the newcoming activity
 	public int getLastActivityId(){
 		int lastActivityId = 0;
 		Statement statement = null;
 		ResultSet resultSet = null;
-		
 		try{
 			String query = "SELECT MAX activityId FROM activity";
 			statement = (Statement) connection.createStatement();
 			resultSet = statement.executeQuery(query);
-			
 			resultSet.next();
-			
 			lastActivityId = resultSet.getInt(1);
-			
 		}catch(SQLException e){
 			e.printStackTrace();
 		}
 		return lastActivityId;
 	}
 	
-	public int getUserId(String username, String password) {
-		
+	//get the client id from credentials (only one time) 
+	public int getUserId(String username, String password) {	
 		PreparedStatement statement = null;
 		ResultSet resultSet = null;
 		int returnedId = 0;
-		
 		try{
 			String query = "SELECT * FROM user WHERE username = ?";
 			statement = (PreparedStatement) connection.prepareStatement(query);
 			statement.setString(1, username);
-			resultSet = statement.executeQuery();
-			
+			resultSet = statement.executeQuery();		
 			if(resultSet.next()){
 				if(resultSet.getString(3).equals(password)){
 					returnedId = resultSet.getInt(1);
@@ -197,55 +227,19 @@ public class DBManager {
 			}
 			else{
 				throw new UserNotFoundException();
-			}
-			
+			}		
 		}catch(SQLException e){
 			e.printStackTrace();
 		}catch(UserNotFoundException u){
 			return -1;
 		}catch(WrongPasswordException w){
 			return -2;
-		}
-		
+		}		
 		return returnedId;
 	}
 	
-	public ArrayList<Project> getAllProjects(){
-		
-		Statement statement;
-		ResultSet resultSet;
-		
-		ArrayList<Project> allProjects = new ArrayList<Project>();
-		try{
-			String query = "SELECT * FROM project";
-			statement = (Statement) connection.createStatement();
-			resultSet = statement.executeQuery(query);
-			
-			while (resultSet.next()){
-				int adminId = resultSet.getInt(5);
-				User admin = null;
-				for(int i = 0; i < ServerImpl.getInstance().getRegisteredUsers().size(); i++){
-					User user = ServerImpl.getInstance().getRegisteredUsers().get(i);
-					int id = user.getUserId();
-					if(id == adminId){
-						admin = ServerImpl.getInstance().getRegisteredUsers().get(i);
-					}
-				}
-				allProjects.add(new Project(resultSet.getInt(1), resultSet.getString(2), resultSet.getString(3), Category.getCategory(resultSet.getString(4)), admin));
-			}
-		}catch(SQLException e){
-			e.printStackTrace();
-		}
-		
-		for(int i = 0; i < allProjects.size(); i++){
-			System.out.println(allProjects.get(i).toString());
-		}
-		
-		return allProjects;
-	}
-	
+	//download and create from database the list of all extisting users on the server when booting
 	public ArrayList<User> getAllUsers(){
-		
 		Statement statement;
 		ResultSet resultSet;
 		ArrayList<User> allUsers = new ArrayList<User>();
@@ -265,54 +259,41 @@ public class DBManager {
 		for(int i = 0; i < allUsers.size(); i++){
 			System.out.println(allUsers.get(i).toString());
 		}
-		
 		return allUsers;
 	}
 
-	public ArrayList<Integer> getProjectsIdByUserId(int userId) {
-		
-		PreparedStatement statement = null;
-		ResultSet resultSet = null;
-		ArrayList<Integer> projectIds = new ArrayList<Integer>();
+	//download and create from database the list of all extisting projects on the server when booting
+	public ArrayList<Project> getAllProjects(){	
+		Statement statement;
+		ResultSet resultSet;
+		ArrayList<Project> allProjects = new ArrayList<Project>();
 		try{
-			String query = "SELECT projectId FROM project_membership WHERE userId = ?";
-			statement = (PreparedStatement) connection.prepareStatement(query);
-			statement.setInt(1, userId);
-			resultSet = statement.executeQuery();
-			while(resultSet.next()){
-				projectIds.add(resultSet.getInt(1));
+			String query = "SELECT * FROM project";
+			statement = (Statement) connection.createStatement();
+			resultSet = statement.executeQuery(query);		
+			while (resultSet.next()){
+				int adminId = resultSet.getInt(5);
+				User admin = null;
+				for(int i = 0; i < ServerImpl.getInstance().getRegisteredUsers().size(); i++){
+					User user = ServerImpl.getInstance().getRegisteredUsers().get(i);
+					int id = user.getUserId();
+					if(id == adminId){
+						admin = ServerImpl.getInstance().getRegisteredUsers().get(i);
+					}
+				}
+				allProjects.add(new Project(resultSet.getInt(1), resultSet.getString(2), resultSet.getString(3), Category.getCategory(resultSet.getString(4)), admin));
 			}
 		}catch(SQLException e){
 			e.printStackTrace();
-		}
-		
-		return projectIds;
-		
+		}	
+		for(int i = 0; i < allProjects.size(); i++){
+			System.out.println(allProjects.get(i).toString());
+		}	
+		return allProjects;
 	}
 	
-public ArrayList<Integer> getActivityIdByUserId(int userId) {
-		
-		PreparedStatement statement = null;
-		ResultSet resultSet = null;
-		ArrayList<Integer> activityIds = new ArrayList<Integer>();
-		try{
-			String query = "SELECT activityId FROM activity_membership WHERE userId = ?";
-			statement = (PreparedStatement) connection.prepareStatement(query);
-			statement.setInt(1, userId);
-			resultSet = statement.executeQuery();
-			while(resultSet.next()){
-				activityIds.add(resultSet.getInt(1));
-			}
-		}catch(SQLException e){
-			e.printStackTrace();
-		}
-		
-		return activityIds;
-		
-	}
-	
-	public ArrayList<Activity> getAllActivity() {
-		
+	//download and create from database the list of all extisting activities on the server when booting
+	public ArrayList<Activity> getAllActivities() {	
 		Statement statement;
 		ResultSet resultSet;
 		ArrayList<Activity> allActivity = new ArrayList<Activity>();
@@ -344,33 +325,54 @@ public ArrayList<Integer> getActivityIdByUserId(int userId) {
 			}
 		}catch(SQLException e){
 			e.printStackTrace();
-		}
-		
+		}		
 		for(int i = 0; i < allActivity.size(); i++){
 			System.out.println(allActivity.get(i).toString());
-		}
-		
+		}		
 		return allActivity;
+	}
+	
+	//retrieve the ids of the projects of the user with the passed id
+	public ArrayList<Integer> getProjectsIdByUserId(int userId) {		
+		PreparedStatement statement = null;
+		ResultSet resultSet = null;
+		ArrayList<Integer> projectIds = new ArrayList<Integer>();
+		try{
+			String query = "SELECT projectId FROM project_membership WHERE userId = ?";
+			statement = (PreparedStatement) connection.prepareStatement(query);
+			statement.setInt(1, userId);
+			resultSet = statement.executeQuery();
+			while(resultSet.next()){
+				projectIds.add(resultSet.getInt(1));
+			}
+		}catch(SQLException e){
+			e.printStackTrace();
+		}	
+		return projectIds;
+	}
+	
+	//retrieve the ids of the activities of the user with the passed id
+	public ArrayList<Integer> getActivitiesIdByUserId(int userId) {
+		PreparedStatement statement = null;
+		ResultSet resultSet = null;
+		ArrayList<Integer> activityIds = new ArrayList<Integer>();
+		try{
+			String query = "SELECT activityId FROM activity_membership WHERE userId = ?";
+			statement = (PreparedStatement) connection.prepareStatement(query);
+			statement.setInt(1, userId);
+			resultSet = statement.executeQuery();
+			while(resultSet.next()){
+				activityIds.add(resultSet.getInt(1));
+			}
+		}catch(SQLException e){
+			e.printStackTrace();
+		}	
+		return activityIds;
 	}
 	
 	public void getNotification() {
 	}
 
-	public void addFriendship(int userId1, int userId2) {
-		
-		PreparedStatement statement = null;
-	    
-	    try {
-			 String query = "INSERT INTO friendship (userId1, userId2) VALUES (?,?)";
-		     statement = (PreparedStatement) connection.prepareStatement(query);         
-		     statement.setInt(1, userId1);
-		     statement.setInt(2, userId2);
-		     statement.executeUpdate();
-		    }catch(Exception e){
-		    	e.printStackTrace();
-		    }
-	}
-	
 	public static void main(String[] args){
 		
 		DBManager db = DBManager.getInstance();
@@ -378,6 +380,5 @@ public ArrayList<Integer> getActivityIdByUserId(int userId) {
 		//db.getAllProjects();
 		//db.getAllUsers();
 		
-	}
-	
+	}	
 }
