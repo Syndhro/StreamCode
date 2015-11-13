@@ -7,11 +7,11 @@ import java.util.ArrayList;
 public interface ServerInterface extends Remote {
 	
 	public abstract void registerUser(String username, String password) throws RemoteException;
-	public abstract void unregisterUser(User user) throws RemoteException;
+	public abstract void unregisterUser(User user, String password) throws RemoteException;
 	public abstract User login(String username, String password) throws RemoteException;
 	public abstract void logout(User user) throws RemoteException;
 	public abstract void addProject(String title, String description, String category, User user) throws RemoteException;
-	public abstract void removeProject(int projectId) throws RemoteException;
+	public abstract void removeProject(Project projectId) throws RemoteException;
 	public abstract void addActivity(Project project, String name, String description, String place, String dateTime) throws RemoteException;
 	public abstract void removeActivity(Project project, Activity activity) throws RemoteException;
 	public abstract void addFriend(User user1, User user2) throws RemoteException;

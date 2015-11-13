@@ -44,7 +44,7 @@ public class ServerImpl implements Subject, ServerInterface {
 		this.registeredActivities = dbManager.getAllActivities();
 	}
 	
-	public void linkProjectsToUser(){
+	public void linkProjectsToUsers(){
 		
 		ArrayList<Integer> projectIds = new ArrayList<Integer>();
 		for (int i = 0; i < registeredUsers.size(); i++){
@@ -60,7 +60,7 @@ public class ServerImpl implements Subject, ServerInterface {
 		}	
 	}
 	
-	public void linkActivitiesToUser(){
+	public void linkActivitiesToUsers(){
 		
 		ArrayList<Integer> activityIds = new ArrayList<Integer>();
 		for (int i = 0; i < registeredUsers.size(); i++){
@@ -75,6 +75,8 @@ public class ServerImpl implements Subject, ServerInterface {
 			}
 		}	
 	}
+	
+	public void linkFriends(){};
 	
 	//OBSERVER PATTERN
 	
@@ -99,14 +101,21 @@ public class ServerImpl implements Subject, ServerInterface {
 
 	@Override
 	public User login(String username, String password) throws RemoteException {
-		dbManager.getUserId(username, password); //se va male solleva eccezione SQL
-		for(int i = 0; i < registeredUsers.size(); i++){
-			if(registeredUsers.get(i).getUsername().equals(username)){
-				registerObserver(registeredUsers.get(i));//aggiungimi a utenti loggati
-				return registeredUsers.get(i);
+		int id = dbManager.getUserId(username, password); //se va male solleva eccezione SQL
+		if(id > 0){
+			for(int i = 0; i < registeredUsers.size(); i++){
+				if(registeredUsers.get(i).getUsername().equals(username)){
+					registerObserver(registeredUsers.get(i));//aggiungimi a utenti loggati
+					return registeredUsers.get(i);
+				}
 			}
 		}
-		System.out.println("Utente non registrato");
+		else if(id == -1){
+			System.out.println("Utente non registrato");
+		}
+		else if(id == -2){
+			System.out.println("Password errata");
+		}
 		return null;
 	}
 
@@ -133,9 +142,8 @@ public class ServerImpl implements Subject, ServerInterface {
 	
 	@Override
 	public void addProject(String title, String description, String category, User user) throws RemoteException {
-
 		int projectId = dbManager.getLastProjectId();
-		Project project = new Project(projectId, title, description, Category.getCategory(category), user);
+		Project project = new Project(projectId+1, title, description, Category.getCategory(category), user);
 		registeredProjects.add(project);
 		dbManager.addProject(project);
 		user.addManagedProject(project);
@@ -144,7 +152,7 @@ public class ServerImpl implements Subject, ServerInterface {
 	@Override
 	public void addActivity(Project project, String name, String description, String place, String dateTime) throws RemoteException {
 		int id = dbManager.getLastActivityId();
-		Activity activity = new Activity(id, project, name, description, place, dateTime);
+		Activity activity = new Activity(id+1, project, name, description, place, dateTime);
 		project.addActivity(activity);
 		registeredActivities.add(activity);
 		dbManager.addActivity(activity);
@@ -153,19 +161,24 @@ public class ServerImpl implements Subject, ServerInterface {
 	@Override
 	public void addCollaborator(Project project, User user) throws RemoteException {
 		project.addCollaborator(user);
-		
+		user.addCollaborationProject(project);
+		dbManager.addProjectMembership(user, project);
 	}
-
+	
 	@Override
 	public void addAgent(Activity activity, User user) throws RemoteException {
-		activity.addAgent(user);	
+		activity.addAgent(user);
+		user.addUserActivities(activity);
+		dbManager.addActivityMembership(user, activity);
 	}
 	
 	//REMOVERS
 
 	@Override
-	public void unregisterUser(User user) throws RemoteException {
-		registeredUsers.remove(user);	
+	public void unregisterUser(User user, String password) throws RemoteException {
+		logout(user);
+		dbManager.removeUser(user.getUsername(), password);
+		registeredUsers.remove(user);
 	}
 	
 	@Override
@@ -175,30 +188,37 @@ public class ServerImpl implements Subject, ServerInterface {
 	}
 	
 	@Override
-	public void removeProject(int projectId) throws RemoteException {
-		Project project = getProjectById(projectId);
+	public void removeProject(Project project) throws RemoteException {
+		project.getAdmin().getManagedProject().remove(project);
+		for(int i = 0; i < project.getUsers().size(); i++){
+			project.getUsers().get(i).getCollaborationProject().remove(project);
+		}
+		dbManager.removeProject(project);
 		registeredProjects.remove(project);
 	}
 	
 	@Override
 	public void removeActivity(Project project, Activity activity) throws RemoteException {
-		/*
-		  	for(int i = 0; i < registeredProjects.size(); i++){
-			if(registeredProjects.get(i).equals(project)){
-				Project myProject = registeredProjects.get(i);
-		*/
-				project.getActivities().remove(activity);
+		for(int i = 0; i < activity.getActivityCollaborators().size(); i++){
+			activity.getActivityCollaborators().get(i).getUserActivities().remove(activity);
+		}
+		project.getActivities().remove(activity);
+		dbManager.removeActivity(activity);
+		registeredActivities.remove(activity);
 	}
 	
 	@Override
 	public void removeCollaborator(Project project, User user) throws RemoteException {
-		// TODO Auto-generated method stub
-		
+		project.getUsers().remove(user);
+		user.getCollaborationProject().remove(project);
+		dbManager.removeProjectMembership(user.getUserId(), project.getProjectId());
 	}
 
 	@Override
 	public void removeAgent(Activity activity, User user) throws RemoteException {
-		// TODO Auto-generated method stub
+		activity.getActivityCollaborators().remove(user);
+		user.getUserActivities().remove(activity);
+		dbManager.removeActivityMembership(user.getUserId(), activity.getActivityId());
 		
 	}
 	
@@ -277,8 +297,8 @@ public class ServerImpl implements Subject, ServerInterface {
 		for(int i = 0; i < registeredUsers.size(); i++){
 			System.out.println("Users:" + registeredUsers.get(i).getUsername());
 			System.out.println("Projects:");
-			for(int j=0; j < registeredUsers.get(i).getUserProjects().size(); j++){
-				System.out.println(registeredUsers.get(i).getUserProjects().get(j).getTitle());
+			for(int j=0; j < registeredUsers.get(i).getCollaborationProject().size(); j++){
+				System.out.println(registeredUsers.get(i).getCollaborationProject().get(j).getTitle());
 			}
 		}
 		System.out.println();
@@ -300,8 +320,8 @@ public class ServerImpl implements Subject, ServerInterface {
 		server.retrieveAllProjects();
 		server.retrieveAllActivities();
 		
-		server.linkProjectsToUser();
-		server.linkActivitiesToUser();
+		server.linkProjectsToUsers();
+		server.linkActivitiesToUsers();
 		
 		server.stampa();
 	}

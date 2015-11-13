@@ -7,7 +7,7 @@ public class User implements Observer {
 	private int userId;
 	private String username;
 	private ArrayList<Project> collaborationProjects;
-	private ArrayList<Project> managedProject;
+	private ArrayList<Project> managedProjects;
 	private ArrayList<Activity> userActivities;
 	private ArrayList<User> userFriends;
 	
@@ -16,7 +16,7 @@ public class User implements Observer {
 		this.userId = id;
 		this.username = username;
 		collaborationProjects = new ArrayList<Project>();
-		managedProject = new ArrayList<Project>();
+		managedProjects = new ArrayList<Project>();
 		userActivities = new ArrayList<Activity>();
 		userFriends = new ArrayList<User>();
 	}
@@ -41,8 +41,12 @@ public class User implements Observer {
 		return username;
 	}
 
-	public ArrayList<Project> getUserProjects() {
+	public ArrayList<Project> getCollaborationProject() {
 		return collaborationProjects;
+	}
+	
+	public ArrayList<Project> getManagedProject() {
+		return managedProjects;
 	}
 
 	public ArrayList<Activity> getUserActivities() {
@@ -62,7 +66,7 @@ public class User implements Observer {
 	}
 	
 	public void addManagedProject(Project project) {
-		this.managedProject.add(project);
+		this.managedProjects.add(project);
 	}
 
 	public void addUserActivities(Activity activity) {

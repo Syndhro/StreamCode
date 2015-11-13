@@ -110,12 +110,12 @@ public class DBManager {
 	}
 	
 	//add project membership
-	public void addProjectMembership(int userId, Project project) {	
+	public void addProjectMembership(User user, Project project) {	
 		PreparedStatement statement = null;
 	    try {
 			 String query = "INSERT INTO project_membership (userId1, projectId) VALUES (?,?)";
 		     statement = (PreparedStatement) connection.prepareStatement(query);         
-		     statement.setInt(1, userId);
+		     statement.setInt(1, user.getUserId());
 		     statement.setInt(2, project.getProjectId());
 		     statement.executeUpdate();
 		    }catch(Exception e){
@@ -124,12 +124,12 @@ public class DBManager {
 	}
 	
 	//add activity membership
-	public void addActivityMembership(int userId, Activity activity) {	
+	public void addActivityMembership(User user, Activity activity) {	
 		PreparedStatement statement = null;
 	    try {
 			 String query = "INSERT INTO activity_membership (userId1, projectId) VALUES (?,?)";
 		     statement = (PreparedStatement) connection.prepareStatement(query);         
-		     statement.setInt(1, userId);
+		     statement.setInt(1, user.getUserId());
 		     statement.setInt(2, activity.getActivityId());
 		     statement.executeUpdate();
 		    }catch(Exception e){
