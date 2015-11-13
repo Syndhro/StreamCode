@@ -186,13 +186,13 @@ public class ServerImpl implements Subject, ServerInterface {
 
 	@Override
 	public void removeActivity(Project project, Activity activity) {
-		for(int i = 0; i < registeredProjects.size(); i++){
+		/*
+		  	for(int i = 0; i < registeredProjects.size(); i++){
 			if(registeredProjects.get(i).equals(project)){
 				Project myProject = registeredProjects.get(i);
-				myProject.getActivities().remove(activity);
-			}
-		}		
-	}
+		*/
+				project.getActivities().remove(activity);
+	}	
 
 	@Override
 	public ArrayList<String> searchUser(String string) {
