@@ -143,6 +143,26 @@ public class DBManager {
 		return lastProjectId;
 	}
 	
+	public int getLastActivityId(){
+		int lastActivityId = 0;
+		Statement statement = null;
+		ResultSet resultSet = null;
+		
+		try{
+			String query = "SELECT MAX activityId FROM activity";
+			statement = (Statement) connection.createStatement();
+			resultSet = statement.executeQuery(query);
+			
+			resultSet.next();
+			
+			lastActivityId = resultSet.getInt(1);
+			
+		}catch(SQLException e){
+			e.printStackTrace();
+		}
+		return lastActivityId;
+	}
+	
 	public int getUserId(String username, String password) {
 		
 		PreparedStatement statement = null;
