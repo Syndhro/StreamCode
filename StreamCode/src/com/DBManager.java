@@ -139,7 +139,20 @@ public class DBManager implements Serializable{
 	}
 	
 	//
-	public void addNotification(Notification notification) {		
+	public void addNotification(Notification notification, int destinationId) {
+		PreparedStatement statement = null;
+		try {
+			 String query = "INSERT INTO notification (message, date, time, targetId, isDelivered) VALUES (?,?,?,?,?,?)";
+		     statement = (PreparedStatement) connection.prepareStatement(query);         
+		     statement.setString(1, notification.getMessage());
+		     statement.setString(2, notification.getDate().toString());
+		     statement.setString(3, notification.getTime().toString());
+		     statement.setInt(4, destinationId);
+		     statement.setBoolean(5, notification.isDelivered());
+		     statement.executeUpdate();
+		    }catch(Exception e){
+		    	e.printStackTrace();
+		    }
 	}
 
 	//remove user from database into unregistration process(only one time)
