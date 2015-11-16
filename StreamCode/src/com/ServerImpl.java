@@ -8,6 +8,7 @@ public class ServerImpl extends UnicastRemoteObject implements Subject, ServerIn
 
 	private static ServerImpl uniqueInstance;
 	private DBManager dbManager;
+	private NotificationSimpleFactory notificationFactory;
 	private ArrayList<Project> registeredProjects;
 	private ArrayList<Activity> registeredActivities;
 	private ArrayList<User> registeredUsers;
@@ -144,6 +145,8 @@ public class ServerImpl extends UnicastRemoteObject implements Subject, ServerIn
 	public void addFriend(User user1, User user2) throws RemoteException {
 		user1.addFriend(user2);
 		dbManager.addFriendship(user1.getUserId(), user2.getUserId());
+		Notification notification = notificationFactory.createNotification("friendship", user1.getUsername());
+		user2.update(notification);
 	}
 	
 	@Override
@@ -165,10 +168,50 @@ public class ServerImpl extends UnicastRemoteObject implements Subject, ServerIn
 	}
 	
 	@Override
-	public void addCollaborator(Project project, User user) throws RemoteException {
-		project.addCollaborator(user);
-		user.addCollaborationProject(project);
-		dbManager.addProjectMembership(user, project);
+	public void addCollaborators(Project project, ArrayList<User> users) throws RemoteException {
+		Notification notification = notificationFactory.createNotification("project_invite", project.getDescription());
+		User user;
+		for(int i = 0; i < users.size(); i++){
+			user = users.get(i);
+			project.addCollaborator(user);
+			user.addCollaborationProject(project);
+			dbManager.addProjectMembership(user, project);			
+			user.update(notification);
+		}
+	}
+	@Override
+	public void startProject(Project project){
+		Notification notification = notificationFactory.createNotification("project_started", project.getDescription());	
+		User user;
+		for (int i = 0; i < project.getCollaborators().size(); i++){
+			user = project.getCollaborators().get(i);
+			user.update(notification);
+		}
+		project.startProject();
+	}
+	
+	@Override 
+	public void completeActivity(Activity activity){
+		Notification notification = notificationFactory.createNotification("activity_completed", activity.getDescription());	
+		User user;
+		for (int i = 0; i < activity.getActivityCollaborators().size(); i++){
+			user = activity.getActivityCollaborators().get(i);
+			user.update(notification);
+		}
+		activity.complete();
+		Project currentProject = activity.getParentProject();
+		Activity nextActivity = null;
+		for(int i = 0; i < currentProject.getActivities().size(); i++){
+			if(currentProject.getActivities().get(i).equals(activity)){
+				nextActivity = currentProject.getActivities().get(i+1);
+				break;
+			}
+		}
+		Notification nextNotification = notificationFactory.createNotification("activity_started", activity.getDescription());
+		for(int i=0; i < nextActivity.getActivityCollaborators().size(); i++){
+			nextActivity.getActivityCollaborators().get(i).update(nextNotification);
+		}
+		nextActivity.setActive(true);	
 	}
 	
 	@Override

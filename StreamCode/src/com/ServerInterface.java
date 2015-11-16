@@ -17,11 +17,13 @@ public interface ServerInterface extends Remote {
 	public abstract void addFriend(User user1, User user2) throws RemoteException;
 	public abstract void removeFriend(User user, User user2) throws RemoteException;
 	public abstract ArrayList<User> searchUser(String string) throws RemoteException;
-	public abstract void addCollaborator(Project project, User user) throws RemoteException;
+	public abstract void addCollaborators(Project project, ArrayList<User> users) throws RemoteException;
 	public abstract void removeCollaborator(Project project, User user) throws RemoteException;
 	public abstract void addAgent(Activity activity, User user) throws RemoteException;
 	public abstract void removeAgent(Activity activity, User user) throws RemoteException;
-	public void stampa()throws RemoteException;
+	public abstract void stampa()throws RemoteException;
+	public abstract void startProject(Project project);
+	public abstract void completeActivity(Activity a);
 	
 	
 }
