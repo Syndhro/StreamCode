@@ -147,6 +147,7 @@ public class ServerImpl extends UnicastRemoteObject implements Subject, ServerIn
 		dbManager.addFriendship(user1.getUserId(), user2.getUserId());
 		Notification notification = notificationFactory.createNotification("friendship", user1.getUsername());
 		user2.update(notification);
+		dbManager.addNotification(notification, user2.getUserId());
 	}
 	
 	@Override
@@ -175,7 +176,8 @@ public class ServerImpl extends UnicastRemoteObject implements Subject, ServerIn
 			user = users.get(i);
 			project.addCollaborator(user);
 			user.addCollaborationProject(project);
-			dbManager.addProjectMembership(user, project);			
+			dbManager.addProjectMembership(user, project);	
+			dbManager.addNotification(notification, user.getUserId());
 			user.update(notification);
 		}
 	}
@@ -185,6 +187,7 @@ public class ServerImpl extends UnicastRemoteObject implements Subject, ServerIn
 		User user;
 		for (int i = 0; i < project.getCollaborators().size(); i++){
 			user = project.getCollaborators().get(i);
+			dbManager.addNotification(notification, user.getUserId());
 			user.update(notification);
 		}
 		project.startProject();
@@ -197,6 +200,7 @@ public class ServerImpl extends UnicastRemoteObject implements Subject, ServerIn
 		for (int i = 0; i < activity.getActivityCollaborators().size(); i++){
 			user = activity.getActivityCollaborators().get(i);
 			user.update(notification);
+			dbManager.addNotification(notification, user.getUserId());
 		}
 		activity.complete();
 		Project currentProject = activity.getParentProject();
@@ -210,6 +214,7 @@ public class ServerImpl extends UnicastRemoteObject implements Subject, ServerIn
 		Notification nextNotification = notificationFactory.createNotification("activity_started", activity.getDescription());
 		for(int i=0; i < nextActivity.getActivityCollaborators().size(); i++){
 			nextActivity.getActivityCollaborators().get(i).update(nextNotification);
+			dbManager.addNotification(nextNotification, nextActivity.getActivityCollaborators().get(i).getUserId());
 		}
 		nextActivity.setActive(true);	
 	}
