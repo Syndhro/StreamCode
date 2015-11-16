@@ -1,6 +1,8 @@
-package com; 
+package com;
 
-public enum Category {
+import java.io.Serializable;
+
+public enum Category implements Serializable{
 	SPORT,
 	PARTY,
 	HOBBY,

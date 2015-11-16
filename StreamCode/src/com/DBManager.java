@@ -1,5 +1,6 @@
 package com;
 
+import java.io.Serializable;
 import java.sql.*;
 import java.util.ArrayList;
 
@@ -8,7 +9,7 @@ import javax.print.attribute.standard.RequestingUserName;
 import com.mysql.jdbc.PreparedStatement;
 import com.mysql.jdbc.Statement;
 
-public class DBManager {
+public class DBManager implements Serializable{
 	
 	private static DBManager uniqueInstance;
 	private Connection connection;
@@ -151,7 +152,7 @@ public class DBManager {
 			statement.setString(2, password);
 			statement.executeUpdate();	
 
-		}catch(SQLException e){
+		}catch(SQLException e){ 
 			e.printStackTrace();
 		}
 	}

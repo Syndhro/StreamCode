@@ -3,6 +3,7 @@ package com;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.Serializable;
 import java.rmi.*;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
@@ -14,7 +15,7 @@ public class Client {
 
   		//locate registry and get an instance of remote server
   		Registry registry = LocateRegistry.getRegistry("localhost");
-  		ServerImpl server = (ServerImpl) registry.lookup("server");
+  		ServerInterface server = (ServerInterface) registry.lookup("server");
  		
  		Graphics gui = new Graphics();
   		

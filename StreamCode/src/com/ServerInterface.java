@@ -21,7 +21,7 @@ public interface ServerInterface extends Remote {
 	public abstract void removeCollaborator(Project project, User user) throws RemoteException;
 	public abstract void addAgent(Activity activity, User user) throws RemoteException;
 	public abstract void removeAgent(Activity activity, User user) throws RemoteException;
-
+	public void stampa()throws RemoteException;
 	
 	
 }

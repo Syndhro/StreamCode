@@ -1,6 +1,8 @@
 package com;
 
-public class UserNotFoundException extends Exception{
+import java.io.Serializable;
+
+public class UserNotFoundException extends Exception implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
 	

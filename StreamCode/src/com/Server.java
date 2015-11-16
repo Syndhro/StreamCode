@@ -12,6 +12,12 @@ public class Server{
   public static void main(String[] args) throws RemoteException, MalformedURLException, NotBoundException {
 
     final ServerImpl server = ServerImpl.getInstance();
+    server.retrieveAllUsers();
+	server.retrieveAllProjects();
+	server.retrieveAllActivities();
+	
+	server.linkProjectsToUsers();
+	server.linkActivitiesToUsers();
     Naming.rebind("server", server);
     System.out.println("Press enter to terminate");
     try {

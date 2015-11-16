@@ -2,8 +2,9 @@ package com;
 
 import java.rmi.RemoteException;
 import java.util.ArrayList;
+import java.rmi.server.*;
 
-public class ServerImpl implements Subject, ServerInterface {
+public class ServerImpl extends UnicastRemoteObject implements Subject, ServerInterface {
 
 	private static ServerImpl uniqueInstance;
 	private DBManager dbManager;
@@ -14,7 +15,7 @@ public class ServerImpl implements Subject, ServerInterface {
 	
 	//CONSTRUCTORS
 
-	private ServerImpl() {
+	private ServerImpl() throws RemoteException{
 		this.dbManager = DBManager.getInstance();
 		this.loggedUsers = new ArrayList<Observer>();
 		this.registeredProjects = new ArrayList<Project>();
@@ -25,7 +26,11 @@ public class ServerImpl implements Subject, ServerInterface {
 
 	public static ServerImpl getInstance() {
 		if (uniqueInstance == null){
+			try{
 			uniqueInstance = new ServerImpl();
+			}catch(RemoteException e){
+				e.printStackTrace();
+			}
 		}
 		return uniqueInstance;
 	}
@@ -286,7 +291,7 @@ public class ServerImpl implements Subject, ServerInterface {
 	
 	//TEST PRINT
 
-	public void stampa(){
+	public void stampa()throws RemoteException{
 		for(int i = 0; i < registeredProjects.size(); i++){
 		System.out.println("Project=" + registeredProjects.get(i).getTitle());
 		System.out.println("Users:");
@@ -313,18 +318,5 @@ public class ServerImpl implements Subject, ServerInterface {
 	}
 	
 	//MAIN
-	
-	public static void main(String[] args){
-		
-		ServerImpl server = ServerImpl.getInstance();
-		server.retrieveAllUsers();
-		server.retrieveAllProjects();
-		server.retrieveAllActivities();
-		
-		server.linkProjectsToUsers();
-		server.linkActivitiesToUsers();
-		
-		server.stampa();
-	}
 	
 }

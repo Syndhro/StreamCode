@@ -1,8 +1,9 @@
 package com;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class User implements Observer {
+public class User implements Observer, Serializable {
 
 	private int userId;
 	private String username;
@@ -29,8 +30,8 @@ public class User implements Observer {
 
 	@Override
 	//observer
-	public void update() {
-		// TODO Auto-generated method s
+	public void update(Notification notification) {
+		
 	}
 
 	public int getUserId() {
