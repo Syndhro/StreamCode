@@ -30,6 +30,11 @@ public class User implements Observer, Serializable {
 
 	@Override
 	//observer
+	
+	public void update() {
+		
+	}
+	
 	public void update(Notification notification) {
 		
 	}
