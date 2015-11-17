@@ -22,8 +22,6 @@ public interface ServerInterface extends Remote {
 	public abstract void addAgent(Activity activity, User user) throws RemoteException;
 	public abstract void removeAgent(Activity activity, User user) throws RemoteException;
 	public abstract void stampa()throws RemoteException;
-	public abstract void startProject(Project project);
-	public abstract void completeActivity(Activity a);
-	
-	
+	public abstract void startProject(Project project) throws RemoteException;
+	public abstract void completeActivity(Activity a) throws RemoteException;
 }

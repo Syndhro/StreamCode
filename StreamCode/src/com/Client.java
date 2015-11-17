@@ -106,11 +106,11 @@ public class Client{
 		server.removeAgent(activity, user);
 	}
 
-	public void startProject(Project project) {
+	public void startProject(Project project) throws RemoteException {
 		server.startProject(project);
 	}
 
-	public void completeActivity(Activity activity) {
+	public void completeActivity(Activity activity) throws RemoteException {
 		server.completeActivity(activity);
 	}
 	
