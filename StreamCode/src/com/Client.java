@@ -41,7 +41,10 @@ public class Client{
 	public void login(String username, String password) throws RemoteException {
 		myUser = server.login(username, password);
 	}
-
+	
+	public int check(String username, String password) throws RemoteException{
+		return server.check(username, password);
+	}
 
 	public void logout(User user) throws RemoteException {
 		server.logout(user);

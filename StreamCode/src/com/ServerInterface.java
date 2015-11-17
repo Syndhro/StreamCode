@@ -24,4 +24,5 @@ public interface ServerInterface extends Remote {
 	public abstract void stampa()throws RemoteException;
 	public abstract void startProject(Project project) throws RemoteException;
 	public abstract void completeActivity(Activity a) throws RemoteException;
+	public abstract int check(String username, String password) throws RemoteException;
 }

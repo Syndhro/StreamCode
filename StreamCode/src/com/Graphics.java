@@ -72,45 +72,71 @@ public class Graphics {
 		frame.getContentPane().setLayout(springLayout);
 		
 		textField = new JTextField();
-		springLayout.putConstraint(SpringLayout.EAST, textField, -180, SpringLayout.EAST, frame.getContentPane());
 		frame.getContentPane().add(textField);
 		textField.setColumns(10);
 		
 		passwordField = new JPasswordField();
-		springLayout.putConstraint(SpringLayout.SOUTH, passwordField, -163, SpringLayout.SOUTH, frame.getContentPane());
-		springLayout.putConstraint(SpringLayout.EAST, passwordField, -180, SpringLayout.EAST, frame.getContentPane());
-		springLayout.putConstraint(SpringLayout.NORTH, textField, 6, SpringLayout.SOUTH, passwordField);
+		springLayout.putConstraint(SpringLayout.NORTH, passwordField, 140, SpringLayout.NORTH, frame.getContentPane());
+		springLayout.putConstraint(SpringLayout.WEST, textField, 0, SpringLayout.WEST, passwordField);
+		springLayout.putConstraint(SpringLayout.SOUTH, textField, -6, SpringLayout.NORTH, passwordField);
+		springLayout.putConstraint(SpringLayout.EAST, textField, 0, SpringLayout.EAST, passwordField);
+		springLayout.putConstraint(SpringLayout.WEST, passwordField, 192, SpringLayout.WEST, frame.getContentPane());
 		frame.getContentPane().add(passwordField);
 		
 		JLabel lblPassword = new JLabel("Password");
-		springLayout.putConstraint(SpringLayout.EAST, lblPassword, -308, SpringLayout.EAST, frame.getContentPane());
-		springLayout.putConstraint(SpringLayout.WEST, passwordField, 20, SpringLayout.EAST, lblPassword);
 		springLayout.putConstraint(SpringLayout.NORTH, lblPassword, 3, SpringLayout.NORTH, passwordField);
+		springLayout.putConstraint(SpringLayout.EAST, lblPassword, -14, SpringLayout.WEST, passwordField);
 		frame.getContentPane().add(lblPassword);
 		
 		JLabel lblUsername = new JLabel("Username");
-		springLayout.putConstraint(SpringLayout.WEST, textField, 18, SpringLayout.EAST, lblUsername);
 		springLayout.putConstraint(SpringLayout.NORTH, lblUsername, 3, SpringLayout.NORTH, textField);
 		springLayout.putConstraint(SpringLayout.WEST, lblUsername, 0, SpringLayout.WEST, lblPassword);
 		frame.getContentPane().add(lblUsername);
 		
 		JButton btnLogin = new JButton("Login");
-		springLayout.putConstraint(SpringLayout.NORTH, btnLogin, 24, SpringLayout.SOUTH, textField);
+		springLayout.putConstraint(SpringLayout.SOUTH, btnLogin, -90, SpringLayout.SOUTH, frame.getContentPane());
+		btnLogin.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				String lUsername = textField.getText();
+				String lPassword = passwordField.getText();
+				try {
+					int verifier = client.check(lUsername, lPassword);
+					if (verifier == -1){
+						JOptionPane panel = new JOptionPane();
+						panel.showMessageDialog(frame, "Wrong Username");
+						panel.setVisible(true);
+						
+					}
+					else if(verifier == -2){
+						JOptionPane.showMessageDialog(frame, "Wrong Password");
+					}
+					else{
+						client.login(lUsername, lPassword);
+						JOptionPane.showMessageDialog(frame, "Bravo");
+					}
+					
+				} catch (RemoteException e1){
+					e1.printStackTrace();
+				}
+			}
+		});
 		springLayout.putConstraint(SpringLayout.WEST, btnLogin, 202, SpringLayout.WEST, frame.getContentPane());
 		frame.getContentPane().add(btnLogin);
 		
 		lblStream = new JLabel("STREAM");
-		springLayout.putConstraint(SpringLayout.SOUTH, lblStream, -30, SpringLayout.NORTH, passwordField);
+		springLayout.putConstraint(SpringLayout.SOUTH, lblStream, -213, SpringLayout.SOUTH, frame.getContentPane());
+		springLayout.putConstraint(SpringLayout.EAST, passwordField, 0, SpringLayout.EAST, lblStream);
 		springLayout.putConstraint(SpringLayout.EAST, lblStream, -184, SpringLayout.EAST, frame.getContentPane());
 		lblStream.setFont(new Font("Tahoma", Font.PLAIN, 28));
 		frame.getContentPane().add(lblStream);
 		
 		lblNew = new JLabel("New user?");
-		springLayout.putConstraint(SpringLayout.NORTH, lblNew, 27, SpringLayout.SOUTH, btnLogin);
+		springLayout.putConstraint(SpringLayout.NORTH, lblNew, 234, SpringLayout.NORTH, frame.getContentPane());
 		springLayout.putConstraint(SpringLayout.WEST, lblNew, 159, SpringLayout.WEST, frame.getContentPane());
 		frame.getContentPane().add(lblNew);
 		
 		btnNewButton = new JButton("Click here!");
+		springLayout.putConstraint(SpringLayout.NORTH, btnNewButton, 230, SpringLayout.NORTH, frame.getContentPane());
 		btnNewButton.addActionListener(new ActionListener() {
 			
 			public void actionPerformed(ActionEvent e) {
@@ -157,7 +183,6 @@ public class Graphics {
 				registeringUser.setVisible(true);
 			}
 		});
-		springLayout.putConstraint(SpringLayout.NORTH, btnNewButton, -4, SpringLayout.NORTH, lblNew);
 		springLayout.putConstraint(SpringLayout.WEST, btnNewButton, 6, SpringLayout.EAST, lblNew);
 		frame.getContentPane().add(btnNewButton);
 	}

@@ -105,25 +105,29 @@ public class ServerImpl extends UnicastRemoteObject implements Subject, ServerIn
 	}
 	
 	//LOGIN-LOGOUT
+	@Override
+	public int check(String username, String password) throws RemoteException {
+		int id = dbManager.getUserId(username, password); 
+
+		if(id == -1){
+			return -1;
+		}
+		if(id == -2){
+			return -2;
+		}
+		return id;
+	}
 
 	@Override
 	public User login(String username, String password) throws RemoteException {
-		int id = dbManager.getUserId(username, password); //se va male solleva eccezione SQL
-		if(id > 0){
+		User user = null;
 			for(int i = 0; i < registeredUsers.size(); i++){
 				if(registeredUsers.get(i).getUsername().equals(username)){
 					registerObserver(registeredUsers.get(i));//aggiungimi a utenti loggati
-					return registeredUsers.get(i);
+					user = registeredUsers.get(i);
 				}
 			}
-		}
-		else if(id == -1){
-			System.out.println("Utente non registrato");
-		}
-		else if(id == -2){
-			System.out.println("Password errata");
-		}
-		return null;
+		return user;
 	}
 
 	@Override
