@@ -147,7 +147,7 @@ public class DBManager implements Serializable{
 		     statement.setString(1, notification.getMessage());
 		     statement.setString(2, notification.getDate().toString());
 		     statement.setString(3, notification.getTime().toString());
-		     statement.setInt(4, destinationId);
+		     statement.setInt(4, destinationId); 
 		     statement.setBoolean(5, notification.isDelivered());
 		     statement.executeUpdate();
 		    }catch(Exception e){

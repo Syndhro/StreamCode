@@ -36,7 +36,7 @@ public class User implements Observer, Serializable {
 	}
 	
 	public void update(Notification notification) {
-		
+		System.out.println(notification.getMessage());
 	}
 
 	public int getUserId() {

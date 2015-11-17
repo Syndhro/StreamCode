@@ -12,10 +12,13 @@ import javax.swing.JPasswordField;
 import javax.swing.JLabel;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 public class Graphics {
 
 	private JFrame frame;
+	private JFrame frame2;
 	private JTextField textField;
 	private JPasswordField passwordField;
 
@@ -23,6 +26,7 @@ public class Graphics {
 	 * Launch the application.
 	 */
 	public static void main(String[] args) {
+		Client client;
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
@@ -33,6 +37,13 @@ public class Graphics {
 				}
 			}
 		});
+		client = new Client();
+		try{
+			client.startup();
+		}
+		catch(Exception e){
+			e.printStackTrace();
+		}
 	}
 
 	/**
