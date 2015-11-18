@@ -124,7 +124,7 @@ public class Client{
 	public void setMyUser(User user){
 		this.myUser = user;
 	}
-	
+
 	public static void main(String[] args){
 		
 		Client client = new Client();
@@ -148,9 +148,6 @@ public class Client{
 			
 		}catch(RemoteException e){
 			e.printStackTrace();
-		}
-		
+		}	
 	}
-	
-	
 }
