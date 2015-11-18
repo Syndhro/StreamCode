@@ -13,8 +13,8 @@ import java.util.ArrayList;
 public class Client{
 	
 	Registry registry;
-	ServerInterface server;
-	User myUser;
+	static ServerInterface server;
+	int myUserId;
 	
 	public Client(){};
 	
@@ -33,53 +33,52 @@ public class Client{
 	}
 
 
-	public void unregisterUser(User user, String password) throws RemoteException {
-		server.unregisterUser(user, password);
+	public void unregisterUser(int userId, String password) throws RemoteException {
+		server.unregisterUser(userId, password);
 	}
 
 
 	public void login(String username, String password) throws RemoteException {
-		myUser = server.login(username, password);
+		myUserId = server.login(username, password);
 	}
 	
 	public int check(String username, String password) throws RemoteException{
 		return server.check(username, password);
 	}
 
-	public void logout(User user) throws RemoteException {
-		server.logout(user);
-		this.myUser = null;
+	public void logout(int userId) throws RemoteException {
+		server.logout(userId);
 	}
 
 
-	public void addProject(String title, String description, Category category, User user) throws RemoteException {
-		server.addProject(title, description, category , user);
+	public void addProject(String title, String description, Category category, int userId) throws RemoteException {
+		server.addProject(title, description, category , userId);
 	}
 
 
-	public void removeProject(Project projectId) throws RemoteException {
+	public void removeProject(int projectId) throws RemoteException {
 		server.removeProject(projectId);	
 	}
 
 
-	public void addActivity(Project project, String name, String description, String place, String dateTime)
+	public void addActivity(int projectId, String name, String description, String place, String dateTime)
 		throws RemoteException {
-		server.addActivity(project, name, description, place, dateTime);
+		server.addActivity(projectId, name, description, place, dateTime);
 	}
 
 
-	public void removeActivity(Project project, Activity activity) throws RemoteException {
-		server.removeActivity(project, activity);
+	public void removeActivity(int projectId, int activityId) throws RemoteException {
+		server.removeActivity(projectId, activityId);
 	}
 
 
-	public void addFriend(User user1, User user2) throws RemoteException {
-		server.addFriend(user1, user2);
+	public void addFriend(int userId1, int userId2) throws RemoteException {
+		server.addFriend(userId1, userId2);
 	}
 
 
-	public void removeFriend(User user, User user2) throws RemoteException {
-		server.removeFriend(user, user2);
+	public void removeFriend(int userId1, int userId2) throws RemoteException {
+		server.removeFriend(userId1, userId2);
 	}
 
 
@@ -90,40 +89,52 @@ public class Client{
 	}
 
 
-	public void addCollaborators(Project project, ArrayList<User> users) throws RemoteException {
-		server.addCollaborators(project, users);
+	public void addCollaborators(int projectId, ArrayList<Integer> userIds) throws RemoteException {
+		server.addCollaborators(projectId, userIds);
 	}
 
 
-	public void removeCollaborator(Project project, User user) throws RemoteException {
-		server.removeCollaborator(project, user);
+	public void removeCollaborator(int projectId, int userId) throws RemoteException {
+		server.removeCollaborator(projectId, userId);
 	}
 
 
-	public void addAgent(Activity activity, User user) throws RemoteException {
-		server.addAgent(activity, user);
+	public void addAgent(int activityId, int userId) throws RemoteException {
+		server.addAgent(activityId, userId);
 	}
 
 
-	public void removeAgent(Activity activity, User user) throws RemoteException {
-		server.removeAgent(activity, user);
+	public void removeAgent(int activityId, int userId) throws RemoteException {
+		server.removeAgent(activityId, userId);
 	}
 
-	public void startProject(Project project) throws RemoteException {
-		server.startProject(project);
+	public void startProject(int projectId) throws RemoteException {
+		server.startProject(projectId);
 	}
 
-	public void completeActivity(Activity activity) throws RemoteException {
-		server.completeActivity(activity);
-	}
-	
-	public User getMyUser(){
-		return myUser;
+	public void completeActivity(int activityId) throws RemoteException {
+		server.completeActivity(activityId);
 	}
 	
-	public void setMyUser(User user){
-		this.myUser = user;
+	public int getMyUserId(){
+		return myUserId;
 	}
+	
+	public void stampa() throws RemoteException {
+		server.stampa();
+	}
+	
+	public ArrayList<Project> getManagedProject(){
+		ArrayList<Project> managedProject = new ArrayList<Project>();
+		try{
+			managedProject = server.getManagedProject(myUserId);
+		}catch(RemoteException e){
+			e.printStackTrace();
+		}
+		return managedProject;
+	}
+	
+	
 	
 	public static void main(String[] args){
 		
@@ -143,8 +154,17 @@ public class Client{
 			else
 				client.login("andreavaghi", "vaghi");
 			
-			//client.addProject("Grigliata", "Un botto di carne", Category.getCategory("holidays"), client.getMyUser());
-			//client.addProject("Studio", "Pre Esame", Category.getCategory("hobby"), client.myUser);
+			client.stampa();
+			
+			client.addProject("Comple Spe", "A casa di spe", Category.getCategory("sport"), client.getMyUserId());
+			
+			client.stampa();
+			
+			ArrayList<Project> managed = client.getManagedProject();
+			
+			for(int i = 0; i < managed.size(); i++){
+				System.out.println(managed.get(i).getTitle());
+			}
 			
 		}catch(RemoteException e){
 			e.printStackTrace();

@@ -90,8 +90,13 @@ public class ServerImpl extends UnicastRemoteObject implements Subject, ServerIn
 		ArrayList<Integer> friendsIds = new ArrayList<Integer>();
 		for(int i = 0; i < registeredUsers.size(); i++){
 			friendsIds = dbManager.getFriendsIdByUserId(registeredUsers.get(i).getUserId());
+			User user = null;
 			for(int j = 0; j < friendsIds.size(); j++){
-				User user = getUserById(friendsIds.get(j));
+				try{
+					user = getUserById(friendsIds.get(j));
+				}catch(RemoteException e){
+					e.printStackTrace();
+				}
 				registeredUsers.get(i).addFriend(user);
 				}
 		}
@@ -131,19 +136,20 @@ public class ServerImpl extends UnicastRemoteObject implements Subject, ServerIn
 	}
 
 	@Override
-	public User login(String username, String password) throws RemoteException {
-		User user = null;
+	public int login(String username, String password) throws RemoteException {
+		int userId = -1;
 			for(int i = 0; i < registeredUsers.size(); i++){
 				if(registeredUsers.get(i).getUsername().equals(username)){
 					registerObserver(registeredUsers.get(i));//aggiungimi a utenti loggati
-					user = registeredUsers.get(i);
+					userId = registeredUsers.get(i).getUserId();
 				}
 			}
-		return user;
+		return userId;
 	}
 
 	@Override
-	public void logout(User user) throws RemoteException {
+	public void logout(int userId) throws RemoteException {
+		User user = getUserById(userId);
 		removeObserver(user); //rimuovo utente dalla lista degli utenti loggati	
 	}
 	
@@ -158,7 +164,9 @@ public class ServerImpl extends UnicastRemoteObject implements Subject, ServerIn
 	}
 	
 	@Override
-	public void addFriend(User user1, User user2) throws RemoteException {
+	public void addFriend(int userId1, int userId2) throws RemoteException {
+		User user1 = getUserById(userId1);
+		User user2 = getUserById(userId2);
 		user1.addFriend(user2);
 		dbManager.addFriendship(user1.getUserId(), user2.getUserId());
 		Notification notification = notificationFactory.createNotification("friendship", user1.getUsername());
@@ -167,16 +175,22 @@ public class ServerImpl extends UnicastRemoteObject implements Subject, ServerIn
 	}
 	
 	@Override
-	public void addProject(String title, String description, Category category, User user) throws RemoteException {
+	public void addProject(String title, String description, Category category, int userId) throws RemoteException {
+		User user = getUserById(userId);
 		int projectId = dbManager.getLastProjectId();
 		Project project = new Project(projectId+1, title, description, category, user);
 		registeredProjects.add(project);
 		dbManager.addProject(project);
-		user.addManagedProject(project);
+		for(int i = 0; i < registeredUsers.size(); i++){
+			if(user.getUsername().equals(registeredUsers.get(i).getUsername())){
+				registeredUsers.get(i).addManagedProject(project);
+			}
+		}
 	}
 	
 	@Override
-	public void addActivity(Project project, String name, String description, String place, String dateTime) throws RemoteException {
+	public void addActivity(int projectId, String name, String description, String place, String dateTime) throws RemoteException {
+		Project project = getProjectById(projectId);
 		int id = dbManager.getLastActivityId();
 		Activity activity = new Activity(id+1, project, name, description, place, dateTime);
 		project.addActivity(activity);
@@ -185,11 +199,12 @@ public class ServerImpl extends UnicastRemoteObject implements Subject, ServerIn
 	}
 	
 	@Override
-	public void addCollaborators(Project project, ArrayList<User> users) throws RemoteException {
+	public void addCollaborators(int projectId, ArrayList<Integer> userIds) throws RemoteException {
+		Project project = getProjectById(projectId);
 		Notification notification = notificationFactory.createNotification("project_invite", project.getDescription());
 		User user;
-		for(int i = 0; i < users.size(); i++){
-			user = users.get(i);
+		for(int i = 0; i < userIds.size(); i++){
+			user = getUserById(userIds.get(i));
 			project.addCollaborator(user);
 			user.addCollaborationProject(project);
 			dbManager.addProjectMembership(user, project);	
@@ -198,7 +213,8 @@ public class ServerImpl extends UnicastRemoteObject implements Subject, ServerIn
 		}
 	}
 	@Override
-	public void startProject(Project project){
+	public void startProject(int projectId){
+		Project project = getProjectById(projectId);
 		Notification notification = notificationFactory.createNotification("project_started", project.getDescription());	
 		User user;
 		for (int i = 0; i < project.getCollaborators().size(); i++){
@@ -210,7 +226,8 @@ public class ServerImpl extends UnicastRemoteObject implements Subject, ServerIn
 	}
 	
 	@Override 
-	public void completeActivity(Activity activity){
+	public void completeActivity(int activityId){
+		Activity activity = getActivityById(activityId);
 		Notification notification = notificationFactory.createNotification("activity_completed", activity.getDescription());	
 		User user;
 		for (int i = 0; i < activity.getActivityCollaborators().size(); i++){
@@ -236,7 +253,9 @@ public class ServerImpl extends UnicastRemoteObject implements Subject, ServerIn
 	}
 	
 	@Override
-	public void addAgent(Activity activity, User user) throws RemoteException {
+	public void addAgent(int activityId, int userId) throws RemoteException {
+		Activity activity = getActivityById(activityId);
+		User user = getUserById(userId);
 		activity.addAgent(user);
 		user.addUserActivities(activity);
 		dbManager.addActivityMembership(user, activity);
@@ -245,20 +264,24 @@ public class ServerImpl extends UnicastRemoteObject implements Subject, ServerIn
 	//REMOVERS
 
 	@Override
-	public void unregisterUser(User user, String password) throws RemoteException {
-		logout(user);
+	public void unregisterUser(int userId, String password) throws RemoteException {
+		logout(userId);
+		User user = getUserById(userId);
 		dbManager.removeUser(user.getUsername(), password);
 		registeredUsers.remove(user);
 	}
 	
 	@Override
-	public void removeFriend(User user1, User user2) throws RemoteException {
+	public void removeFriend(int userId1, int userId2) throws RemoteException {
+		User user1 = getUserById(userId1);
+		User user2 = getUserById(userId2);
 		user1.getUserFriends().remove(user2);
 		dbManager.removeFriendship(user1.getUserId(), user2.getUserId());
 	}
 	
 	@Override
-	public void removeProject(Project project) throws RemoteException {
+	public void removeProject(int projectId) throws RemoteException {
+		Project project = getProjectById(projectId);
 		project.getAdmin().getManagedProject().remove(project);
 		for(int i = 0; i < project.getCollaborators().size(); i++){
 			project.getCollaborators().get(i).getCollaborationProject().remove(project);
@@ -268,7 +291,9 @@ public class ServerImpl extends UnicastRemoteObject implements Subject, ServerIn
 	}
 	
 	@Override
-	public void removeActivity(Project project, Activity activity) throws RemoteException {
+	public void removeActivity(int projectId, int activityId) throws RemoteException {
+		Project project = getProjectById(projectId);
+		Activity activity = getActivityById(activityId);
 		for(int i = 0; i < activity.getActivityCollaborators().size(); i++){
 			activity.getActivityCollaborators().get(i).getUserActivities().remove(activity);
 		}
@@ -278,14 +303,18 @@ public class ServerImpl extends UnicastRemoteObject implements Subject, ServerIn
 	}
 	
 	@Override
-	public void removeCollaborator(Project project, User user) throws RemoteException {
+	public void removeCollaborator(int projectId, int userId) throws RemoteException {
+		Project project = getProjectById(projectId);
+		User user = getUserById(userId);
 		project.getCollaborators().remove(user);
 		user.getCollaborationProject().remove(project);
 		dbManager.removeProjectMembership(user.getUserId(), project.getProjectId());
 	}
 
 	@Override
-	public void removeAgent(Activity activity, User user) throws RemoteException {
+	public void removeAgent(int activityId, int userId) throws RemoteException {
+		Activity activity = getActivityById(activityId);
+		User user = getUserById(userId);
 		activity.getActivityCollaborators().remove(user);
 		user.getUserActivities().remove(activity);
 		dbManager.removeActivityMembership(user.getUserId(), activity.getActivityId());
@@ -305,7 +334,7 @@ public class ServerImpl extends UnicastRemoteObject implements Subject, ServerIn
 		return matchedUsers;
 	}
 	
-	public User getUserById(int userId){
+	public User getUserById(int userId)throws RemoteException{
 		User user = null;
 		for(int i = 0; i < registeredUsers.size(); i++){
 			if(registeredUsers.get(i).getUserId() == userId){
@@ -341,6 +370,16 @@ public class ServerImpl extends UnicastRemoteObject implements Subject, ServerIn
 		return activity;
 	}
 	
+	public ArrayList<Project> getManagedProject(int userId) throws RemoteException{
+		ArrayList<Project> managedProject = new ArrayList<Project>();
+		try{
+			managedProject = getUserById(userId).getManagedProject();
+		}catch(RemoteException e){
+			e.printStackTrace();
+		}
+		return managedProject;
+	}
+	
 	public ArrayList<User> getRegisteredUsers() {
 		return registeredUsers;
 	}
@@ -362,13 +401,15 @@ public class ServerImpl extends UnicastRemoteObject implements Subject, ServerIn
 			for(int j=0; j < registeredProjects.get(i).getCollaborators().size(); j++){
 				System.out.println(registeredProjects.get(i).getCollaborators().get(j).getUsername());
 			}
+		System.out.println("Admin:");	
+		System.out.println(registeredProjects.get(i).getAdmin().getUsername());
 		}
 		System.out.println();
 		for(int i = 0; i < registeredUsers.size(); i++){
 			System.out.println("Users:" + registeredUsers.get(i).getUsername());
 			System.out.println("Projects:");
-			for(int j=0; j < registeredUsers.get(i).getCollaborationProject().size(); j++){
-				System.out.println(registeredUsers.get(i).getCollaborationProject().get(j).getTitle());
+			for(int j=0; j < registeredUsers.get(i).getManagedProject().size(); j++){
+				System.out.println(registeredUsers.get(i).getManagedProject().get(j).getTitle());
 			}
 		}
 		System.out.println();
@@ -379,6 +420,7 @@ public class ServerImpl extends UnicastRemoteObject implements Subject, ServerIn
 				System.out.println(registeredUsers.get(i).getUserActivities().get(j).getName());
 			}
 		}
+		System.out.println("----------------------------------------------------------------");
 	}
 	
 	//MAIN

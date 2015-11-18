@@ -122,7 +122,7 @@ public class Graphics {
 						projectFrame.setVisible(true);
 						JTextField text = new JTextField(40);
 						projectFrame.add(text);
-						text.setText(client.getMyUser().getManagedProject().toString());
+						//text.setText(client.getMyUserId().getManagedProject().toString());
 						
 					}
 					
