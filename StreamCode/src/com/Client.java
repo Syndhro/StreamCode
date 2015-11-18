@@ -161,8 +161,18 @@ public class Client{
 			client.addProject("Comple Spe", "A casa di spe", Category.getCategory("sport"), client.getMyUserId());
 			
 			client.addActivity(4, "Fare la spesa", "Andare al supermercato a fare la spesa", "Esselunga", "Venerdì");
+			client.addActivity(4, "Preparare DJ Set", "Syndrome prepara le bombe", "Casa sua", "Sabato");
 			
 			client.addFriend(client.getMyUserId(), 17);
+			client.addFriend(client.getMyUserId(), 18);
+			
+			ArrayList<Integer> userIds = new ArrayList<Integer>();
+			userIds.add(17);
+			userIds.add(18);
+			
+			client.addCollaborators(4, userIds);
+			client.addAgent(1, 18);
+			client.addAgent(1, 17);
 			
 			User user = server.getUserById(16);
 			
