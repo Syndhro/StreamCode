@@ -18,6 +18,7 @@ public class ServerImpl extends UnicastRemoteObject implements Subject, ServerIn
 
 	private ServerImpl() throws RemoteException{
 		this.dbManager = DBManager.getInstance();
+		this.notificationFactory = new NotificationSimpleFactory();
 		this.loggedUsers = new ArrayList<Observer>();
 		this.registeredProjects = new ArrayList<Project>();
 		this.registeredActivities = new ArrayList<Activity>();
@@ -169,9 +170,9 @@ public class ServerImpl extends UnicastRemoteObject implements Subject, ServerIn
 		User user2 = getUserById(userId2);
 		user1.addFriend(user2);
 		dbManager.addFriendship(user1.getUserId(), user2.getUserId());
-		//Notification notification = notificationFactory.createNotification("friendship", user1.getUsername());
-		//user2.update(notification);
-		//dbManager.addNotification(notification, user2.getUserId());
+		Notification notification = notificationFactory.createNotification("friendship", user1.getUsername());
+		user2.update(notification);
+		dbManager.addNotification(notification, user2.getUserId());
 	}
 	
 	@Override

@@ -80,7 +80,7 @@ public class DBManager implements Serializable{
 	public void addActivity(Activity activity) {
 		PreparedStatement statement = null;
 		try {
-			 String query = "INSERT INTO activity (activityId, projectId, name, description, place, dateTime, isActive, isComplete) VALUES (?,?,?,?,?,?,?,?)";
+			 String query = "INSERT INTO activity (activityId, projectId, name, description, place, dateTime, isActive, isCompleted) VALUES (?,?,?,?,?,?,?,?)";
 		     statement = (PreparedStatement) connection.prepareStatement(query);         
 		     statement.setInt(1, activity.getActivityId());
 		     statement.setInt(2, activity.getParentProject().getProjectId());
