@@ -115,6 +115,7 @@ public class Graphics {
 					else{
 						client.login(lUsername, lPassword);
  						JOptionPane.showMessageDialog(loginFrame, "Logged!");
+ 						//PROJECT FRAME------------------------------------------------------------------------
 						projectFrame = new JFrame("Projects");
  						projectFrame.setBounds(100, 100, 500, 336);
  						projectFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -132,6 +133,7 @@ public class Graphics {
 							projectButtons.add(button);
 							button.addActionListener(new ActionListener(){
 								public void actionPerformed(ActionEvent event) {
+									//ACTIVITY FRAME----------------------------------------------------------
 									JFrame activityFrame;
 								    int i = projectButtons.indexOf(event.getSource());
 								    Project project = client.getManagedProject().get(i); //l'indirizzo in projects e buttons è lo stesso
@@ -154,7 +156,43 @@ public class Graphics {
 								}
 							});
 						}
-				
+						JPanel projectSettings = new JPanel();
+						JButton addProjectButton = new JButton("Add project");
+						projectSettings.add(addProjectButton);
+						projectFrame.add(projectSettings);
+						addProjectButton.addActionListener(new ActionListener(){
+
+							@Override
+							public void actionPerformed(ActionEvent e) {
+								
+								JTextField projectTitle = new JTextField(15);
+								JTextField projectDescription = new JTextField(40);
+								JTextField projectCategory = new JTextField(15);
+								
+								JPanel projectValues = new JPanel();
+								projectValues.setLayout(new BoxLayout(projectValues, BoxLayout.PAGE_AXIS));
+								projectValues.add(new JLabel("Insert title: "));
+								projectValues.add(projectTitle);
+								projectValues.add(new JLabel(" "),"span, grow");
+								projectValues.add(new JLabel("Insert description: "));
+								projectValues.add(projectDescription);
+								projectValues.add(new JLabel(" "),"span, grow");
+								projectValues.add(new JLabel("Insert category: ")); //fare combobox
+								projectValues.add(projectCategory);
+								projectValues.setVisible(true);
+								//
+								JOptionPane creatingProject = new JOptionPane();
+								int result = creatingProject.showConfirmDialog(projectFrame, projectValues, "Please Enter Project Values", JOptionPane.OK_CANCEL_OPTION);
+								if (result == creatingProject.OK_OPTION){
+									try {
+										client.addProject(projectTitle.getText(), projectDescription.getText(), Category.getCategory(projectCategory.getText()), client.getMyUserId());
+									} catch (RemoteException e1) {
+										e1.printStackTrace();
+									}	
+								}
+							}
+							
+						});
  						loginFrame.setVisible(false);
  						projectFrame.setVisible(true);			
 					}					
