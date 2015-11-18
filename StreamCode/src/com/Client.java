@@ -52,8 +52,8 @@ public class Client{
 	}
 
 
-	public void addProject(String title, String description, String category, User user) throws RemoteException {
-		server.addProject(title, description, category, user);
+	public void addProject(String title, String description, Category category, User user) throws RemoteException {
+		server.addProject(title, description, category , user);
 	}
 
 
@@ -120,5 +120,37 @@ public class Client{
 	public User getMyUser(){
 		return myUser;
 	}
+	
+	public void setMyUser(User user){
+		this.myUser = user;
+	}
+	
+	public static void main(String[] args){
+		
+		Client client = new Client();
+		try{
+			client.startup();
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		
+		try{
+			int verifier = client.check("andreavaghi", "vaghi");
+			if (verifier == -1)
+				System.out.println("Wrong Username");
+			else if (verifier == -2)
+				System.out.println("Wrong Password");
+			else
+				client.login("andreavaghi", "vaghi");
+			
+			//client.addProject("Grigliata", "Un botto di carne", Category.getCategory("holidays"), client.getMyUser());
+			//client.addProject("Studio", "Pre Esame", Category.getCategory("hobby"), client.myUser);
+			
+		}catch(RemoteException e){
+			e.printStackTrace();
+		}
+		
+	}
+	
 	
 }

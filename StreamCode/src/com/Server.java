@@ -16,7 +16,8 @@ public class Server{
 	server.retrieveAllProjects();
 	server.retrieveAllActivities();
 	
-	server.linkProjectsToUsers();
+	server.linkProjectsToCollaborators();
+	server.linkProjectsToAdmins();
 	server.linkActivitiesToUsers();
     Naming.rebind("server", server);
     System.out.println("Press enter to terminate");

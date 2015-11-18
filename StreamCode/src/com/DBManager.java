@@ -248,11 +248,13 @@ public class DBManager implements Serializable{
 		Statement statement = null;
 		ResultSet resultSet = null;		
 		try{
-			String query = "SELECT MAX projectId FROM project";
+			String query = "SELECT MAX(projectId) FROM project";
 			statement = (Statement) connection.createStatement();
 			resultSet = statement.executeQuery(query);		
-			resultSet.next();		
-			lastProjectId = resultSet.getInt(1);
+			if(resultSet.next())		
+				lastProjectId = resultSet.getInt(1);
+			else 
+				lastProjectId = 0;
 		}catch(SQLException e){
 			e.printStackTrace();
 		}
@@ -402,12 +404,30 @@ public class DBManager implements Serializable{
 	}
 	
 	//retrieve the ids of the projects of the user with the passed id
-	public ArrayList<Integer> getProjectsIdByUserId(int userId) {		
+	public ArrayList<Integer> getCollabProjectsIdByUserId(int userId) {		
 		PreparedStatement statement = null;
 		ResultSet resultSet = null;
 		ArrayList<Integer> projectIds = new ArrayList<Integer>();
 		try{
 			String query = "SELECT projectId FROM project_membership WHERE userId = ?";
+			statement = (PreparedStatement) connection.prepareStatement(query);
+			statement.setInt(1, userId);
+			resultSet = statement.executeQuery();
+			while(resultSet.next()){
+				projectIds.add(resultSet.getInt(1));
+			}
+		}catch(SQLException e){
+			e.printStackTrace();
+		}	
+		return projectIds;
+	}
+	
+	public ArrayList<Integer> getManagedProjectsIdByUserId(int userId) {		
+		PreparedStatement statement = null;
+		ResultSet resultSet = null;
+		ArrayList<Integer> projectIds = new ArrayList<Integer>();
+		try{
+			String query = "SELECT projectId FROM project WHERE adminId = ?";
 			statement = (PreparedStatement) connection.prepareStatement(query);
 			statement.setInt(1, userId);
 			resultSet = statement.executeQuery();

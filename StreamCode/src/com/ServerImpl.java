@@ -50,14 +50,26 @@ public class ServerImpl extends UnicastRemoteObject implements Subject, ServerIn
 		this.registeredActivities = dbManager.getAllActivities();
 	}
 	
-	public void linkProjectsToUsers(){		
+	public void linkProjectsToCollaborators(){		
 		ArrayList<Integer> projectIds = new ArrayList<Integer>();
 		for (int i = 0; i < registeredUsers.size(); i++){
-			projectIds = dbManager.getProjectsIdByUserId(registeredUsers.get(i).getUserId());
+			projectIds = dbManager.getCollabProjectsIdByUserId(registeredUsers.get(i).getUserId());
 			for(int j = 0; j < projectIds.size(); j++){
 				Project project = getProjectById(projectIds.get(j));
 				registeredUsers.get(i).addCollaborationProject(project);
 				project.addCollaborator(registeredUsers.get(i));
+			}
+		}	
+	}
+	
+	public void linkProjectsToAdmins(){		
+		ArrayList<Integer> projectIds = new ArrayList<Integer>();
+		for (int i = 0; i < registeredUsers.size(); i++){
+			projectIds = dbManager.getManagedProjectsIdByUserId(registeredUsers.get(i).getUserId());
+			for(int j = 0; j < projectIds.size(); j++){
+				Project project = getProjectById(projectIds.get(j));
+				registeredUsers.get(i).addManagedProject(project);
+				project.setAdmin(registeredUsers.get(i));
 			}
 		}	
 	}
@@ -155,9 +167,9 @@ public class ServerImpl extends UnicastRemoteObject implements Subject, ServerIn
 	}
 	
 	@Override
-	public void addProject(String title, String description, String category, User user) throws RemoteException {
+	public void addProject(String title, String description, Category category, User user) throws RemoteException {
 		int projectId = dbManager.getLastProjectId();
-		Project project = new Project(projectId+1, title, description, Category.getCategory(category), user);
+		Project project = new Project(projectId+1, title, description, category, user);
 		registeredProjects.add(project);
 		dbManager.addProject(project);
 		user.addManagedProject(project);

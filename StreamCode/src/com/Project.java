@@ -55,6 +55,10 @@ public class Project implements Serializable{
 	
 	//setters
 	
+	public void setAdmin(User user) {
+		this.admin = user;
+	}
+	
 	public void setTitle(String title) {
 		this.title = title;
 	}
