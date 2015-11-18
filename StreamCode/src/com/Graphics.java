@@ -11,6 +11,7 @@ import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JPasswordField;
+import javax.swing.JTextArea;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 
@@ -19,6 +20,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.rmi.RemoteException;
+import java.util.ArrayList;
 import java.awt.Font;
 
 public class Graphics {
@@ -119,13 +121,8 @@ public class Graphics {
 						SpringLayout springLayout = new SpringLayout();
 						projectFrame.getContentPane().setLayout(springLayout);
 						loginFrame.setVisible(false);
-						projectFrame.setVisible(true);
-						JTextField text = new JTextField(40);
-						projectFrame.add(text);
-						//text.setText(client.getMyUserId().getManagedProject().toString());
-						
-					}
-					
+						projectFrame.setVisible(true);					
+					}					
 				} catch (RemoteException e1){
 					e1.printStackTrace();
 				}

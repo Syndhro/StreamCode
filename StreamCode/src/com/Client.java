@@ -133,7 +133,7 @@ public class Client{
 		}
 		return managedProject;
 	}
-	
+
 	
 	
 	public static void main(String[] args){
