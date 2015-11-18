@@ -114,14 +114,49 @@ public class Graphics {
 					}
 					else{
 						client.login(lUsername, lPassword);
-						JOptionPane.showMessageDialog(loginFrame, "Logged!");
-						projectFrame = new JFrame();
-						projectFrame.setBounds(100, 100, 500, 336);
-						projectFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-						SpringLayout springLayout = new SpringLayout();
-						projectFrame.getContentPane().setLayout(springLayout);
-						loginFrame.setVisible(false);
-						projectFrame.setVisible(true);					
+ 						JOptionPane.showMessageDialog(loginFrame, "Logged!");
+						projectFrame = new JFrame("Projects");
+ 						projectFrame.setBounds(100, 100, 500, 336);
+ 						projectFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+						JPanel projectContainer = new JPanel();
+						projectContainer.setLayout(new BoxLayout(projectContainer, BoxLayout.PAGE_AXIS));
+						projectFrame.setContentPane(projectContainer);
+					
+						ArrayList<Project> projects = new ArrayList<Project>();
+						ArrayList<JButton> projectButtons = new ArrayList<JButton>();
+						projects = client.getManagedProject();
+						for(int i = 0; i < projects.size(); i++){
+							JButton button = new JButton();
+							button.setText(projects.get(i).getTitle());
+							projectContainer.add(button);		
+							projectButtons.add(button);
+							button.addActionListener(new ActionListener(){
+								public void actionPerformed(ActionEvent event) {
+									JFrame activityFrame;
+								    int i = projectButtons.indexOf(event.getSource());
+								    Project project = client.getManagedProject().get(i); //l'indirizzo in projects e buttons è lo stesso
+								    activityFrame = new JFrame("Activities");
+									activityFrame.setBounds(100, 100, 500, 336);
+									activityFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+									JPanel activityContainer = new JPanel();
+									activityContainer.setLayout(new BoxLayout(activityContainer, BoxLayout.PAGE_AXIS));
+									activityFrame.setContentPane(activityContainer);
+									ArrayList<Activity> activities = new ArrayList<Activity>();
+									ArrayList<JButton> activitiesButtons = new ArrayList<JButton>();
+									activities = project.getActivities();
+									for(int j = 0; j < activities.size(); j++){
+										JButton button = new JButton();
+										button.setText(activities.get(j).getName());
+										activityContainer.add(button);		
+										activitiesButtons.add(button);
+									}
+									activityFrame.setVisible(true);
+								}
+							});
+						}
+				
+ 						loginFrame.setVisible(false);
+ 						projectFrame.setVisible(true);			
 					}					
 				} catch (RemoteException e1){
 					e1.printStackTrace();
