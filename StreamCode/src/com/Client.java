@@ -121,4 +121,10 @@ public class Client{
 		return myUser;
 	}
 	
+	public ArrayList<Project> getMyProjects(){
+		ArrayList<Project> projects = new ArrayList<Project>();
+		projects = myUser.getManagedProject();
+		return projects;		
+	}
+	
 }

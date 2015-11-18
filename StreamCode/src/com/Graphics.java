@@ -11,6 +11,7 @@ import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JPasswordField;
+import javax.swing.JTextArea;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 
@@ -19,6 +20,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.rmi.RemoteException;
+import java.util.ArrayList;
 import java.awt.Font;
 
 public class Graphics {
@@ -113,16 +115,45 @@ public class Graphics {
 					else{
 						client.login(lUsername, lPassword);
 						JOptionPane.showMessageDialog(loginFrame, "Logged!");
-						projectFrame = new JFrame();
+						projectFrame = new JFrame("Projects");
 						projectFrame.setBounds(100, 100, 500, 336);
 						projectFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+						JPanel container = new JPanel();
+						container.setLayout(new BoxLayout(container, BoxLayout.PAGE_AXIS));
+						projectFrame.setContentPane(container);
+						
+						/*
 						SpringLayout springLayout = new SpringLayout();
 						projectFrame.getContentPane().setLayout(springLayout);
+						*/
+						
+						
+						JTextArea area = new JTextArea();			
+						ArrayList<Project> projects = new ArrayList<Project>();
+						projects = client.getMyProjects();
+						for(int i = 0; i < projects.size(); i++){
+							System.out.println(projects.get(i).getTitle());
+							area.setText(projects.get(i).getTitle());
+						}
+						Integer n = 10;
+						ArrayList<JButton> buttons = new ArrayList<JButton>();
+						for(Integer i = 0; i < n; i++){
+							JButton button = new JButton();
+							button.setText(i.toString());
+							//area.append(i.toString());
+							container.add(button);		
+							buttons.add(button);
+							button.addActionListener(new ActionListener(){
+								public void actionPerformed(ActionEvent event) {
+								    int i = buttons.indexOf(event.getSource());
+								    //
+								}
+							});
+						}
+						//container.add(area);
+						
 						loginFrame.setVisible(false);
 						projectFrame.setVisible(true);
-						JTextField text = new JTextField(40);
-						projectFrame.add(text);
-						text.setText(client.getMyUser().getManagedProject().toString());
 						
 					}
 					
