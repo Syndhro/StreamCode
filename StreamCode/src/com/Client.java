@@ -10,6 +10,8 @@ import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 
+import com.mysql.jdbc.authentication.MysqlClearPasswordPlugin;
+
 public class Client{
 	
 	Registry registry;
@@ -158,13 +160,19 @@ public class Client{
 			
 			client.addProject("Comple Spe", "A casa di spe", Category.getCategory("sport"), client.getMyUserId());
 			
-			client.stampa();
+			client.addActivity(4, "Fare la spesa", "Andare al supermercato a fare la spesa", "Esselunga", "Venerdì");
+			
+			client.addFriend(client.getMyUserId(), 17);
+			
+			User user = server.getUserById(16);
 			
 			ArrayList<Project> managed = client.getManagedProject();
 			
 			for(int i = 0; i < managed.size(); i++){
 				System.out.println(managed.get(i).getTitle());
 			}
+			
+			client.stampa();
 			
 		}catch(RemoteException e){
 			e.printStackTrace();

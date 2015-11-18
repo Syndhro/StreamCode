@@ -169,9 +169,9 @@ public class ServerImpl extends UnicastRemoteObject implements Subject, ServerIn
 		User user2 = getUserById(userId2);
 		user1.addFriend(user2);
 		dbManager.addFriendship(user1.getUserId(), user2.getUserId());
-		Notification notification = notificationFactory.createNotification("friendship", user1.getUsername());
-		user2.update(notification);
-		dbManager.addNotification(notification, user2.getUserId());
+		//Notification notification = notificationFactory.createNotification("friendship", user1.getUsername());
+		//user2.update(notification);
+		//dbManager.addNotification(notification, user2.getUserId());
 	}
 	
 	@Override

@@ -267,7 +267,7 @@ public class DBManager implements Serializable{
 		Statement statement = null;
 		ResultSet resultSet = null;
 		try{
-			String query = "SELECT MAX activityId FROM activity";
+			String query = "SELECT MAX(activityId) FROM activity";
 			statement = (Statement) connection.createStatement();
 			resultSet = statement.executeQuery(query);
 			resultSet.next();
