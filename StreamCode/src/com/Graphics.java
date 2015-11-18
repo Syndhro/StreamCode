@@ -152,10 +152,49 @@ public class Graphics {
 										activityContainer.add(button);		
 										activitiesButtons.add(button);
 									}
+									//ACTIVITY SETTINGS-----------------------------------------------------------------
+									JPanel activitySettings = new JPanel();
+									JButton addActivityButton = new JButton("Add activity");
+									activitySettings.add(addActivityButton);
+									activityFrame.add(activitySettings);
+									addActivityButton.addActionListener(new ActionListener(){
+
+										@Override
+										public void actionPerformed(ActionEvent e) {
+											
+											JTextField activityName = new JTextField(15);
+											JTextField activityDescription = new JTextField(40);
+											JTextField activityPlace = new JTextField(15);
+											
+											JPanel activityValues = new JPanel();
+											activityValues.setLayout(new BoxLayout(activityValues, BoxLayout.PAGE_AXIS));
+											activityValues.add(new JLabel("Insert name: "));
+											activityValues.add(activityName);
+											activityValues.add(new JLabel(" "),"span, grow");
+											activityValues.add(new JLabel("Insert description: "));
+											activityValues.add(activityDescription);
+											activityValues.add(new JLabel(" "),"span, grow");
+											activityValues.add(new JLabel("Insert place: "));
+											activityValues.add(activityPlace);
+											activityValues.setVisible(true);
+											
+											JOptionPane creatingActivity = new JOptionPane();
+											int result = creatingActivity.showConfirmDialog(projectFrame, activityValues, "Please Enter Activity Values", JOptionPane.OK_CANCEL_OPTION);
+											if (result == creatingActivity.OK_OPTION){
+												try {
+													client.addActivity(project.getProjectId(), activityName.getText(), activityDescription.getText(), activityPlace.getText(), "Ora_attuale");
+												} catch (RemoteException e1) {
+													e1.printStackTrace();
+												}	
+											}
+										}
+										
+									});
 									activityFrame.setVisible(true);
 								}
 							});
 						}
+						//PROJECT SETTINGS--------------------------------------------------------------------------------
 						JPanel projectSettings = new JPanel();
 						JButton addProjectButton = new JButton("Add project");
 						projectSettings.add(addProjectButton);
