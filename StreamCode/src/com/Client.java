@@ -122,6 +122,16 @@ public class Client{
 		return myUserId;
 	}
 	
+	public ArrayList<User> getUserFriends(){
+		ArrayList<User> userFriends = new ArrayList<User>();
+		try{
+			userFriends = server.getUserFriend(myUserId);
+		}catch(RemoteException e){
+			e.printStackTrace();
+		}
+		return userFriends;
+	}
+	
 	public void stampa() throws RemoteException {
 		server.stampa();
 	}
