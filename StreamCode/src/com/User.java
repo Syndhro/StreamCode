@@ -11,6 +11,7 @@ public class User implements Observer, Serializable {
 	private ArrayList<Project> managedProjects;
 	private ArrayList<Activity> userActivities;
 	private ArrayList<User> userFriends;
+	private ArrayList<Notification> userNotifications;
 	
 
 	public User(int id, String username){
@@ -62,6 +63,10 @@ public class User implements Observer, Serializable {
 	public ArrayList<User> getUserFriends() {
 		return userFriends;
 	}
+	
+	public ArrayList<Notification> getUserNotification(){
+		return userNotifications;
+	}
 
 	public void setUsername(String username) {
 		this.username = username;
@@ -77,6 +82,10 @@ public class User implements Observer, Serializable {
 
 	public void addUserActivities(Activity activity) {
 		this.userActivities.add(activity);
+	}
+	
+	public void addUserNotifications(Notification notification){
+		this.userNotifications.add(notification);
 	}
 
 	@Override

@@ -6,13 +6,13 @@ import java.util.Date;
 
 public abstract class Notification implements Serializable{
 
-	private int notificationId;
+	protected int notificationId;
 	protected String message;
-	private Time time;
-	private Date date;
-	private int sourceID;
-	private int targetID;
-	private boolean isDelivered;
+	protected String time;
+	protected String date;
+	protected int targetId;
+	protected boolean isDelivered;
+	protected NotificationType type;
 	
 	public int getNotificationId() {
 		return notificationId;
@@ -20,18 +20,21 @@ public abstract class Notification implements Serializable{
 	public String getMessage() {
 		return message;
 	}
-	public Time getTime() {
+	public String getTime() {
 		return time;
 	}
-	public Date getDate() {
+	public String getDate() {
 		return date;
 	}
-	public int getSourceId() {
-		return sourceID;
-	}
+	
 	public int getTargetId() {
-		return targetID;
+		return targetId;
 	}
+	
+	public NotificationType getType() {
+		return type;
+	}
+	
 	public boolean isDelivered() {
 		return isDelivered;
 	}
@@ -41,20 +44,22 @@ public abstract class Notification implements Serializable{
 	public void setMessage(String message) {
 		this.message = message;
 	}
-	public void setTime(Time time) {
+	public void setTime(String time) {
 		this.time = time;
 	}
-	public void setDate(Date date) {
+	public void setDate(String date) {
 		this.date = date;
 	}
-	public void setSourceID(int sourceID) {
-		this.sourceID = sourceID;
-	}
-	public void setTargetID(int targetID) {
-		this.targetID = targetID;
+
+	public void setTargetID(int targetId) {
+		this.targetId = targetId;
 	}
 	public void setDelivered(boolean isDelivered) {
 		this.isDelivered = isDelivered;
+	}
+	
+	public void setType(NotificationType type){
+		this.type = type;
 	}
 
 }
