@@ -135,22 +135,18 @@ public class Graphics {
 							button.addActionListener(new ActionListener(){
 								public void actionPerformed(ActionEvent event) {
 									//ACTIVITY FRAME----------------------------------------------------------
-									JFrame activityFrame;
+									JPanel activityPanel = new JPanel();
 								    int i = projectButtons.indexOf(event.getSource());
-								    Project project = client.getManagedProject().get(i); //l'indirizzo in projects e buttons è lo stesso
-								    activityFrame = new JFrame("Activities");
-									activityFrame.setBounds(100, 100, 500, 336);
-									activityFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-									JPanel activityContainer = new JPanel();
-									activityContainer.setLayout(new BoxLayout(activityContainer, BoxLayout.PAGE_AXIS));
-									activityFrame.setContentPane(activityContainer);
+								    Project project = client.getManagedProject().get(i); //l'indirizzo in projects e buttons è lo stesso								  
+								    activityPanel.setBounds(100, 100, 500, 336);								 
+								    activityPanel.setLayout(new BoxLayout(activityPanel, BoxLayout.PAGE_AXIS));					
 									ArrayList<Activity> activities = new ArrayList<Activity>();
 									ArrayList<JButton> activitiesButtons = new ArrayList<JButton>();
 									activities = project.getActivities();
 									for(int j = 0; j < activities.size(); j++){
 										JButton button = new JButton();
 										button.setText(activities.get(j).getName());
-										activityContainer.add(button);		
+										activityPanel.add(button);		
 										activitiesButtons.add(button);
 									}
 									//ACTIVITY SETTINGS-----------------------------------------------------------------
@@ -159,7 +155,7 @@ public class Graphics {
 									JButton addCollaboratorsButton = new JButton("Invite collaborators");
 									activitySettings.add(addActivityButton);
 									activitySettings.add(addCollaboratorsButton);
-									activityFrame.add(activitySettings);
+									activityPanel.add(activitySettings);
 									addActivityButton.addActionListener(new ActionListener(){
 
 										@Override
@@ -227,7 +223,8 @@ public class Graphics {
 										}
 										
 									});
-									activityFrame.setVisible(true);
+									JOptionPane activityPane = new JOptionPane();
+									int result3 = activityPane.showConfirmDialog(projectFrame, activityPanel,"Activities", JOptionPane.CLOSED_OPTION);
 								}
 							});
 						}
