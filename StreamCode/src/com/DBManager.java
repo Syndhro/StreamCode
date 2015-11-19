@@ -114,7 +114,7 @@ public class DBManager implements Serializable{
 	public void addProjectMembership(User user, Project project) {	
 		PreparedStatement statement = null;
 	    try {
-			 String query = "INSERT INTO project_membership (userId1, projectId) VALUES (?,?)";
+			 String query = "INSERT INTO project_membership (userId, projectId) VALUES (?,?)";
 		     statement = (PreparedStatement) connection.prepareStatement(query);         
 		     statement.setInt(1, user.getUserId());
 		     statement.setInt(2, project.getProjectId());

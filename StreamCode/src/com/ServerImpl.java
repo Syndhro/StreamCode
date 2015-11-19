@@ -361,12 +361,9 @@ public class ServerImpl extends UnicastRemoteObject implements Subject, ServerIn
 	
 	@Override
 	public ArrayList<User> getUserFriend(int userId) throws RemoteException {
+		User user = getUserById(userId);
 		ArrayList<User> userFriends = new ArrayList<User>();
-		try{
-			userFriends = getUserById(userId).getUserFriends();
-		}catch(RemoteException e){
-			e.printStackTrace();
-		}
+		userFriends = user.getUserFriends();
 		return userFriends;
 	}
 	

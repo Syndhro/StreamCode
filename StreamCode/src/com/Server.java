@@ -19,6 +19,7 @@ public class Server{
 	server.linkProjectsToCollaborators();
 	server.linkProjectsToAdmins();
 	server.linkActivitiesToUsers();
+	server.linkFriends();
     Naming.rebind("server", server);
     System.out.println("Press enter to terminate");
     try {

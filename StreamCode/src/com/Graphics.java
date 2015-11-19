@@ -10,6 +10,7 @@ import javax.swing.SpringLayout;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JPasswordField;
 import javax.swing.JTextArea;
 import javax.swing.JLabel;
@@ -155,7 +156,9 @@ public class Graphics {
 									//ACTIVITY SETTINGS-----------------------------------------------------------------
 									JPanel activitySettings = new JPanel();
 									JButton addActivityButton = new JButton("Add activity");
+									JButton addCollaboratorsButton = new JButton("Invite collaborators");
 									activitySettings.add(addActivityButton);
+									activitySettings.add(addCollaboratorsButton);
 									activityFrame.add(activitySettings);
 									addActivityButton.addActionListener(new ActionListener(){
 
@@ -183,6 +186,40 @@ public class Graphics {
 											if (result == creatingActivity.OK_OPTION){
 												try {
 													client.addActivity(project.getProjectId(), activityName.getText(), activityDescription.getText(), activityPlace.getText(), "Ora_attuale");
+												} catch (RemoteException e1) {
+													e1.printStackTrace();
+												}	
+											}							
+										}
+										
+									});
+									//ADD COLLABORATORS---------------------------------------------------------------------
+									addCollaboratorsButton.addActionListener(new ActionListener(){
+
+										@Override
+										public void actionPerformed(ActionEvent arg0) {
+											
+											JPanel inviteFriends = new JPanel();
+											ArrayList<User> collaborators = new ArrayList<User>();
+											collaborators = client.getUserFriends();											
+											ArrayList<JCheckBox> checkboxes = new ArrayList<>();
+											for(int i = 0; i < collaborators.size(); i++) {
+											    JCheckBox box = new JCheckBox(collaborators.get(i).getUsername());
+											    checkboxes.add(box);
+											    inviteFriends.add(box);
+											}
+											
+											JOptionPane invitingFriends = new JOptionPane();
+											ArrayList<Integer> selected = new ArrayList<Integer>();
+											int result2 = invitingFriends.showConfirmDialog(projectFrame, inviteFriends, "Invite your friends",JOptionPane.OK_CANCEL_OPTION); 
+											if (result2 == invitingFriends.OK_OPTION){
+												try {
+													for(int i = 0; i < checkboxes.size(); i++){
+														if(checkboxes.get(i).isSelected()){
+															selected.add(collaborators.get(i).getUserId());														
+														}
+													}
+													client.addCollaborators(project.getProjectId(), selected);
 												} catch (RemoteException e1) {
 													e1.printStackTrace();
 												}	
