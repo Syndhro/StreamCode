@@ -5,6 +5,8 @@ import java.awt.EventQueue;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import java.awt.BorderLayout;
+import java.awt.Container;
+
 import javax.swing.JTextField;
 import javax.swing.SpringLayout;
 import javax.swing.Box;
@@ -75,17 +77,17 @@ public class Graphics {
 		loginFrame.getContentPane().setLayout(springLayout);
 		
 		textField = new JTextField();
-		loginFrame.getContentPane().add(textField);
 		textField.setColumns(10);
-		
 		passwordField = new JPasswordField();
+		loginFrame.getContentPane().add(textField);
+		loginFrame.getContentPane().add(passwordField);
+				
 		springLayout.putConstraint(SpringLayout.NORTH, passwordField, 140, SpringLayout.NORTH, loginFrame.getContentPane());
 		springLayout.putConstraint(SpringLayout.WEST, textField, 0, SpringLayout.WEST, passwordField);
 		springLayout.putConstraint(SpringLayout.SOUTH, textField, -6, SpringLayout.NORTH, passwordField);
 		springLayout.putConstraint(SpringLayout.EAST, textField, 0, SpringLayout.EAST, passwordField);
 		springLayout.putConstraint(SpringLayout.WEST, passwordField, 192, SpringLayout.WEST, loginFrame.getContentPane());
-		loginFrame.getContentPane().add(passwordField);
-		
+				
 		JLabel lblPassword = new JLabel("Password");
 		springLayout.putConstraint(SpringLayout.NORTH, lblPassword, 3, SpringLayout.NORTH, passwordField);
 		springLayout.putConstraint(SpringLayout.EAST, lblPassword, -14, SpringLayout.WEST, passwordField);
@@ -113,28 +115,39 @@ public class Graphics {
 					else if(verifier == -2){
 						JOptionPane.showMessageDialog(loginFrame, "Wrong Password");
 					}
+					
+					//LOGIN CORRECT--------------------------------------------------------------------------------------
 					else{
 						client.login(lUsername, lPassword);
  						JOptionPane.showMessageDialog(loginFrame, "Logged!");
+ 						
+ 						
  						//PROJECT FRAME------------------------------------------------------------------------
-						projectFrame = new JFrame("Projects");
+						//initialization
+ 						projectFrame = new JFrame("Projects");
  						projectFrame.setBounds(100, 100, 500, 336);
- 						projectFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-						JPanel projectContainer = new JPanel();
-						projectContainer.setLayout(new BoxLayout(projectContainer, BoxLayout.PAGE_AXIS));
-						projectFrame.setContentPane(projectContainer);
+ 						projectFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);						
+						Container mainPanel = projectFrame.getContentPane();						
+						mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.PAGE_AXIS));
+						
+						
+						//projectContainer.setLayout(new BoxLayout(projectContainer, BoxLayout.PAGE_AXIS));
+						//projectFrame.setContentPane(projectContainer);
 					
 						ArrayList<Project> projects = new ArrayList<Project>();
 						ArrayList<JButton> projectButtons = new ArrayList<JButton>();
+						
 						projects = client.getManagedProject();
+						
 						for(int i = 0; i < projects.size(); i++){
 							JButton button = new JButton();
 							button.setText(projects.get(i).getTitle());
-							projectContainer.add(button);		
+							mainPanel.add(button);		
 							projectButtons.add(button);
 							button.addActionListener(new ActionListener(){
 								public void actionPerformed(ActionEvent event) {
-									//ACTIVITY FRAME----------------------------------------------------------
+									
+									//ACTIVITY PANEL----------------------------------------------------------
 									JPanel activityPanel = new JPanel();
 								    int i = projectButtons.indexOf(event.getSource());
 								    Project project = client.getManagedProject().get(i); //l'indirizzo in projects e buttons è lo stesso								  
@@ -182,6 +195,7 @@ public class Graphics {
 											if (result == creatingActivity.OK_OPTION){
 												try {
 													client.addActivity(project.getProjectId(), activityName.getText(), activityDescription.getText(), activityPlace.getText(), "Ora_attuale");
+													
 												} catch (RemoteException e1) {
 													e1.printStackTrace();
 												}	
