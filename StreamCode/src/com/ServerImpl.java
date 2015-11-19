@@ -14,6 +14,7 @@ public class ServerImpl extends UnicastRemoteObject implements Subject, ServerIn
 	private ArrayList<User> registeredUsers;
 	private ArrayList<Observer> loggedUsers;
 	private ArrayList<Notification> registeredNotifications;
+	private ArrayList<ClientInterface> clients;
 	
 	//CONSTRUCTORS---------------------------------------------------------------------
 
@@ -24,9 +25,9 @@ public class ServerImpl extends UnicastRemoteObject implements Subject, ServerIn
 		this.registeredProjects = new ArrayList<Project>();
 		this.registeredActivities = new ArrayList<Activity>();
 		this.registeredUsers = new ArrayList<User>();
+		this.clients = new ArrayList<ClientInterface>();
 	}
 	
-
 	public static ServerImpl getInstance() {
 		if (uniqueInstance == null){
 			try{
@@ -110,6 +111,12 @@ public class ServerImpl extends UnicastRemoteObject implements Subject, ServerIn
 	
 	//OBSERVER PATTERN------------------------------------------------------------------------
 	
+
+	public void registerClient(ClientInterface client) throws RemoteException{
+		clients.add(client);
+		client.getNotification("Registrato");
+	}
+
 	public void registerObserver(Observer o) {
 		loggedUsers.add(o);
 	}

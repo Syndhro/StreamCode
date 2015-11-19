@@ -159,8 +159,16 @@ public class Client{
 
 	
 	
-	public static void main(String[] args){
-		
+	public static void main(String[] args) throws RemoteException, NotBoundException{
+		ClientImpl clientImpl = new ClientImpl();
+		clientImpl.printName();
+		Registry registry = LocateRegistry.getRegistry("localhost");
+  		server = (ServerInterface) registry.lookup("server");
+  		
+  		server.registerClient(clientImpl);
+  		
+  		
+		/*
 		Client client = new Client();
 		try{
 			client.startup();
@@ -214,7 +222,7 @@ public class Client{
 		}catch(RemoteException e){
 			e.printStackTrace();
 		}
-		
+		*/
 	}
 	
 	
