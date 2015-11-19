@@ -16,7 +16,7 @@ public class Client{
 	
 	Registry registry;
 	static ServerInterface server;
-	int myUserId;
+	private int myUserId;
 	
 	public Client(){};
 	
@@ -139,11 +139,22 @@ public class Client{
 	public ArrayList<Project> getManagedProject(){
 		ArrayList<Project> managedProject = new ArrayList<Project>();
 		try{
+			
 			managedProject = server.getManagedProject(myUserId);
 		}catch(RemoteException e){
 			e.printStackTrace();
 		}
 		return managedProject;
+	}
+	
+	public ArrayList<Notification> getNotifications(){
+		ArrayList<Notification> myNotifications = new ArrayList<Notification>();
+		try{
+			myNotifications = server.getNotificationsById(myUserId);
+		}catch(RemoteException e){
+			e.printStackTrace();
+		}
+		return myNotifications;
 	}
 
 	
@@ -165,6 +176,12 @@ public class Client{
 				System.out.println("Wrong Password");
 			else
 				client.login("andreavaghi", "vaghi");
+			
+			ArrayList<Notification> notif = client.getNotifications();
+			
+			for(int i = 0; i < notif.size(); i++){
+				System.out.println(notif.get(i).getMessage());
+			}
 			
 			client.stampa();
 			

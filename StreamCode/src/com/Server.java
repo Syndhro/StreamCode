@@ -7,6 +7,7 @@ import java.rmi.NotBoundException;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
+import java.util.ArrayList;
 
 public class Server{
   public static void main(String[] args) throws RemoteException, MalformedURLException, NotBoundException {
@@ -15,10 +16,14 @@ public class Server{
     server.retrieveAllUsers();
 	server.retrieveAllProjects();
 	server.retrieveAllActivities();
+	server.retrieveAllNotifications();
+	
+	ArrayList<Notification> notif = server.getNotificationsById(16);
 	
 	server.linkProjectsToCollaborators();
 	server.linkProjectsToAdmins();
 	server.linkActivitiesToUsers();
+	server.linkFriends();
     Naming.rebind("server", server);
     System.out.println("Press enter to terminate");
     try {

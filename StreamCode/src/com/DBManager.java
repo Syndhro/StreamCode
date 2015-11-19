@@ -114,7 +114,7 @@ public class DBManager implements Serializable{
 	public void addProjectMembership(User user, Project project) {	
 		PreparedStatement statement = null;
 	    try {
-			 String query = "INSERT INTO project_membership (userId1, projectId) VALUES (?,?)";
+			 String query = "INSERT INTO project_membership (userId, projectId) VALUES (?,?)";
 		     statement = (PreparedStatement) connection.prepareStatement(query);         
 		     statement.setInt(1, user.getUserId());
 		     statement.setInt(2, project.getProjectId());
@@ -128,7 +128,7 @@ public class DBManager implements Serializable{
 	public void addActivityMembership(User user, Activity activity) {	
 		PreparedStatement statement = null;
 	    try {
-			 String query = "INSERT INTO activity_membership (userId1, projectId) VALUES (?,?)";
+			 String query = "INSERT INTO activity_membership (userId, activityId) VALUES (?,?)";
 		     statement = (PreparedStatement) connection.prepareStatement(query);         
 		     statement.setInt(1, user.getUserId());
 		     statement.setInt(2, activity.getActivityId());
@@ -139,16 +139,18 @@ public class DBManager implements Serializable{
 	}
 	
 	//
-	public void addNotification(Notification notification, int destinationId) {
+	public void addNotification(Notification notification) {
 		PreparedStatement statement = null;
 		try {
-			 String query = "INSERT INTO notification (message, date, time, targetId, isDelivered) VALUES (?,?,?,?,?,?)";
-		     statement = (PreparedStatement) connection.prepareStatement(query);         
-		     statement.setString(1, notification.getMessage());
-		     statement.setString(2, notification.getDate().toString());
-		     statement.setString(3, notification.getTime().toString());
-		     statement.setInt(4, destinationId); 
-		     statement.setBoolean(5, notification.isDelivered());
+			 String query = "INSERT INTO notification (notificationId, message, date, time, targetId, isDelivered, type) VALUES (?,?,?,?,?,?,?)";
+		     statement = (PreparedStatement) connection.prepareStatement(query);   
+		     statement.setInt(1, notification.getNotificationId());
+		     statement.setString(2, notification.getMessage());
+		     statement.setString(3, notification.getDate().toString());
+		     statement.setString(4, notification.getTime().toString());
+		     statement.setInt(5, notification.getTargetId()); 
+		     statement.setBoolean(6, notification.isDelivered());
+		     statement.setString(7, notification.getType().toString().toLowerCase());
 		     statement.executeUpdate();
 		    }catch(Exception e){
 		    	e.printStackTrace();
@@ -239,7 +241,16 @@ public class DBManager implements Serializable{
 		}
 	}
 	//remove notification from database when read
-	public void removeNotification(Notification notification ) {
+	public void removeNotification(int notificationId) {
+		PreparedStatement statement = null;		
+		try{
+			String query = "DELETE from notification WHERE notificationId=?";
+			statement = (PreparedStatement) connection.prepareStatement(query);
+			statement.setInt(1, notificationId);
+			statement.executeUpdate();	
+		}catch(SQLException e){
+			e.printStackTrace();
+		}
 	}
 
 	//getting the following id in the project table for the newcoming project
@@ -276,6 +287,22 @@ public class DBManager implements Serializable{
 			e.printStackTrace();
 		}
 		return lastActivityId;
+	}
+	
+	public int getLastNotificationId(){
+		int lastNotificationId = 0;
+		Statement statement = null;
+		ResultSet resultSet = null;
+		try{
+			String query = "SELECT MAX(notificationId) FROM notification";
+			statement = (Statement) connection.createStatement();
+			resultSet = statement.executeQuery(query);
+			resultSet.next();
+			lastNotificationId = resultSet.getInt(1);
+		}catch(SQLException e){
+			e.printStackTrace();
+		}
+		return lastNotificationId;
 	}
 	
 	//get the client id from credentials (only one time) 
@@ -403,6 +430,39 @@ public class DBManager implements Serializable{
 		return allActivity;
 	}
 	
+	public ArrayList<Notification> getAllNotifications() {	
+		Statement statement;
+		ResultSet resultSet;
+		NotificationSimpleFactory notificationFactory = new NotificationSimpleFactory();
+		ArrayList<Notification> allNotifications = new ArrayList<Notification>();
+		try{
+			String query = "SELECT * FROM notification";
+			statement = (Statement) connection.createStatement();
+			resultSet = statement.executeQuery(query);
+			
+			while (resultSet.next()){
+				int notificationId = resultSet.getInt(1);
+				String message = resultSet.getString(2);
+				String date = resultSet.getString(3);
+				String time = resultSet.getString(4);
+				int targetId = resultSet.getInt(5);
+				boolean isDelivered = resultSet.getBoolean(6);
+				String type = resultSet.getString(7);
+				Notification newNotification = notificationFactory.createNotification(notificationId, type, "", targetId);
+				newNotification.setMessage(message);
+				allNotifications.add(newNotification);
+			}
+		}catch(SQLException e){
+			e.printStackTrace();
+		}		
+		for(int i = 0; i < allNotifications.size(); i++){
+			System.out.println(allNotifications.get(i).toString());
+		}		
+		return allNotifications;
+	}
+	
+	
+	
 	//retrieve the ids of the projects of the user with the passed id
 	public ArrayList<Integer> getCollabProjectsIdByUserId(int userId) {		
 		PreparedStatement statement = null;
@@ -478,15 +538,21 @@ public class DBManager implements Serializable{
 		return friendsIds;
 	}
 	
-	public void getNotification() {
+	public ArrayList<Integer> getNotificationByUserId(int userId) {
+		PreparedStatement statement = null;
+		ResultSet resultSet = null;
+		ArrayList<Integer> notificationIds = new ArrayList<Integer>();
+		try{
+			String query = "SELECT notificationId FROM notification WHERE targetId = ?";
+			statement = (PreparedStatement) connection.prepareStatement(query);
+			statement.setInt(1, userId);
+			resultSet = statement.executeQuery();
+			while(resultSet.next()){
+				notificationIds.add(resultSet.getInt(1));
+			}
+		}catch(SQLException e){
+			e.printStackTrace();
+		}	
+		return notificationIds;
 	}
-
-	public static void main(String[] args){
-		
-		DBManager db = DBManager.getInstance();
-		
-		//db.getAllProjects();
-		//db.getAllUsers();
-		
-	}	
 }
