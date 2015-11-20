@@ -35,7 +35,7 @@ public class Graphics {
 	private JLabel lblStream;
 	private JLabel lblNew;
 	private JButton btnNewButton;
-	private static Client client = new Client();
+	private static Client client; // = new Client();
 
 	/**
 	 * Launch the application.

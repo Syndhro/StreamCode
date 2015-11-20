@@ -114,7 +114,7 @@ public class ServerImpl extends UnicastRemoteObject implements Subject, ServerIn
 
 	public void registerClient(ClientInterface client) throws RemoteException{
 		clients.add(client);
-		client.getNotification("Registrato");
+		//client.getNotification("Registrato");
 	}
 
 	public void registerObserver(Observer o) {
@@ -180,10 +180,11 @@ public class ServerImpl extends UnicastRemoteObject implements Subject, ServerIn
 	public void addFriend(int userId1, int userId2) throws RemoteException {
 		User user1 = getUserById(userId1);
 		User user2 = getUserById(userId2);
+		ClientInterface clientToBeNotified = getClientById(userId2);
 		user1.addFriend(user2);
 		dbManager.addFriendship(user1.getUserId(), user2.getUserId());
 		Notification notification = createNotification("friendship", user1.getUsername(), userId2);
-		user2.update(notification);
+		clientToBeNotified.getNotification(notification);
 		dbManager.addNotification(notification);
 	}
 	
@@ -221,37 +222,43 @@ public class ServerImpl extends UnicastRemoteObject implements Subject, ServerIn
 	public void addCollaborators(int projectId, ArrayList<Integer> userIds) throws RemoteException {
 		Project project = getProjectById(projectId);
 		User user;
+		ClientInterface clientToBeNotified;
 		for(int i = 0; i < userIds.size(); i++){
 			Notification notification = createNotification("project_invite", project.getDescription(), userIds.get(i));
 			user = getUserById(userIds.get(i));
+			clientToBeNotified = getClientById(userIds.get(i));
 			project.addCollaborator(user);
 			user.addCollaborationProject(project);
 			dbManager.addProjectMembership(user, project);	
 			dbManager.addNotification(notification);
-			user.update(notification);
+			clientToBeNotified.getNotification(notification);
 		}
 	}
 	@Override
-	public void startProject(int projectId){
+	public void startProject(int projectId) throws RemoteException{
 		Project project = getProjectById(projectId);	
 		User user;
+		ClientInterface clientToBeNotified;
 		for (int i = 0; i < project.getCollaborators().size(); i++){
 			user = project.getCollaborators().get(i);
+			clientToBeNotified = getClientById(project.getCollaborators().get(i).getUserId());
 			Notification notification = createNotification("project_started", project.getDescription(), user.getUserId());
 			dbManager.addNotification(notification);
-			user.update(notification);
+			clientToBeNotified.getNotification(notification);
 		}
 		project.startProject();
 	}
 	
 	@Override 
-	public void completeActivity(int activityId){
+	public void completeActivity(int activityId) throws RemoteException{
 		Activity activity = getActivityById(activityId);	
 		User user;
+		ClientInterface clientToBeNotified;
 		for (int i = 0; i < activity.getActivityCollaborators().size(); i++){
 			user = activity.getActivityCollaborators().get(i);
+			clientToBeNotified = getClientById(activity.getActivityCollaborators().get(i).getUserId());
 			Notification notification = createNotification("activity_completed", activity.getDescription(), user.getUserId());
-			user.update(notification);
+			clientToBeNotified.getNotification(notification);
 			dbManager.addNotification(notification);
 		}
 		activity.complete();
@@ -265,8 +272,9 @@ public class ServerImpl extends UnicastRemoteObject implements Subject, ServerIn
 		}
 		for(int i=0; i < nextActivity.getActivityCollaborators().size(); i++){
 			User userNextActivity = nextActivity.getActivityCollaborators().get(i);
+			ClientInterface clientNextActivity = getClientById(nextActivity.getActivityCollaborators().get(i).getUserId());
 			Notification nextNotification = createNotification("activity_started", activity.getDescription(), userNextActivity.getUserId());
-			userNextActivity.update(nextNotification);
+			clientNextActivity.getNotification((nextNotification));
 			dbManager.addNotification(nextNotification);
 		}
 		nextActivity.setActive(true);	
@@ -276,6 +284,8 @@ public class ServerImpl extends UnicastRemoteObject implements Subject, ServerIn
 	public void addAgent(int activityId, int userId) throws RemoteException {
 		Activity activity = getActivityById(activityId);
 		User user = getUserById(userId);
+		ClientInterface clientToBeNotified = getClientById(userId);
+		Notification nextNotification = createNotification("agent_added", activity.getDescription(), userId);
 		activity.addAgent(user);
 		user.addUserActivities(activity);
 		dbManager.addActivityMembership(user, activity);
@@ -364,6 +374,18 @@ public class ServerImpl extends UnicastRemoteObject implements Subject, ServerIn
 		}
 		System.out.println("User not found");
 		return user;
+	}
+	
+	public ClientInterface getClientById(int clientId)throws RemoteException{
+		ClientInterface client = null;
+		for(int i = 0; i < clients.size(); i++){
+			if(clients.get(i).getMyUserId() == clientId){
+				client = clients.get(i);
+				return client;
+			}
+		}
+		System.out.println("User not found");
+		return client;
 	}
 
 	public Project getProjectById(int projectId){

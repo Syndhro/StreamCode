@@ -12,13 +12,13 @@ import java.util.ArrayList;
 
 import com.mysql.jdbc.authentication.MysqlClearPasswordPlugin;
 
-public class Client extends UnicastRemoteObject implements ClientInterface{
+public class Client2 extends UnicastRemoteObject implements ClientInterface{
 	
 	Registry registry;
 	static ServerInterface server;
 	private int myUserId;
 	
-	public Client()throws RemoteException{};
+	public Client2()throws RemoteException{};
 	
 	public void startup() throws NotBoundException, IOException {
   		System.setSecurityManager(new RMISecurityManager());
@@ -159,14 +159,14 @@ public class Client extends UnicastRemoteObject implements ClientInterface{
 	
 	@Override
 	public void getNotification(Notification notification) throws RemoteException {
-		System.out.println(notification.getMessage());
+		System.out.println(notification.getMessage());		
 	}
 
 	
 	
 	public static void main(String[] args) throws RemoteException, NotBoundException{
   		
-		Client client = new Client();
+		Client2 client = new Client2();
 		try{
 			client.startup();
 		}catch(Exception e){
@@ -174,38 +174,25 @@ public class Client extends UnicastRemoteObject implements ClientInterface{
 		}
 		
 		try{
-			int verifier = client.check("andreavaghi", "vaghi");
+			int verifier = client.check("anielrossi", "rossi");
 			if (verifier == -1)
 				System.out.println("Wrong Username");
 			else if (verifier == -2)
 				System.out.println("Wrong Password");
 			else{
-				client.login("andreavaghi", "vaghi");
+				client.login("anielrossi", "rossi");
 				server.registerClient(client);
 				}
-			
-			ArrayList<Notification> notif = client.getOfflineNotifications();
-			
-			for(int i = 0; i < notif.size(); i++){
-				System.out.println(notif.get(i).getMessage());
-			}
-			
-			//client.stampa();
-			
-			client.addProject("Comple Spe", "A casa di spe", Category.getCategory("sport"), client.getMyUserId());
-			
-			client.addFriend(client.getMyUserId(), 17);
-			
-			client.addFriend(client.getMyUserId(), 18);
-			
-			ArrayList<Integer> userIds = new ArrayList<>();
-			userIds.add(17);
-			userIds.add(18);
-			
-			client.addCollaborators(4, userIds);
-			
 		}catch(RemoteException e){
 			e.printStackTrace();
 		}
+		
+		System.out.println("Press enter to terminate");
+	    try {
+	      System.in.read();
+	    } catch (IOException e) {
+	      /* Don't care */
+	    }
+		
 	}
 }

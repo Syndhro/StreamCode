@@ -4,5 +4,6 @@ import java.rmi.Remote;
 import java.rmi.RemoteException;
 
 public interface ClientInterface extends Remote {
-	public void getNotification(String string) throws RemoteException;
+	public void getNotification(Notification notification) throws RemoteException;
+	public int getMyUserId() throws RemoteException;
 }

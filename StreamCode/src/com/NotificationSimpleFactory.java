@@ -10,6 +10,9 @@ public class NotificationSimpleFactory {
 		if (type.equals("activity_completed")){
 			notification = new ActivityCompletedNotification(notificationId, NotificationType.getNotificationType(type), description, targetId);
 		}
+		if (type.equals("agent_added")){
+			notification = new AgentAddedNotification(notificationId, NotificationType.getNotificationType(type), description, targetId);
+		}
 		if (type.equals("project_started")){
 			notification = new ProjectStartedNotification(notificationId, NotificationType.getNotificationType(type), description, targetId);
 		}

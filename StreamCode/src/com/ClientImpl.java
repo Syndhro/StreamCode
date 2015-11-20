@@ -12,12 +12,18 @@ public class ClientImpl extends UnicastRemoteObject implements ClientInterface{
 	}
 
 	@Override
-	public void getNotification(String string) throws RemoteException {
-		System.out.println(string);		
+	public void getNotification(Notification notification) throws RemoteException {
+		System.out.println(notification.getMessage());		
 	}
 	
 	public void printName(){
 		System.out.println(name);
+	}
+
+	@Override
+	public int getMyUserId() throws RemoteException {
+		// TODO Auto-generated method stub
+		return 0;
 	}
 	
 }
