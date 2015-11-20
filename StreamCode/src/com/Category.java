@@ -8,7 +8,11 @@ public enum Category implements Serializable{
 	HOBBY,
 	HOLIDAYS
 	;
-	
+	public static String[] getStringsArray(){
+		String[] categories = {"sport", "party", "hobby", "holidays"};	
+		return categories;
+		
+	}
 	public static Category getCategory(String string){
 		
 		Category cat = null;
