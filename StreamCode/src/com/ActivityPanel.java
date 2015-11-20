@@ -16,13 +16,15 @@ import javax.swing.JTextField;
 public class ActivityPanel extends JPanel {
 
 	ProjectListFrame parentFrame;
+	ActivityPanel thisPanel = this;
 	
 	/**
 	 * Create the panel.
 	 */
-	public ActivityPanel(Project project, ProjectListFrame parentFrame, JOptionPane activityPane) {
+	public ActivityPanel(Project project, ProjectListFrame parentFrame) {
 		
 		this.parentFrame = parentFrame;
+		
 		ActivityPanel thisPanel = this;
 	    setBounds(100, 100, 500, 336);								 
 	    setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));					
@@ -65,18 +67,8 @@ public class ActivityPanel extends JPanel {
 		JOptionPane creatingActivity = new JOptionPane();
 		int result = creatingActivity.showConfirmDialog(null, activityValues, "Please Enter Activity Values", JOptionPane.OK_CANCEL_OPTION);
 		if (result == creatingActivity.OK_OPTION){
-			try {
-				Client.getInstance().addActivity(project.getProjectId(), activityName.getText(), activityDescription.getText(), activityPlace.getText(), "Ora_attuale");
-				JOptionPane newActivityPane = new JOptionPane();
-				ActivityPanel newActivityPanel = new ActivityPanel(project, parentFrame, activityPane);
-			//	JOptionPane activityPane = new JOptionPane();
-				newActivityPane.showConfirmDialog(null, newActivityPanel,"Activities", JOptionPane.CLOSED_OPTION);
-				parentFrame.remove(activityPane);
-			
-			} catch (RemoteException e1) {
-				e1.printStackTrace();
-			}	
-		}
+				thisPanel.revalidate();
+				
 		//ADD COLLABORATORS---------------------------------------------------------------------
 		addCollaboratorsButton.addActionListener(new ActionListener(){
 
@@ -115,10 +107,9 @@ public class ActivityPanel extends JPanel {
 					}	
 				}
 			}
-			
-		});		
+		});
+		}
+			}
+		});
 	}
-});
-}
-
 }

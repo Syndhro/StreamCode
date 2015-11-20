@@ -13,10 +13,11 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
 public class ProjectListFrame extends JFrame {
+	
+	ProjectListFrame thisFrame = this;
 
 	private JPanel contentPane;
 	Project project = null;
-	ProjectListFrame thisFrame = this;
 	/**
 	 * Launch the application.
 	 */
@@ -63,10 +64,9 @@ public class ProjectListFrame extends JFrame {
 						// TODO Auto-generated catch block
 						e2.printStackTrace();
 					} //l'indirizzo in projects e buttons è lo stesso
-					JOptionPane activityPane = new JOptionPane();
-					ActivityPanel activityPanel = new ActivityPanel(project, thisFrame, activityPane);
-					
-					int result3 = activityPane.showConfirmDialog(null, activityPanel,"Activities", JOptionPane.CLOSED_OPTION);
+						JOptionPane activityPane = new JOptionPane();
+						ActivityPanel activityPanel = new ActivityPanel(project, thisFrame);
+						activityPane.showConfirmDialog(null, activityPanel,"Activities", JOptionPane.CLOSED_OPTION);
 					}
 				});				
 		}
