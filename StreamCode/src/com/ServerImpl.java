@@ -57,7 +57,7 @@ public class ServerImpl extends UnicastRemoteObject implements Subject, ServerIn
 		this.registeredNotifications = dbManager.getAllNotifications();
 	}
 	
-	public void linkProjectsToCollaborators(){		
+	public void linkProjectsToCollaborators() throws RemoteException{		
 		ArrayList<Integer> projectIds = new ArrayList<Integer>();
 		for (int i = 0; i < registeredUsers.size(); i++){
 			projectIds = dbManager.getCollabProjectsIdByUserId(registeredUsers.get(i).getUserId());
@@ -69,7 +69,7 @@ public class ServerImpl extends UnicastRemoteObject implements Subject, ServerIn
 		}	
 	}
 	
-	public void linkProjectsToAdmins(){		
+	public void linkProjectsToAdmins() throws RemoteException{		
 		ArrayList<Integer> projectIds = new ArrayList<Integer>();
 		for (int i = 0; i < registeredUsers.size(); i++){
 			projectIds = dbManager.getManagedProjectsIdByUserId(registeredUsers.get(i).getUserId());
@@ -388,7 +388,7 @@ public class ServerImpl extends UnicastRemoteObject implements Subject, ServerIn
 		return client;
 	}
 
-	public Project getProjectById(int projectId){
+	public Project getProjectById(int projectId) throws RemoteException{
 		Project project = null;
 		for(int i = 0; i < registeredProjects.size(); i++){
 			if(registeredProjects.get(i).getProjectId() == projectId){

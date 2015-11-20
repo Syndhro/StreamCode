@@ -30,4 +30,5 @@ public interface ServerInterface extends Remote {
 	public abstract ArrayList<Project> getManagedProject(int userId) throws RemoteException;
 	public abstract ArrayList<Notification> getNotificationsById(int userId) throws RemoteException;
 	public abstract void registerClient(ClientInterface client) throws RemoteException;
+	public abstract Project getProjectById(int projectId) throws RemoteException;
 }

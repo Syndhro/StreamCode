@@ -20,12 +20,12 @@ public class ActivityPanel extends JPanel {
 	
 	/**
 	 * Create the panel.
+	 * @throws RemoteException 
 	 */
-	public ActivityPanel(Project project, ProjectListFrame parentFrame) {
+	public ActivityPanel(int i, ProjectListFrame parentFrame) throws RemoteException {
 		
 		this.parentFrame = parentFrame;
-		
-		ActivityPanel thisPanel = this;
+		Project project = Client.getInstance().getManagedProject().get(i);
 	    setBounds(100, 100, 500, 336);								 
 	    setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));					
 		ArrayList<Activity> activities = new ArrayList<Activity>();
@@ -67,7 +67,17 @@ public class ActivityPanel extends JPanel {
 		JOptionPane creatingActivity = new JOptionPane();
 		int result = creatingActivity.showConfirmDialog(null, activityValues, "Please Enter Activity Values", JOptionPane.OK_CANCEL_OPTION);
 		if (result == creatingActivity.OK_OPTION){
-				thisPanel.revalidate();
+			Project managedProject = project;
+			try {
+				Client.getInstance().addActivity(project.getProjectId(), activityName.getText(), activityDescription.getText(), activityPlace.getText(), "Ora_attuale");
+				JOptionPane newactivityPane = new JOptionPane();
+				ActivityPanel newactivityPanel = new ActivityPanel(i, parentFrame);
+				newactivityPane.showConfirmDialog(null, newactivityPanel,"Activities", JOptionPane.CLOSED_OPTION);
+				
+			} catch (RemoteException e2) {
+				// TODO Auto-generated catch block
+				e2.printStackTrace();
+			}
 				
 		//ADD COLLABORATORS---------------------------------------------------------------------
 		addCollaboratorsButton.addActionListener(new ActionListener(){

@@ -141,6 +141,12 @@ public class Client extends UnicastRemoteObject implements ClientInterface{
 		return userFriends;
 	}
 	
+	public Project getProjectById(int projectId) throws RemoteException{
+		Project project = null;
+		project = server.getProjectById(projectId);
+		return project;
+	}
+	
 	public void stampa() throws RemoteException {
 		server.stampa();
 	}

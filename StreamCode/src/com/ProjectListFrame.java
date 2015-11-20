@@ -65,7 +65,13 @@ public class ProjectListFrame extends JFrame {
 						e2.printStackTrace();
 					} //l'indirizzo in projects e buttons è lo stesso
 						JOptionPane activityPane = new JOptionPane();
-						ActivityPanel activityPanel = new ActivityPanel(project, thisFrame);
+						ActivityPanel activityPanel = null;
+						try {
+							activityPanel = new ActivityPanel(i, thisFrame);
+						} catch (RemoteException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
 						activityPane.showConfirmDialog(null, activityPanel,"Activities", JOptionPane.CLOSED_OPTION);
 					}
 				});				
