@@ -52,6 +52,7 @@ public class Graphics {
 			}
 		});
 		try{
+			client = Client.getInstance();
 			client.startup();
 		}
 		catch(Exception e){
@@ -120,9 +121,12 @@ public class Graphics {
 					else{
 						client.login(lUsername, lPassword);
  						JOptionPane.showMessageDialog(loginFrame, "Logged!");
+ 						loginFrame.dispose();
+ 						ProjectListFrame projectListFrame = new ProjectListFrame();
+ 						projectListFrame.setVisible(true);
  						
  						
- 						//PROJECT FRAME------------------------------------------------------------------------
+ 						/*PROJECT FRAME------------------------------------------------------------------------
 						//initialization
  						projectFrame = new JFrame("Projects");
  						projectFrame.setBounds(100, 100, 500, 336);
@@ -281,8 +285,8 @@ public class Graphics {
 							
 						});
  						loginFrame.setVisible(false);
- 						projectFrame.setVisible(true);			
-					}					
+ 						projectFrame.setVisible(true);	*/		
+					}		
 				} catch (RemoteException e1){
 					e1.printStackTrace();
 				}

@@ -17,8 +17,17 @@ public class Client extends UnicastRemoteObject implements ClientInterface{
 	Registry registry;
 	static ServerInterface server;
 	private int myUserId;
+	private static Client uniqueInstance;
+
 	
-	public Client()throws RemoteException{};
+	private Client()throws RemoteException{};
+	
+	public static Client getInstance() throws RemoteException{
+	 	if (uniqueInstance == null){
+			uniqueInstance = new Client();
+		}
+		return uniqueInstance;
+	}
 	
 	public void startup() throws NotBoundException, IOException {
   		System.setSecurityManager(new RMISecurityManager());
