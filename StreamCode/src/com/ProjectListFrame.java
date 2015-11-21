@@ -73,7 +73,7 @@ public class ProjectListFrame extends JFrame {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
-						activityPane.showConfirmDialog(null, activityPanel,"Activities", JOptionPane.CLOSED_OPTION);
+						activityPane.showConfirmDialog(thisFrame, activityPanel,"Activities", JOptionPane.CLOSED_OPTION);
 					}
 			});				
 		}
@@ -106,7 +106,7 @@ public class ProjectListFrame extends JFrame {
 				projectValues.setVisible(true);
 				//
 				JOptionPane creatingProject = new JOptionPane();
-				int result = creatingProject.showConfirmDialog(null, projectValues, "Please Enter Project Values", JOptionPane.OK_CANCEL_OPTION);
+				int result = creatingProject.showConfirmDialog(thisFrame, projectValues, "Please Enter Project Values", JOptionPane.OK_CANCEL_OPTION);
 				if (result == creatingProject.OK_OPTION){
 					try {
 						Client.getInstance().addProject(projectTitle.getText(), projectDescription.getText(), Category.getCategory(projectCategory.getSelectedItem().toString()), Client.getInstance().getMyUserId());

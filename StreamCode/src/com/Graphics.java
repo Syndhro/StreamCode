@@ -74,6 +74,7 @@ public class Graphics {
 		loginFrame = new JFrame();
 		loginFrame.setBounds(100, 100, 500, 336);
 		loginFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		loginFrame.setLocationRelativeTo(null);
 		SpringLayout springLayout = new SpringLayout();
 		loginFrame.getContentPane().setLayout(springLayout);
 		
@@ -123,6 +124,7 @@ public class Graphics {
  						JOptionPane.showMessageDialog(loginFrame, "Logged!");
  						loginFrame.dispose();
  						ProjectListFrame projectListFrame = new ProjectListFrame();
+ 						projectListFrame.setLocationRelativeTo(null);
  						projectListFrame.setVisible(true);
  							
 					}		

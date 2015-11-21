@@ -68,7 +68,7 @@ public class ActivityPanel extends JPanel {
 				activityValues.setVisible(true);
 		
 				JOptionPane creatingActivity = new JOptionPane();
-				int result = creatingActivity.showConfirmDialog(null, activityValues, "Please Enter Activity Values", JOptionPane.OK_CANCEL_OPTION);
+				int result = creatingActivity.showConfirmDialog(parentFrame, activityValues, "Please Enter Activity Values", JOptionPane.OK_CANCEL_OPTION);
 				if (result == creatingActivity.OK_OPTION){
 					Project managedProject = project;
 					try{
@@ -78,7 +78,7 @@ public class ActivityPanel extends JPanel {
 						Client.getInstance().addActivity(project.getProjectId(), activityName.getText(), activityDescription.getText(), activityPlace.getText(), "Ora_attuale");				
 						JOptionPane newactivityPane = new JOptionPane();
 						ActivityPanel newactivityPanel = new ActivityPanel(i, parentFrame);
-						newactivityPane.showConfirmDialog(null, newactivityPanel,"Activities", JOptionPane.CLOSED_OPTION);			
+						newactivityPane.showConfirmDialog(parentFrame, newactivityPanel,"Activities", JOptionPane.CLOSED_OPTION);			
 					}catch(RemoteException e2) {
 						e2.printStackTrace();
 					}
@@ -104,7 +104,7 @@ public class ActivityPanel extends JPanel {
 					}				
 					JOptionPane invitingFriends = new JOptionPane();
 					ArrayList<Integer> selected = new ArrayList<Integer>();
-					int result2 = invitingFriends.showConfirmDialog(null, inviteFriends, "Invite your friends",JOptionPane.OK_CANCEL_OPTION); 
+					int result2 = invitingFriends.showConfirmDialog(parentFrame, inviteFriends, "Invite your friends",JOptionPane.OK_CANCEL_OPTION); 
 					if (result2 == invitingFriends.OK_OPTION){
 						try {
 							for(int i = 0; i < checkboxes.size(); i++){
