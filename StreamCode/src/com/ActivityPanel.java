@@ -1,5 +1,6 @@
 package com;
 
+import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.rmi.RemoteException;
@@ -12,11 +13,12 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
 
 public class ActivityPanel extends JPanel {
 
 	ProjectListFrame parentFrame;
-	ActivityPanel thisPanel = this;
+	ActivityPanel thisPanel; 
 	
 	/**
 	 * Create the panel.
@@ -24,6 +26,7 @@ public class ActivityPanel extends JPanel {
 	 */
 	public ActivityPanel(int i, ProjectListFrame parentFrame) throws RemoteException {
 		
+		thisPanel = this;
 		this.parentFrame = parentFrame;
 		Project project = Client.getInstance().getManagedProject().get(i);
 	    setBounds(100, 100, 500, 336);								 
@@ -69,11 +72,13 @@ public class ActivityPanel extends JPanel {
 				if (result == creatingActivity.OK_OPTION){
 					Project managedProject = project;
 					try{
-						Client.getInstance().addActivity(project.getProjectId(), activityName.getText(), activityDescription.getText(), activityPlace.getText(), "Ora_attuale");
+						
+						Window w = SwingUtilities.getWindowAncestor(thisPanel);	//codice per nascondere 
+						w.setVisible(false);									//la vecchia finestra
+						Client.getInstance().addActivity(project.getProjectId(), activityName.getText(), activityDescription.getText(), activityPlace.getText(), "Ora_attuale");				
 						JOptionPane newactivityPane = new JOptionPane();
 						ActivityPanel newactivityPanel = new ActivityPanel(i, parentFrame);
-						newactivityPane.showConfirmDialog(null, newactivityPanel,"Activities", JOptionPane.CLOSED_OPTION);
-				
+						newactivityPane.showConfirmDialog(null, newactivityPanel,"Activities", JOptionPane.CLOSED_OPTION);			
 					}catch(RemoteException e2) {
 						e2.printStackTrace();
 					}
