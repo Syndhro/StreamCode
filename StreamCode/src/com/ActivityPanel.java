@@ -44,6 +44,21 @@ public class ActivityPanel extends JPanel {
 			button.setBackground(Color.ORANGE);
 			activitiesPanel.add(button);		
 			activitiesButtons.add(button);
+			button.addActionListener(new ActionListener(){
+
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					int x = activitiesButtons.indexOf(e.getSource());
+					Activity activity = project.getActivities().get(x);
+					//creare un dialog per modificare l'activity
+					ActivityModifierPanel activityModifier = new ActivityModifierPanel(i, x, thisPanel); 
+					  
+				    JOptionPane activityModifierPane = new JOptionPane();
+				    //activityModifierPane.showInputDialog
+					
+				}
+				
+			});
 		}
 		add(activitiesPanel);
 		
