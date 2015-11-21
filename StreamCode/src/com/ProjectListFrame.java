@@ -1,6 +1,7 @@
 package com;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Container;
 import java.awt.EventQueue;
 import java.awt.LayoutManager;
@@ -53,6 +54,7 @@ public class ProjectListFrame extends JFrame {
 		for(int i = 0; i < projects.size(); i++){
 			JButton button = new JButton();
 			button.setText(projects.get(i).getTitle());
+			button.setBackground(Color.YELLOW);
 			mainPanel.add(button);
 			projectButtons.add(button);
 			button.addActionListener(new ActionListener(){

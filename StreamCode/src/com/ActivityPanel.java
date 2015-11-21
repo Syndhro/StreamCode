@@ -1,5 +1,6 @@
 package com;
 
+import java.awt.Color;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -40,6 +41,7 @@ public class ActivityPanel extends JPanel {
 		for(int j = 0; j < activities.size(); j++){
 			JButton button = new JButton();
 			button.setText(activities.get(j).getName());
+			button.setBackground(Color.ORANGE);
 			activitiesPanel.add(button);		
 			activitiesButtons.add(button);
 		}
@@ -53,6 +55,7 @@ public class ActivityPanel extends JPanel {
 		for(int j = 0; j < collaborators.size(); j++){
 			JButton button = new JButton();
 			button.setText(collaborators.get(j).getUsername());
+			button.setBackground(Color.CYAN);
 			collaboratorsPanel.add(button);		
 			collaboratorsButtons.add(button);
 		}
