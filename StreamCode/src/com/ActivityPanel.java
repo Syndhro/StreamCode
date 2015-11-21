@@ -30,16 +30,34 @@ public class ActivityPanel extends JPanel {
 		this.parentFrame = parentFrame;
 		Project project = Client.getInstance().getManagedProject().get(i);
 	    setBounds(100, 100, 500, 336);								 
-	    setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));					
-		ArrayList<Activity> activities = new ArrayList<Activity>();
+	   					
+		
+	    JPanel activitiesPanel = new JPanel();
+	    activitiesPanel.setLayout(new BoxLayout(activitiesPanel, BoxLayout.PAGE_AXIS));
+	    ArrayList<Activity> activities = new ArrayList<Activity>();
 		ArrayList<JButton> activitiesButtons = new ArrayList<JButton>();
 		activities = project.getActivities();
 		for(int j = 0; j < activities.size(); j++){
 			JButton button = new JButton();
 			button.setText(activities.get(j).getName());
-			add(button);		
+			activitiesPanel.add(button);		
 			activitiesButtons.add(button);
 		}
+		add(activitiesPanel);
+		
+		JPanel collaboratorsPanel = new JPanel();
+		collaboratorsPanel. setLayout(new BoxLayout(collaboratorsPanel, BoxLayout.PAGE_AXIS));
+		ArrayList<User> collaborators = new ArrayList<User>();
+		ArrayList<JButton> collaboratorsButtons = new ArrayList<JButton>();
+		collaborators = project.getCollaborators();
+		for(int j = 0; j < collaborators.size(); j++){
+			JButton button = new JButton();
+			button.setText(collaborators.get(j).getUsername());
+			collaboratorsPanel.add(button);		
+			collaboratorsButtons.add(button);
+		}
+		add(collaboratorsPanel);
+		
 		//ACTIVITY SETTINGS-----------------------------------------------------------------
 		JPanel activitySettings = new JPanel();
 		JButton addActivityButton = new JButton("Add activity");
@@ -112,7 +130,12 @@ public class ActivityPanel extends JPanel {
 									selected.add(collaborators.get(i).getUserId());														
 								}
 							}
-							Client.getInstance().addCollaborators(project.getProjectId(), selected);					
+							Client.getInstance().addCollaborators(project.getProjectId(), selected);
+							Window w = SwingUtilities.getWindowAncestor(thisPanel);	//codice per nascondere 
+							w.setVisible(false);									//la vecchia finestra							
+							JOptionPane newactivityPane = new JOptionPane();
+							ActivityPanel newactivityPanel = new ActivityPanel(i, parentFrame);
+							newactivityPane.showConfirmDialog(parentFrame, newactivityPanel,"Activities", JOptionPane.CLOSED_OPTION);
 						}catch(RemoteException e1) {
 							e1.printStackTrace();
 						}	

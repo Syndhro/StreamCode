@@ -231,7 +231,13 @@ public class ServerImpl extends UnicastRemoteObject implements Subject, ServerIn
 			user.addCollaborationProject(project);
 			dbManager.addProjectMembership(user, project);	
 			dbManager.addNotification(notification);
-			clientToBeNotified.getNotification(notification);
+			//controllo per la notifica solo se è online, attualmente è sbagliato ma almeno non mi da exception
+			for(int i1 = 0; i1 < clients.size(); i1++){
+				if(clientToBeNotified.getMyUserId() == clients.get(i1).getMyUserId()){
+					clientToBeNotified.getNotification(notification);
+				}
+			}
+			
 		}
 	}
 	@Override
