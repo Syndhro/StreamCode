@@ -54,7 +54,7 @@ public class ActivityPanel extends JPanel {
 					ActivityModifierPanel activityModifier = new ActivityModifierPanel(i, x, thisPanel); 
 					  
 				    JOptionPane activityModifierPane = new JOptionPane();
-				    //activityModifierPane.showInputDialog
+				    activityModifierPane.showConfirmDialog(thisPanel, activityModifier, "Modify activity", JOptionPane.OK_CANCEL_OPTION);
 					
 				}
 				
