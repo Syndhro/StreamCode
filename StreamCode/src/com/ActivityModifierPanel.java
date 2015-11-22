@@ -10,8 +10,10 @@ import java.util.ArrayList;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 
 public class ActivityModifierPanel extends JPanel {
@@ -48,6 +50,22 @@ public class ActivityModifierPanel extends JPanel {
 			}
 		}
 		add(collaboratorsPanel);
+		
+		JLabel activityName = new JLabel(activity.getName());
+		JLabel activityDescription = new JLabel(activity.getDescription());
+		JLabel activityPlace = new JLabel(activity.getPlace());
+	
+		JPanel activityValues = new JPanel();
+		activityValues.setLayout(new BoxLayout(activityValues, BoxLayout.PAGE_AXIS));
+		activityValues.add(new JLabel("Name: "));
+		activityValues.add(activityName);
+		activityValues.add(new JLabel(" "),"span, grow");
+		activityValues.add(new JLabel("Description: "));
+		activityValues.add(activityDescription);
+		activityValues.add(new JLabel(" "),"span, grow");
+		activityValues.add(new JLabel("Place: ")); //fare combobox
+		activityValues.add(activityPlace);	
+		add(activityValues);
 	    
 	    //ADD COLLABORATORS BUTTON
 		JButton addCollaboratorsButton = new JButton("Invite collaborators");
@@ -63,22 +81,32 @@ public class ActivityModifierPanel extends JPanel {
 						e.printStackTrace();
 					}											
 					ArrayList<JCheckBox> checkboxes = new ArrayList<>();
-					for(int i = 0; i < collaborators.size(); i++) {
-						JCheckBox box = new JCheckBox(collaborators.get(i).getUsername());
-						checkboxes.add(box);
-						inviteFriends.add(box);
-					}				
+					if(!collaborators.isEmpty()){
+						for(int i = 0; i < collaborators.size(); i++) {
+							JCheckBox box = new JCheckBox(collaborators.get(i).getUsername());
+							checkboxes.add(box);
+							inviteFriends.add(box);
+						}
+					}
+					else{
+						JLabel noCollab = new JLabel("There are no collaborators in this project yet");
+						inviteFriends.add(noCollab);
+					}
 					JOptionPane invitingFriends = new JOptionPane();
 					int userId = 0;
 					int result2 = invitingFriends.showConfirmDialog(parentPanel, inviteFriends, "Invite your friends",JOptionPane.OK_CANCEL_OPTION); 
 					if (result2 == invitingFriends.OK_OPTION){
+						
 						try {
-							for(int i = 0; i < checkboxes.size(); i++){
-								if(checkboxes.get(i).isSelected()){
-									userId = collaborators.get(i).getUserId();														
+							if(!checkboxes.isEmpty()){
+								for(int i = 0; i < checkboxes.size(); i++){
+									if(checkboxes.get(i).isSelected()){
+										userId = collaborators.get(i).getUserId();														
+									}	
 								}
-							}
-							Client.getInstance().addAgent(activity.getActivityId(), userId);
+								Client.getInstance().addAgent(activity.getActivityId(), userId);
+							}													
+							
 							Window w = SwingUtilities.getWindowAncestor(thisPanel);	//codice per nascondere 
 							w.setVisible(false);									//la vecchia finestra							
 							JOptionPane newactivityPane = new JOptionPane();
