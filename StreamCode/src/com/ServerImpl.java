@@ -276,6 +276,7 @@ public class ServerImpl extends UnicastRemoteObject implements Subject, ServerIn
 	public void completeActivity(int activityId) throws RemoteException{
 		Activity activity = getActivityById(activityId);	
 		User user;
+		activity.complete();
 		for (int i = 0; i < activity.getActivityCollaborators().size(); i++){
 			user = activity.getActivityCollaborators().get(i);
 			int targetId = user.getUserId();
@@ -288,7 +289,6 @@ public class ServerImpl extends UnicastRemoteObject implements Subject, ServerIn
 			}
 			dbManager.addNotification(notification);
 		}
-		activity.complete();
 		Project currentProject = activity.getParentProject();
 		Activity nextActivity = null;
 		for(int i = 0; i < currentProject.getActivities().size(); i++){
@@ -388,6 +388,26 @@ public class ServerImpl extends UnicastRemoteObject implements Subject, ServerIn
 		
 	}
 	
+	//MODIFIERS------------------------------------------------------------------------------------
+	
+	@Override
+	public void modifyProject(int projectId, String title, String description, Category category) throws RemoteException {
+		Project project = getProjectById(projectId);
+		project.setTitle(title);
+		project.setDescription(description);
+		project.setCategory(category);
+	}
+
+	@Override
+	public void modifyActivity(int activityId, String name, String description, String place, String dateTime) throws RemoteException {
+		Activity activity = getActivityById(activityId);
+		activity.setName(name);
+		activity.setDescription(description);
+		activity.setPlace(place);
+		activity.setDateTime(dateTime);
+		
+	}
+	
 	//GETTERS------------------------------------------------------------------------------------
 	
 	@Override
@@ -424,7 +444,7 @@ public class ServerImpl extends UnicastRemoteObject implements Subject, ServerIn
 		System.out.println("User not found");
 		return client;
 	}
-
+	
 	public Project getProjectById(int projectId) throws RemoteException{
 		Project project = null;
 		for(int i = 0; i < registeredProjects.size(); i++){
@@ -490,7 +510,7 @@ public class ServerImpl extends UnicastRemoteObject implements Subject, ServerIn
 	}
 	
 	//TEST PRINT-----------------------------------------------------------------------------------
-
+	
 	public void stampa()throws RemoteException{
 		for(int i = 0; i < registeredProjects.size(); i++){
 		System.out.println("Project=" + registeredProjects.get(i).getTitle());

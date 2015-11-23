@@ -58,7 +58,19 @@ public class ProjectListFrame extends JFrame {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
-						activityPane.showConfirmDialog(thisFrame, activityPanel,"Activities", JOptionPane.CLOSED_OPTION);
+						int result = activityPane.showConfirmDialog(thisFrame, activityPanel,"Activities", JOptionPane.CLOSED_OPTION);
+						if(result == activityPane.CLOSED_OPTION){
+							setVisible(false);
+							ProjectListFrame projectListFrame = null;
+							try {
+								projectListFrame = new ProjectListFrame(client);
+							} catch (RemoteException e1) {
+								// TODO Auto-generated catch block
+								e1.printStackTrace();
+							}
+							projectListFrame.setLocationRelativeTo(null);
+ 							projectListFrame.setVisible(true);			
+						}
 					}
 			});				
 		}
@@ -74,7 +86,6 @@ public class ProjectListFrame extends JFrame {
 				
 				JTextField projectTitle = new JTextField(15);
 				JTextField projectDescription = new JTextField(40);
-				//JTextField projectCategory = new JTextField(15);
 				String[] categories = Category.getStringsArray();			
 				JComboBox projectCategory = new JComboBox(categories);
 				
