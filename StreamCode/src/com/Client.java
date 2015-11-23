@@ -30,18 +30,18 @@ public class Client extends UnicastRemoteObject implements ClientInterface{
   		server = (ServerInterface) registry.lookup("server");
   		
   	}
-	
-	
+
+
 	public void registerUser(String username, String password) throws RemoteException {
 		server.registerUser(username, password);
 	}
-	
-	
+
+
 	public void unregisterUser(int userId, String password) throws RemoteException {
 		server.unregisterUser(userId, password);
 	}
-	
-	
+
+
 	public void login(String username, String password) throws RemoteException {
 		myUserId = server.login(username, password, (ClientInterface) this);
 	}
@@ -49,17 +49,17 @@ public class Client extends UnicastRemoteObject implements ClientInterface{
 	public int check(String username, String password) throws RemoteException{
 		return server.check(username, password);
 	}
-	
+
 	public void logout(int userId) throws RemoteException {
 		server.logout(userId);
 	}
-	
-	
+
+
 	public void addProject(String title, String description, Category category, int userId) throws RemoteException {
 		server.addProject(title, description, category , userId);
 	}
-	
-	
+
+
 	public void removeProject(int projectId) throws RemoteException {
 		server.removeProject(projectId);	
 	}
@@ -114,14 +114,6 @@ public class Client extends UnicastRemoteObject implements ClientInterface{
 
 	public void startProject(int projectId) throws RemoteException {
 		server.startProject(projectId);
-	}
-	
-	public void modifyProject(int projectId, String title, String description, Category category) throws RemoteException {
-		server.modifyProject(projectId, title, description, category);
-	}
-	
-	public void modifyActivity(int activityId, String name, String description, String place, String dateTime) throws RemoteException {
-		server.modifyActivity(activityId, name, description, place, dateTime);
 	}
 
 	public void completeActivity(int activityId) throws RemoteException {
