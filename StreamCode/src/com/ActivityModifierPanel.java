@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -66,8 +67,59 @@ public class ActivityModifierPanel extends JPanel {
 		activityValues.add(new JLabel("Place: ")); //fare combobox
 		activityValues.add(activityPlace);	
 		add(activityValues);
+		
+		//MODIFY INFO ACTIVITY-------------------------------------------------
+		JButton modifyInfo = new JButton("Modify Activity Info");
+		add(modifyInfo);
+		modifyInfo.addActionListener(new ActionListener(){
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+
+				JTextField activityTitle2 = new JTextField(15);
+				JTextField activityDescription2 = new JTextField(40);
+				JTextField activityPlace2 = new JTextField(15);
+						
+				JPanel activityValues2 = new JPanel();
+				activityValues2.setLayout(new BoxLayout(activityValues2, BoxLayout.PAGE_AXIS));
+				activityValues2.add(new JLabel("Insert title: "));
+				activityValues2.add(activityTitle2);
+				activityValues2.add(new JLabel(" "),"span, grow");
+				activityValues2.add(new JLabel("Insert description: "));
+				activityValues2.add(activityDescription2);
+				activityValues2.add(new JLabel(" "),"span, grow");
+				activityValues2.add(new JLabel("Insert place: ")); //fare combobox
+				activityValues2.add(activityPlace2);
+				activityValues2.setVisible(true);
+				
+				JOptionPane creatingProject = new JOptionPane();
+				int result = creatingProject.showConfirmDialog(thisPanel, activityValues2, "Modify Activity Values", JOptionPane.OK_CANCEL_OPTION);
+				if (result == creatingProject.OK_OPTION){	
+					/*	questa parte va fatta sul server, ci vuole una funzione modify activity
+					Activity activity2 = null;
+						try {
+							activity2 = Client.getInstance().getManagedProject().get(projectIndex).getActivities().get(activityIndex);
+						} catch (RemoteException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						}
+						activity2.setName(activityTitle2.getText());
+						activity2.setDescription(activityDescription2.getText());
+						activity2.setPlace(activityPlace2.getText());		
+						
+						*/
+						Window w = SwingUtilities.getWindowAncestor(thisPanel);	//codice per nascondere 
+						w.setVisible(false);									//la vecchia finestra		
+						JOptionPane newactivityPane2 = new JOptionPane();
+						ActivityModifierPanel newactivityPanel2 = new ActivityModifierPanel(projectIndex, activityIndex, parentPanel);
+						newactivityPane2.showConfirmDialog(parentPanel, newactivityPanel2,"Activities", JOptionPane.CLOSED_OPTION);
+				}
+				
+			}
+			
+		});
 	    
-	    //ADD COLLABORATORS BUTTON
+	    //ADD COLLABORATORS BUTTON--------------------------------------------------
 		JButton addCollaboratorsButton = new JButton("Invite collaborators");
 		add(addCollaboratorsButton);
 	    addCollaboratorsButton.addActionListener(new ActionListener(){
