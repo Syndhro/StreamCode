@@ -111,7 +111,7 @@ public class ProjectListFrame extends JFrame {
 				int result = creatingProject.showConfirmDialog(thisFrame, projectValues, "Please Enter Project Values", JOptionPane.OK_CANCEL_OPTION);
 				if (result == creatingProject.OK_OPTION){
 					try {
-						Client.getInstance().addProject(projectTitle.getText(), projectDescription.getText(), Category.getCategory(projectCategory.getSelectedItem().toString()), Client.getInstance().getClientId());
+						Client.getInstance().addProject(projectTitle.getText(), projectDescription.getText(), Category.getCategory(projectCategory.getSelectedItem().toString()), Client.getInstance().getMyUserId());
 						dispose();
 						ProjectListFrame projectListFrame = new ProjectListFrame();
  						projectListFrame.setVisible(true);

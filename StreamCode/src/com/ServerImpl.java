@@ -14,7 +14,7 @@ public class ServerImpl extends UnicastRemoteObject implements Subject, ServerIn
 	private ArrayList<User> registeredUsers;
 	private ArrayList<Observer> loggedUsers;
 	private ArrayList<Notification> registeredNotifications;
-	private ArrayList<ClientInterface> onlineClients;
+	private ArrayList<ClientInterface> clients;
 	
 	//CONSTRUCTORS---------------------------------------------------------------------
 
@@ -25,7 +25,7 @@ public class ServerImpl extends UnicastRemoteObject implements Subject, ServerIn
 		this.registeredProjects = new ArrayList<Project>();
 		this.registeredActivities = new ArrayList<Activity>();
 		this.registeredUsers = new ArrayList<User>();
-		this.onlineClients = new ArrayList<ClientInterface>();
+		this.clients = new ArrayList<ClientInterface>();
 	}
 	
 	public static ServerImpl getInstance() {
@@ -113,7 +113,7 @@ public class ServerImpl extends UnicastRemoteObject implements Subject, ServerIn
 	
 
 	public void registerClient(ClientInterface client) throws RemoteException{
-		onlineClients.add(client);
+		clients.add(client);
 		//client.getNotification("Registrato");
 	}
 
@@ -166,18 +166,6 @@ public class ServerImpl extends UnicastRemoteObject implements Subject, ServerIn
 		removeObserver(user); //rimuovo utente dalla lista degli utenti loggati	
 	}
 	
-	public boolean isClientOnline(int clientId) throws RemoteException{
-		boolean isOnline = false;
-		
-		for (int i = 0; i < onlineClients.size(); i++){
-			if(clientId == onlineClients.get(i).getClientId()){
-				isOnline = true;
-				return isOnline;
-			}
-		}
-		return isOnline;
-	}
-	
 	//ADDERS--------------------------------------------------------------------------------------
 
 	@Override
@@ -192,14 +180,11 @@ public class ServerImpl extends UnicastRemoteObject implements Subject, ServerIn
 	public void addFriend(int userId1, int userId2) throws RemoteException {
 		User user1 = getUserById(userId1);
 		User user2 = getUserById(userId2);
+		ClientInterface clientToBeNotified = getClientById(userId2);
 		user1.addFriend(user2);
 		dbManager.addFriendship(user1.getUserId(), user2.getUserId());
 		Notification notification = createNotification("friendship", user1.getUsername(), userId2);
-		if (isClientOnline(userId2)){
-			ClientInterface clientToBeNotified = getClientById(userId2);
-			clientToBeNotified.getNotification(notification);
-			notification.setDelivered(true);
-		}
+		clientToBeNotified.getNotification(notification);
 		dbManager.addNotification(notification);
 	}
 	
@@ -237,19 +222,22 @@ public class ServerImpl extends UnicastRemoteObject implements Subject, ServerIn
 	public void addCollaborators(int projectId, ArrayList<Integer> userIds) throws RemoteException {
 		Project project = getProjectById(projectId);
 		User user;
+		ClientInterface clientToBeNotified;
 		for(int i = 0; i < userIds.size(); i++){
-			int idTarget = userIds.get(i);
-			Notification notification = createNotification("project_invite", project.getDescription(), idTarget);
-			user = getUserById(idTarget);
-			if (isClientOnline(idTarget)){
-				ClientInterface clientToBeNotified = getClientById(idTarget);
-				clientToBeNotified.getNotification(notification);
-				notification.setDelivered(true);
-			}
+			Notification notification = createNotification("project_invite", project.getDescription(), userIds.get(i));
+			user = getUserById(userIds.get(i));
+			clientToBeNotified = getClientById(userIds.get(i));
 			project.addCollaborator(user);
 			user.addCollaborationProject(project);
 			dbManager.addProjectMembership(user, project);	
 			dbManager.addNotification(notification);
+			//controllo per la notifica solo se è online, attualmente è sbagliato ma almeno non mi da exception
+			for(int i1 = 0; i1 < clients.size(); i1++){
+				if(clientToBeNotified.getMyUserId() == clients.get(i1).getMyUserId()){
+					clientToBeNotified.getNotification(notification);
+				}
+			}
+			
 		}
 	}
 	@Override
@@ -259,14 +247,10 @@ public class ServerImpl extends UnicastRemoteObject implements Subject, ServerIn
 		ClientInterface clientToBeNotified;
 		for (int i = 0; i < project.getCollaborators().size(); i++){
 			user = project.getCollaborators().get(i);
-			int targetId = user.getUserId();
-			Notification notification = createNotification("project_started", project.getDescription(), targetId);
-			if(isClientOnline(targetId)){
-				clientToBeNotified = getClientById(targetId);
-				clientToBeNotified.getNotification(notification);
-				notification.setDelivered(true);
-			}
+			clientToBeNotified = getClientById(project.getCollaborators().get(i).getUserId());
+			Notification notification = createNotification("project_started", project.getDescription(), user.getUserId());
 			dbManager.addNotification(notification);
+			clientToBeNotified.getNotification(notification);
 		}
 		project.startProject();
 	}
@@ -275,16 +259,12 @@ public class ServerImpl extends UnicastRemoteObject implements Subject, ServerIn
 	public void completeActivity(int activityId) throws RemoteException{
 		Activity activity = getActivityById(activityId);	
 		User user;
+		ClientInterface clientToBeNotified;
 		for (int i = 0; i < activity.getActivityCollaborators().size(); i++){
 			user = activity.getActivityCollaborators().get(i);
-			int targetId = user.getUserId();
+			clientToBeNotified = getClientById(activity.getActivityCollaborators().get(i).getUserId());
 			Notification notification = createNotification("activity_completed", activity.getDescription(), user.getUserId());
-			if(isClientOnline(targetId)){
-				ClientInterface clientToBeNotified = null;
-				clientToBeNotified = getClientById(targetId);
-				clientToBeNotified.getNotification(notification);
-				notification.setDelivered(true);
-			}
+			clientToBeNotified.getNotification(notification);
 			dbManager.addNotification(notification);
 		}
 		activity.complete();
@@ -298,33 +278,23 @@ public class ServerImpl extends UnicastRemoteObject implements Subject, ServerIn
 		}
 		for(int i=0; i < nextActivity.getActivityCollaborators().size(); i++){
 			User userNextActivity = nextActivity.getActivityCollaborators().get(i);
-			int nextTargetId = userNextActivity.getUserId();
-			Notification nextNotification = createNotification("activity_started", activity.getDescription(), nextTargetId);
-			if(isClientOnline(nextTargetId)){
-				ClientInterface clientNextActivity = getClientById(nextTargetId);
-				clientNextActivity.getNotification(nextNotification);
-				nextNotification.setDelivered(true);
-			}
+			ClientInterface clientNextActivity = getClientById(nextActivity.getActivityCollaborators().get(i).getUserId());
+			Notification nextNotification = createNotification("activity_started", activity.getDescription(), userNextActivity.getUserId());
+			clientNextActivity.getNotification((nextNotification));
 			dbManager.addNotification(nextNotification);
 		}
-		nextActivity.setActive(true);
+		nextActivity.setActive(true);	
 	}
 	
 	@Override
 	public void addAgent(int activityId, int userId) throws RemoteException {
 		Activity activity = getActivityById(activityId);
 		User user = getUserById(userId);
-		int targetId = user.getUserId();
-		Notification notification = createNotification("agent_added", activity.getDescription(), userId);
-		if(isClientOnline(targetId)){
-			ClientInterface clientToBeNotified = getClientById(targetId);
-			clientToBeNotified.getNotification(notification);
-			notification.setDelivered(true);
-		}
+		ClientInterface clientToBeNotified = getClientById(userId);
+		Notification nextNotification = createNotification("agent_added", activity.getDescription(), userId);
 		activity.addAgent(user);
 		user.addUserActivities(activity);
 		dbManager.addActivityMembership(user, activity);
-		dbManager.addNotification(notification);
 	}
 	
 	//REMOVERS-----------------------------------------------------------------------------------
@@ -414,9 +384,9 @@ public class ServerImpl extends UnicastRemoteObject implements Subject, ServerIn
 	
 	public ClientInterface getClientById(int clientId)throws RemoteException{
 		ClientInterface client = null;
-		for(int i = 0; i < onlineClients.size(); i++){
-			if(onlineClients.get(i).getClientId() == clientId){
-				client = onlineClients.get(i);
+		for(int i = 0; i < clients.size(); i++){
+			if(clients.get(i).getMyUserId() == clientId){
+				client = clients.get(i);
 				return client;
 			}
 		}

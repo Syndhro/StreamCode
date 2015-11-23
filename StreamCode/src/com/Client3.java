@@ -118,7 +118,7 @@ public class Client3 extends UnicastRemoteObject implements ClientInterface{
 		server.completeActivity(activityId);
 	}
 	
-	public int getClientId() throws RemoteException{
+	public int getMyUserId() throws RemoteException{
 		return myUserId;
 	}
 	

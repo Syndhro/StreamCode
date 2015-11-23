@@ -127,7 +127,7 @@ public class Client extends UnicastRemoteObject implements ClientInterface{
 		server.completeActivity(activityId);
 	}
 	
-	public int getClientId() throws RemoteException{
+	public int getMyUserId() throws RemoteException{
 		return myUserId;
 	}
 	
@@ -207,17 +207,17 @@ public class Client extends UnicastRemoteObject implements ClientInterface{
 			
 			//client.stampa();
 			
-			client.addProject("Comple Spe", "A casa di spe", Category.getCategory("sport"), client.getClientId());
+			client.addProject("Comple Spe", "A casa di spe", Category.getCategory("sport"), client.getMyUserId());
 			
-			client.addFriend(client.getClientId(), 17);
+			client.addFriend(client.getMyUserId(), 17);
 			
-			client.addFriend(client.getClientId(), 18);
+			client.addFriend(client.getMyUserId(), 18);
 			
 			ArrayList<Integer> userIds = new ArrayList<>();
 			userIds.add(17);
 			userIds.add(18);
 			
-			client.addCollaborators(1, userIds);
+			client.addCollaborators(4, userIds);
 			
 		}catch(RemoteException e){
 			e.printStackTrace();

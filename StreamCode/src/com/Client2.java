@@ -118,7 +118,7 @@ public class Client2 extends UnicastRemoteObject implements ClientInterface{
 		server.completeActivity(activityId);
 	}
 	
-	public int getClientId() throws RemoteException{
+	public int getMyUserId() throws RemoteException{
 		return myUserId;
 	}
 	
@@ -185,12 +185,6 @@ public class Client2 extends UnicastRemoteObject implements ClientInterface{
 				}
 		}catch(RemoteException e){
 			e.printStackTrace();
-		}
-		
-		ArrayList<Notification> notif = client.getOfflineNotifications();
-		
-		for(int i = 0; i < notif.size(); i++){
-			System.out.println(notif.get(i).getMessage());
 		}
 		
 		System.out.println("Press enter to terminate");

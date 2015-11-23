@@ -21,7 +21,7 @@ public class ClientImpl extends UnicastRemoteObject implements ClientInterface{
 	}
 
 	@Override
-	public int getClientId() throws RemoteException {
+	public int getMyUserId() throws RemoteException {
 		// TODO Auto-generated method stub
 		return 0;
 	}
