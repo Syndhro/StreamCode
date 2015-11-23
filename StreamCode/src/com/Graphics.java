@@ -52,7 +52,7 @@ public class Graphics {
 			}
 		});
 		try{
-			client = Client.getInstance();
+			client = new Client();
 			client.startup();
 		}
 		catch(Exception e){
@@ -123,7 +123,7 @@ public class Graphics {
 						client.login(lUsername, lPassword);
  						JOptionPane.showMessageDialog(loginFrame, "Logged!");
  						loginFrame.dispose();
- 						ProjectListFrame projectListFrame = new ProjectListFrame();
+ 						ProjectListFrame projectListFrame = new ProjectListFrame(client);
  						projectListFrame.setLocationRelativeTo(null);
  						projectListFrame.setVisible(true);
  							

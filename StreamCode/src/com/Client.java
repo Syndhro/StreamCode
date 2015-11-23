@@ -10,6 +10,8 @@ import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 
+import javax.swing.JOptionPane;
+
 import com.mysql.jdbc.authentication.MysqlClearPasswordPlugin;
 
 public class Client extends UnicastRemoteObject implements ClientInterface{
@@ -17,17 +19,8 @@ public class Client extends UnicastRemoteObject implements ClientInterface{
 	Registry registry;
 	static ServerInterface server;
 	private int myUserId;
-	private static Client uniqueInstance;
-
 	
-	private Client()throws RemoteException{};
-	
-	public static Client getInstance() throws RemoteException{
-	 	if (uniqueInstance == null){
-			uniqueInstance = new Client();
-		}
-		return uniqueInstance;
-	}
+	public Client()throws RemoteException{};
 	
 	public void startup() throws NotBoundException, IOException {
   		System.setSecurityManager(new RMISecurityManager());
@@ -50,7 +43,7 @@ public class Client extends UnicastRemoteObject implements ClientInterface{
 
 
 	public void login(String username, String password) throws RemoteException {
-		myUserId = server.login(username, password);
+		myUserId = server.login(username, password, (ClientInterface) this);
 	}
 	
 	public int check(String username, String password) throws RemoteException{
@@ -174,6 +167,7 @@ public class Client extends UnicastRemoteObject implements ClientInterface{
 	
 	@Override
 	public void getNotification(Notification notification) throws RemoteException {
+		JOptionPane.showMessageDialog(null, notification.getMessage());
 		System.out.println(notification.getMessage());
 	}
 

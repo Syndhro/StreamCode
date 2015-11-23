@@ -149,12 +149,12 @@ public class ServerImpl extends UnicastRemoteObject implements Subject, ServerIn
 	}
 
 	@Override
-	public int login(String username, String password) throws RemoteException {
+	public int login(String username, String password, ClientInterface client) throws RemoteException {
 		int userId = -1;
 			for(int i = 0; i < registeredUsers.size(); i++){
 				if(registeredUsers.get(i).getUsername().equals(username)){
-					registerObserver(registeredUsers.get(i));//aggiungimi a utenti loggati
 					userId = registeredUsers.get(i).getUserId();
+					registerClient(client);
 				}
 			}
 		return userId;
@@ -167,6 +167,7 @@ public class ServerImpl extends UnicastRemoteObject implements Subject, ServerIn
 	}
 	
 	public boolean isClientOnline(int clientId) throws RemoteException{
+		
 		boolean isOnline = false;
 		
 		for (int i = 0; i < onlineClients.size(); i++){
@@ -238,14 +239,14 @@ public class ServerImpl extends UnicastRemoteObject implements Subject, ServerIn
 		Project project = getProjectById(projectId);
 		User user;
 		for(int i = 0; i < userIds.size(); i++){
-			int idTarget = userIds.get(i);
+			int idTarget = userIds.get(i).intValue();
 			Notification notification = createNotification("project_invite", project.getDescription(), idTarget);
 			user = getUserById(idTarget);
-			if (isClientOnline(idTarget)){
+		//	if (isClientOnline(idTarget)){
 				ClientInterface clientToBeNotified = getClientById(idTarget);
 				clientToBeNotified.getNotification(notification);
 				notification.setDelivered(true);
-			}
+		//	}
 			project.addCollaborator(user);
 			user.addCollaborationProject(project);
 			dbManager.addProjectMembership(user, project);	

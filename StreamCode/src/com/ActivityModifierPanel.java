@@ -23,16 +23,11 @@ public class ActivityModifierPanel extends JPanel {
 	ActivityPanel parentPanel;
 	Activity activity;
 	
-	public ActivityModifierPanel(int projectIndex, int activityIndex, ActivityPanel parentPanel) {
+	public ActivityModifierPanel(int projectIndex, int activityIndex, ActivityPanel parentPanel, Client client) {
 		
 		thisPanel = this;
 		this.parentPanel = parentPanel;
-		//retrieve activity
-		try {
-			activity = Client.getInstance().getManagedProject().get(projectIndex).getActivities().get(activityIndex);
-		} catch (RemoteException e) {
-			e.printStackTrace();
-		}
+		activity = client.getManagedProject().get(projectIndex).getActivities().get(activityIndex);
 	    setBounds(100, 100, 500, 336);
 	    
 	    //ACTIVITY COLLABORATORS LIST
@@ -111,7 +106,7 @@ public class ActivityModifierPanel extends JPanel {
 						Window w = SwingUtilities.getWindowAncestor(thisPanel);	//codice per nascondere 
 						w.setVisible(false);									//la vecchia finestra		
 						JOptionPane newactivityPane2 = new JOptionPane();
-						ActivityModifierPanel newactivityPanel2 = new ActivityModifierPanel(projectIndex, activityIndex, parentPanel);
+						ActivityModifierPanel newactivityPanel2 = new ActivityModifierPanel(projectIndex, activityIndex, parentPanel, client);
 						newactivityPane2.showConfirmDialog(parentPanel, newactivityPanel2,"Activities", JOptionPane.CLOSED_OPTION);
 				}
 				
@@ -127,11 +122,7 @@ public class ActivityModifierPanel extends JPanel {
 			public void actionPerformed(ActionEvent arg0) {	
 				JPanel inviteFriends = new JPanel();						
 				ArrayList<User> collaborators = new ArrayList<User>();
-					try {
-						collaborators = Client.getInstance().getManagedProject().get(projectIndex).getCollaborators();
-					}catch(RemoteException e) {
-						e.printStackTrace();
-					}											
+					collaborators = client.getManagedProject().get(projectIndex).getCollaborators();											
 					ArrayList<JCheckBox> checkboxes = new ArrayList<>();
 					if(!collaborators.isEmpty()){
 						for(int i = 0; i < collaborators.size(); i++) {
@@ -156,13 +147,13 @@ public class ActivityModifierPanel extends JPanel {
 										userId = collaborators.get(i).getUserId();														
 									}	
 								}
-								Client.getInstance().addAgent(activity.getActivityId(), userId);
+								client.addAgent(activity.getActivityId(), userId);
 							}													
 							
 							Window w = SwingUtilities.getWindowAncestor(thisPanel);	//codice per nascondere 
 							w.setVisible(false);									//la vecchia finestra							
 							JOptionPane newactivityPane = new JOptionPane();
-							ActivityModifierPanel newactivityPanel = new ActivityModifierPanel(projectIndex, activityIndex, parentPanel);
+							ActivityModifierPanel newactivityPanel = new ActivityModifierPanel(projectIndex, activityIndex, parentPanel, client);
 							newactivityPane.showConfirmDialog(parentPanel, newactivityPanel,"Activities", JOptionPane.CLOSED_OPTION);
 						}catch(RemoteException e1) {
 							e1.printStackTrace();

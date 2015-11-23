@@ -25,11 +25,11 @@ public class ActivityPanel extends JPanel {
 	 * Create the panel.
 	 * @throws RemoteException 
 	 */
-	public ActivityPanel(int i, ProjectListFrame parentFrame) throws RemoteException {
+	public ActivityPanel(int i, ProjectListFrame parentFrame, Client client) throws RemoteException {
 		
 		thisPanel = this;
 		this.parentFrame = parentFrame;
-		Project project = Client.getInstance().getManagedProject().get(i);
+		Project project = client.getManagedProject().get(i);
 	    setBounds(100, 100, 500, 336);								 
 	   					
 	    JLabel projectName = new JLabel(project.getTitle());
@@ -66,7 +66,7 @@ public class ActivityPanel extends JPanel {
 					int x = activitiesButtons.indexOf(e.getSource());
 					Activity activity = project.getActivities().get(x);
 					//creare un dialog per modificare l'activity
-					ActivityModifierPanel activityModifier = new ActivityModifierPanel(i, x, thisPanel); 
+					ActivityModifierPanel activityModifier = new ActivityModifierPanel(i, x, thisPanel, client); 
 					  
 				    JOptionPane activityModifierPane = new JOptionPane();
 				    activityModifierPane.showConfirmDialog(thisPanel, activityModifier, "Modify activity", JOptionPane.OK_CANCEL_OPTION);
@@ -126,9 +126,9 @@ public class ActivityPanel extends JPanel {
 						
 						Window w = SwingUtilities.getWindowAncestor(thisPanel);	//codice per nascondere 
 						w.setVisible(false);									//la vecchia finestra
-						Client.getInstance().addActivity(project.getProjectId(), activityName.getText(), activityDescription.getText(), activityPlace.getText(), "Ora_attuale");				
+						client.addActivity(project.getProjectId(), activityName.getText(), activityDescription.getText(), activityPlace.getText(), "Ora_attuale");				
 						JOptionPane newactivityPane = new JOptionPane();
-						ActivityPanel newactivityPanel = new ActivityPanel(i, parentFrame);
+						ActivityPanel newactivityPanel = new ActivityPanel(i, parentFrame, client);
 						newactivityPane.showConfirmDialog(parentFrame, newactivityPanel,"Activities", JOptionPane.CLOSED_OPTION);			
 					}catch(RemoteException e2) {
 						e2.printStackTrace();
@@ -142,11 +142,7 @@ public class ActivityPanel extends JPanel {
 			public void actionPerformed(ActionEvent arg0) {	
 				JPanel inviteFriends = new JPanel();						
 				ArrayList<User> collaborators = new ArrayList<User>();
-					try {
-						collaborators = Client.getInstance().getUserFriends();
-					}catch(RemoteException e) {
-						e.printStackTrace();
-					}											
+					collaborators = client.getUserFriends();											
 					ArrayList<JCheckBox> checkboxes = new ArrayList<>();
 					for(int i = 0; i < collaborators.size(); i++) {
 						JCheckBox box = new JCheckBox(collaborators.get(i).getUsername());
@@ -163,11 +159,11 @@ public class ActivityPanel extends JPanel {
 									selected.add(collaborators.get(i).getUserId());														
 								}
 							}
-							Client.getInstance().addCollaborators(project.getProjectId(), selected);
+							client.addCollaborators(project.getProjectId(), selected);
 							Window w = SwingUtilities.getWindowAncestor(thisPanel);	//codice per nascondere 
 							w.setVisible(false);									//la vecchia finestra							
 							JOptionPane newactivityPane = new JOptionPane();
-							ActivityPanel newactivityPanel = new ActivityPanel(i, parentFrame);
+							ActivityPanel newactivityPanel = new ActivityPanel(i, parentFrame, client);
 							newactivityPane.showConfirmDialog(parentFrame, newactivityPanel,"Activities", JOptionPane.CLOSED_OPTION);
 						}catch(RemoteException e1) {
 							e1.printStackTrace();

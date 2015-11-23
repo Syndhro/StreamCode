@@ -22,24 +22,12 @@ public class ProjectListFrame extends JFrame {
 	/**
 	 * Launch the application.
 	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					ProjectListFrame frame = new ProjectListFrame();
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
 
 	/**
 	 * Create the frame.
 	 * @throws RemoteException 
 	 */
-	public ProjectListFrame() throws RemoteException {
+	public ProjectListFrame(Client client) throws RemoteException {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 300);
 		contentPane = new JPanel();
@@ -49,7 +37,7 @@ public class ProjectListFrame extends JFrame {
 		ArrayList<Project> projects = new ArrayList<Project>();
 		ArrayList<JButton> projectButtons = new ArrayList<JButton>();
 		
-		projects = Client.getInstance().getManagedProject();
+		projects = client.getManagedProject();
 		
 		for(int i = 0; i < projects.size(); i++){
 			JButton button = new JButton();
@@ -60,17 +48,12 @@ public class ProjectListFrame extends JFrame {
 			button.addActionListener(new ActionListener(){
 				public void actionPerformed(ActionEvent event) {
 					int i = projectButtons.indexOf(event.getSource());
-					try {
-						project = Client.getInstance().getManagedProject().get(i);
-					} catch (RemoteException e2) {
-						// TODO Auto-generated catch block
-						e2.printStackTrace();
-					} //l'indirizzo in projects e buttons è lo stesso
+					project = client.getManagedProject().get(i);
 					//OPEN ACTIVITY PANEL------------------------------------------------------------------
 						JOptionPane activityPane = new JOptionPane();
 						ActivityPanel activityPanel = null;
 						try {
-							activityPanel = new ActivityPanel(i, thisFrame);
+							activityPanel = new ActivityPanel(i, thisFrame, client);
 						} catch (RemoteException e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
@@ -111,9 +94,10 @@ public class ProjectListFrame extends JFrame {
 				int result = creatingProject.showConfirmDialog(thisFrame, projectValues, "Please Enter Project Values", JOptionPane.OK_CANCEL_OPTION);
 				if (result == creatingProject.OK_OPTION){
 					try {
-						Client.getInstance().addProject(projectTitle.getText(), projectDescription.getText(), Category.getCategory(projectCategory.getSelectedItem().toString()), Client.getInstance().getClientId());
+						client.addProject(projectTitle.getText(), projectDescription.getText(), Category.getCategory(projectCategory.getSelectedItem().toString()), client.getClientId());
 						dispose();
-						ProjectListFrame projectListFrame = new ProjectListFrame();
+						ProjectListFrame projectListFrame = new ProjectListFrame(client);
+						projectListFrame.setLocationRelativeTo(null);
  						projectListFrame.setVisible(true);
 					} catch (RemoteException e1) {
 						e1.printStackTrace();

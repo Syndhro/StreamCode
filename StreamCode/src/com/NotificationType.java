@@ -9,7 +9,8 @@ public enum NotificationType implements Serializable{
 	PROJECT_STARTED,
 	PROJECT_INVITE,
 	FRIENDSHIP,
-	BROADCAST
+	BROADCAST,
+	AGENT_ADDED
 	;
 	
 	public static NotificationType getNotificationType(String string){
@@ -20,6 +21,9 @@ public enum NotificationType implements Serializable{
 			return null;
 		
 		switch (string){
+		case "agent_added":
+			notType = AGENT_ADDED;
+			break;
 		case "activity_started":
 			notType = ACTIVITY_STARTED;
 			break;
