@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -69,10 +70,24 @@ public class ActivityPanel extends JPanel {
 					ActivityModifierPanel activityModifier = new ActivityModifierPanel(i, x, thisPanel, client); 
 					  
 				    JOptionPane activityModifierPane = new JOptionPane();
-				    activityModifierPane.showConfirmDialog(thisPanel, activityModifier, "Modify activity", JOptionPane.OK_CANCEL_OPTION);
-					
-				}
-				
+				    int result3 = activityModifierPane.showConfirmDialog(thisPanel, activityModifier, "Modify activity", JOptionPane.OK_CANCEL_OPTION);
+				    
+				    
+				    if(result3 ==activityModifierPane.OK_OPTION){
+				    	Window w = SwingUtilities.getWindowAncestor(thisPanel);	//codice per nascondere 
+						w.setVisible(false);									//la vecchia finestra
+									
+						JOptionPane newactivityPane3 = new JOptionPane();
+						ActivityPanel newactivityPanel3 = null;
+						try {
+							newactivityPanel3 = new ActivityPanel(i, parentFrame, client);
+						} catch (RemoteException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						}
+						newactivityPane3.showConfirmDialog(parentFrame, newactivityPanel3,"Activities", JOptionPane.CLOSED_OPTION);
+				    }				
+				}				
 			});
 		}
 		add(activitiesPanel);
@@ -175,6 +190,58 @@ public class ActivityPanel extends JPanel {
 						}	
 					}
 			}
+		});
+		
+		//MODIFY INFO PROJECT
+		JButton modifyProjectInfo = new JButton("Modify Project Info");
+		add(modifyProjectInfo);
+		modifyProjectInfo.addActionListener(new ActionListener(){
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+
+				JTextField projectName2 = new JTextField(15);
+				JTextField projectDescription2 = new JTextField(40);
+				String[] categories = Category.getStringsArray();			
+				JComboBox projectCategory2 = new JComboBox(categories);
+						
+				JPanel projectValues2 = new JPanel();
+				projectValues2.setLayout(new BoxLayout(projectValues2, BoxLayout.PAGE_AXIS));
+				projectValues2.add(new JLabel("Insert title: "));
+				projectValues2.add(projectName2);
+				projectValues2.add(new JLabel(" "),"span, grow");
+				projectValues2.add(new JLabel("Insert description: "));
+				projectValues2.add(projectDescription2);
+				projectValues2.add(new JLabel(" "),"span, grow");
+				projectValues2.add(new JLabel("Insert category: ")); //fare combobox
+				projectValues2.add(projectCategory2);
+				projectValues2.setVisible(true);
+				
+				JOptionPane creatingProject = new JOptionPane();
+				int result2 = creatingProject.showConfirmDialog(thisPanel, projectValues2, "Modify Project Values", JOptionPane.OK_CANCEL_OPTION);
+				if (result2 == creatingProject.OK_OPTION){	
+						try {
+							client.modifyProject(project.getProjectId(), projectName2.getText(), projectDescription2.getText(), Category.getCategory(projectCategory2.getSelectedItem().toString()));
+						} catch (RemoteException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						}
+						
+						Window w = SwingUtilities.getWindowAncestor(thisPanel);	//codice per nascondere 
+						w.setVisible(false);									//la vecchia finestra		
+						JOptionPane newactivityPane2 = new JOptionPane();
+						ActivityPanel newactivityPanel2 = null;
+						try {
+							newactivityPanel2 = new ActivityPanel(i, parentFrame, client);
+						} catch (RemoteException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						}
+						newactivityPane2.showConfirmDialog(thisPanel, newactivityPanel2,"Activities", JOptionPane.CLOSED_OPTION);
+				}
+				
+			}
+			
 		});
 	}	
 }
