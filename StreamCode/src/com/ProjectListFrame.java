@@ -76,9 +76,18 @@ public class ProjectListFrame extends JFrame {
 		}
 		//PROJECT SETTINGS--------------------------------------------------------------------------------
 		JPanel projectSettings = new JPanel();
+		
+		JButton btnAddFriend = new JButton("Add Friend");
+		btnAddFriend.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				FriendsPanel friendsPanel = new FriendsPanel(client);
+				int result4 = JOptionPane.showConfirmDialog(mainPanel, friendsPanel, "Friends", JOptionPane.OK_CANCEL_OPTION);
+			}
+		});
+		projectSettings.add(btnAddFriend);
 		JButton addProjectButton = new JButton("Add project");
 		projectSettings.add(addProjectButton);
-		add(projectSettings);
+		getContentPane().add(projectSettings);
 		addProjectButton.addActionListener(new ActionListener(){
 
 			@SuppressWarnings("static-access")
