@@ -121,17 +121,22 @@ public class ActivityPanel extends JPanel {
 				JOptionPane creatingActivity = new JOptionPane();
 				int result = creatingActivity.showConfirmDialog(parentFrame, activityValues, "Please Enter Activity Values", JOptionPane.OK_CANCEL_OPTION);
 				if (result == creatingActivity.OK_OPTION){
-					Project managedProject = project;
-					try{
+					if(!activityName.getText().equals("")){
+						Project managedProject = project;
+						try{
 						
-						Window w = SwingUtilities.getWindowAncestor(thisPanel);	//codice per nascondere 
-						w.setVisible(false);									//la vecchia finestra
-						client.addActivity(project.getProjectId(), activityName.getText(), activityDescription.getText(), activityPlace.getText(), "Ora_attuale");				
-						JOptionPane newactivityPane = new JOptionPane();
-						ActivityPanel newactivityPanel = new ActivityPanel(i, parentFrame, client);
-						newactivityPane.showConfirmDialog(parentFrame, newactivityPanel,"Activities", JOptionPane.CLOSED_OPTION);			
-					}catch(RemoteException e2) {
-						e2.printStackTrace();
+							Window w = SwingUtilities.getWindowAncestor(thisPanel);	//codice per nascondere 
+							w.setVisible(false);									//la vecchia finestra
+							client.addActivity(project.getProjectId(), activityName.getText(), activityDescription.getText(), activityPlace.getText(), "Ora_attuale");				
+							JOptionPane newactivityPane = new JOptionPane();
+							ActivityPanel newactivityPanel = new ActivityPanel(i, parentFrame, client);
+							newactivityPane.showConfirmDialog(parentFrame, newactivityPanel,"Activities", JOptionPane.CLOSED_OPTION);			
+						}catch(RemoteException e2) {
+							e2.printStackTrace();
+						}
+					}
+					else{
+						JOptionPane.showMessageDialog(thisPanel, "The activity must have a name");
 					}
 				}
 			}
