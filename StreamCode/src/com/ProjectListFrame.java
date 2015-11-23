@@ -69,6 +69,7 @@ public class ProjectListFrame extends JFrame {
 		add(projectSettings);
 		addProjectButton.addActionListener(new ActionListener(){
 
+			@SuppressWarnings("static-access")
 			public void actionPerformed(ActionEvent e) {
 				
 				JTextField projectTitle = new JTextField(15);
@@ -92,16 +93,30 @@ public class ProjectListFrame extends JFrame {
 				//
 				JOptionPane creatingProject = new JOptionPane();
 				int result = creatingProject.showConfirmDialog(thisFrame, projectValues, "Please Enter Project Values", JOptionPane.OK_CANCEL_OPTION);
+				
 				if (result == creatingProject.OK_OPTION){
-					try {
-						client.addProject(projectTitle.getText(), projectDescription.getText(), Category.getCategory(projectCategory.getSelectedItem().toString()), client.getClientId());
-						dispose();
-						ProjectListFrame projectListFrame = new ProjectListFrame(client);
-						projectListFrame.setLocationRelativeTo(null);
- 						projectListFrame.setVisible(true);
-					} catch (RemoteException e1) {
-						e1.printStackTrace();
-					}	
+					if(!projectTitle.getText().equals("")){				
+							try {
+								client.addProject(projectTitle.getText(), projectDescription.getText(), Category.getCategory(projectCategory.getSelectedItem().toString()), client.getClientId());
+							} catch (RemoteException e1) {
+								// TODO Auto-generated catch block
+								e1.printStackTrace();
+							}
+							dispose();
+							ProjectListFrame projectListFrame = null;
+							try {
+								projectListFrame = new ProjectListFrame(client);
+							} catch (RemoteException e1) {
+								// TODO Auto-generated catch block
+								e1.printStackTrace();
+							}
+							projectListFrame.setLocationRelativeTo(null);
+ 							projectListFrame.setVisible(true);						
+					}
+				
+					else{
+						JOptionPane.showMessageDialog(thisFrame, "A project must have a name");
+					}
 				}
 			}
 		});
