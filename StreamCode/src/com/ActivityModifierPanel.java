@@ -120,9 +120,18 @@ public class ActivityModifierPanel extends JPanel {
 					ArrayList<JCheckBox> checkboxes = new ArrayList<>();
 					if(!collaborators.isEmpty()){
 						for(int i = 0; i < collaborators.size(); i++) {
-							JCheckBox box = new JCheckBox(collaborators.get(i).getUsername());
-							checkboxes.add(box);
-							inviteFriends.add(box);
+							boolean exist = false;
+							for(int j = 0; j < collaboratorsButtons.size(); j++){
+								if(collaboratorsButtons.get(j).getText().equals(collaborators.get(i).getUsername())){
+									exist = true;
+									break;
+								}
+							}
+							if(!exist){
+								JCheckBox box = new JCheckBox(collaborators.get(i).getUsername());
+								checkboxes.add(box);
+								inviteFriends.add(box);
+							}
 						}
 					}
 					else{
@@ -137,12 +146,19 @@ public class ActivityModifierPanel extends JPanel {
 						try {
 							if(!checkboxes.isEmpty()){
 								for(int i = 0; i < checkboxes.size(); i++){
-									if(checkboxes.get(i).isSelected()){
-										userId = collaborators.get(i).getUserId();														
+									for(int j = 0; j < collaborators.size(); j++){
+										if(checkboxes.get(i).isSelected()){
+											if(collaborators.get(j).getUsername().equals(checkboxes.get(i).getText())){
+												client.addAgent(activity.getActivityId(), collaborators.get(j).getUserId());		
+											}
+										}													
 									}	
 								}
-								client.addAgent(activity.getActivityId(), userId);
-							}													
+							}
+							else{
+								JLabel noCollab = new JLabel("There are no collaborators in this project yet");
+								inviteFriends.add(noCollab);
+							}
 							
 							Window w = SwingUtilities.getWindowAncestor(thisPanel);	//codice per nascondere 
 							w.setVisible(false);									//la vecchia finestra							

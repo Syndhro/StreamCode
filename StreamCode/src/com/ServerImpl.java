@@ -242,11 +242,11 @@ public class ServerImpl extends UnicastRemoteObject implements Subject, ServerIn
 			int idTarget = userIds.get(i).intValue();
 			Notification notification = createNotification("project_invite", project.getDescription(), idTarget);
 			user = getUserById(idTarget);
-		//	if (isClientOnline(idTarget)){
+			if (isClientOnline(idTarget)){
 				ClientInterface clientToBeNotified = getClientById(idTarget);
 				clientToBeNotified.getNotification(notification);
 				notification.setDelivered(true);
-		//	}
+			}
 			project.addCollaborator(user);
 			user.addCollaborationProject(project);
 			dbManager.addProjectMembership(user, project);	

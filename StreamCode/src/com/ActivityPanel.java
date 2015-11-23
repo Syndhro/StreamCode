@@ -165,9 +165,18 @@ public class ActivityPanel extends JPanel {
 					collaborators = client.getUserFriends();											
 					ArrayList<JCheckBox> checkboxes = new ArrayList<>();
 					for(int i = 0; i < collaborators.size(); i++) {
-						JCheckBox box = new JCheckBox(collaborators.get(i).getUsername());
-						checkboxes.add(box);
-						inviteFriends.add(box);
+						boolean exist = false;
+						for(int j = 0; j < collaboratorsButtons.size(); j++){
+							if(collaboratorsButtons.get(j).getText().equals(collaborators.get(i).getUsername())){
+								exist = true;
+								break;
+							}
+						}
+						if(!exist){
+							JCheckBox box = new JCheckBox(collaborators.get(i).getUsername());
+							checkboxes.add(box);
+							inviteFriends.add(box);
+						}
 					}				
 					JOptionPane invitingFriends = new JOptionPane();
 					ArrayList<Integer> selected = new ArrayList<Integer>();
@@ -175,9 +184,13 @@ public class ActivityPanel extends JPanel {
 					if (result2 == invitingFriends.OK_OPTION){
 						try {
 							for(int i = 0; i < checkboxes.size(); i++){
-								if(checkboxes.get(i).isSelected()){
-									selected.add(collaborators.get(i).getUserId());														
-								}
+								for(int j = 0; j < collaborators.size(); j++){
+									if(checkboxes.get(i).isSelected()){
+										if(collaborators.get(j).getUsername().equals(checkboxes.get(i).getText())){
+											selected.add(collaborators.get(j).getUserId());
+										}
+									}
+								}														
 							}
 							client.addCollaborators(project.getProjectId(), selected);
 							Window w = SwingUtilities.getWindowAncestor(thisPanel);	//codice per nascondere 
