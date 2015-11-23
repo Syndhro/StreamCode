@@ -32,6 +32,21 @@ public class ActivityPanel extends JPanel {
 		Project project = Client.getInstance().getManagedProject().get(i);
 	    setBounds(100, 100, 500, 336);								 
 	   					
+	    JLabel projectName = new JLabel(project.getTitle());
+		JLabel projectDescription = new JLabel(project.getDescription());
+		JLabel projectCategory = new JLabel(project.getCategory().toString());
+	
+		JPanel projectInfoValues = new JPanel();
+		projectInfoValues.setLayout(new BoxLayout(projectInfoValues, BoxLayout.PAGE_AXIS));
+		projectInfoValues.add(new JLabel("Name: "));
+		projectInfoValues.add(projectName);
+		projectInfoValues.add(new JLabel(" "),"span, grow");
+		projectInfoValues.add(new JLabel("Description: "));
+		projectInfoValues.add(projectDescription);
+		projectInfoValues.add(new JLabel(" "),"span, grow");
+		projectInfoValues.add(new JLabel("Category: ")); 
+		projectInfoValues.add(projectCategory);	
+		add(projectInfoValues);
 		
 	    JPanel activitiesPanel = new JPanel();
 	    activitiesPanel.setLayout(new BoxLayout(activitiesPanel, BoxLayout.PAGE_AXIS));
@@ -54,7 +69,7 @@ public class ActivityPanel extends JPanel {
 					ActivityModifierPanel activityModifier = new ActivityModifierPanel(i, x, thisPanel); 
 					  
 				    JOptionPane activityModifierPane = new JOptionPane();
-				    //activityModifierPane.showInputDialog
+				    activityModifierPane.showConfirmDialog(thisPanel, activityModifier, "Modify activity", JOptionPane.OK_CANCEL_OPTION);
 					
 				}
 				
