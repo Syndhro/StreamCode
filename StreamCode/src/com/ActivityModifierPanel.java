@@ -71,14 +71,14 @@ public class ActivityModifierPanel extends JPanel {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 
-				JTextField activityName2 = new JTextField(15);
+				JTextField activityTitle2 = new JTextField(15);
 				JTextField activityDescription2 = new JTextField(40);
 				JTextField activityPlace2 = new JTextField(15);
 						
 				JPanel activityValues2 = new JPanel();
 				activityValues2.setLayout(new BoxLayout(activityValues2, BoxLayout.PAGE_AXIS));
 				activityValues2.add(new JLabel("Insert title: "));
-				activityValues2.add(activityName2);
+				activityValues2.add(activityTitle2);
 				activityValues2.add(new JLabel(" "),"span, grow");
 				activityValues2.add(new JLabel("Insert description: "));
 				activityValues2.add(activityDescription2);
@@ -90,13 +90,19 @@ public class ActivityModifierPanel extends JPanel {
 				JOptionPane creatingProject = new JOptionPane();
 				int result = creatingProject.showConfirmDialog(thisPanel, activityValues2, "Modify Activity Values", JOptionPane.OK_CANCEL_OPTION);
 				if (result == creatingProject.OK_OPTION){	
+					/*	questa parte va fatta sul server, ci vuole una funzione modify activity
+					Activity activity2 = null;
 						try {
-							client.modifyActivity(activity.getActivityId(), activityName2.getText(), activityDescription2.getText(), activityPlace2.getText(), "Ora attuale");
+							activity2 = Client.getInstance().getManagedProject().get(projectIndex).getActivities().get(activityIndex);
 						} catch (RemoteException e1) {
 							// TODO Auto-generated catch block
 							e1.printStackTrace();
 						}
+						activity2.setName(activityTitle2.getText());
+						activity2.setDescription(activityDescription2.getText());
+						activity2.setPlace(activityPlace2.getText());		
 						
+						*/
 						Window w = SwingUtilities.getWindowAncestor(thisPanel);	//codice per nascondere 
 						w.setVisible(false);									//la vecchia finestra		
 						JOptionPane newactivityPane2 = new JOptionPane();
