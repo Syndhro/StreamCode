@@ -36,7 +36,8 @@ public class ProjectListFrame extends JFrame {
 		
 		ArrayList<Project> managedProjects = new ArrayList<Project>();
 		ArrayList<Project> collaborationProjects = new ArrayList<Project>();
-		ArrayList<JButton> projectButtons = new ArrayList<JButton>();
+		ArrayList<JButton> managedProjectButtons = new ArrayList<JButton>();
+		ArrayList<JButton> collaborationProjectButtons = new ArrayList<JButton>();
 		ArrayList<Notification> notifications = new ArrayList<Notification>();
 		notifications = client.getOfflineNotifications();
 		managedProjects = client.getManagedProject();
@@ -59,11 +60,46 @@ public class ProjectListFrame extends JFrame {
 			button.setText(managedProjects.get(i).getTitle());
 			button.setBackground(Color.YELLOW);
 			mainPanel.add(button);
-			projectButtons.add(button);
+			managedProjectButtons.add(button);
 			button.addActionListener(new ActionListener(){
 				public void actionPerformed(ActionEvent event) {
-					int i = projectButtons.indexOf(event.getSource());
+					int i = managedProjectButtons.indexOf(event.getSource());
 					project = client.getManagedProject().get(i);
+					//OPEN ACTIVITY PANEL------------------------------------------------------------------
+						JOptionPane activityPane = new JOptionPane();
+						ActivityPanel activityPanel = null;
+						try {
+							activityPanel = new ActivityPanel(i, thisFrame, client);
+						} catch (RemoteException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+						int result = activityPane.showConfirmDialog(thisFrame, activityPanel,"Activities", JOptionPane.CLOSED_OPTION);
+						if(result == activityPane.CLOSED_OPTION){
+							setVisible(false);
+							ProjectListFrame projectListFrame = null;
+							try {
+								projectListFrame = new ProjectListFrame(client);
+							} catch (RemoteException e1) {
+								// TODO Auto-generated catch block
+								e1.printStackTrace();
+							}
+							projectListFrame.setLocationRelativeTo(null);
+ 							projectListFrame.setVisible(true);			
+						}
+					}
+			});				
+		}
+		for(int i = 0; i < collaborationProjects.size(); i++){
+			JButton button = new JButton();
+			button.setText(collaborationProjects.get(i).getTitle());
+			button.setBackground(Color.CYAN);
+			mainPanel.add(button);
+			collaborationProjectButtons.add(button);
+			button.addActionListener(new ActionListener(){
+				public void actionPerformed(ActionEvent event) {
+					int i = collaborationProjectButtons.indexOf(event.getSource());
+					project = client.getCollaborationProject().get(i);
 					//OPEN ACTIVITY PANEL------------------------------------------------------------------
 						JOptionPane activityPane = new JOptionPane();
 						ActivityPanel activityPanel = null;
