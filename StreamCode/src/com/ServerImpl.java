@@ -232,7 +232,7 @@ public class ServerImpl extends UnicastRemoteObject implements Subject, ServerIn
 	
 	public Notification createNotification(String type, String description, int targetId){
 		int notificationId = dbManager.getLastNotificationId() + 1;
-		Notification notification = notificationFactory.createNotification(notificationId, type, description, targetId);
+		Notification notification = notificationFactory.createNotification(notificationId, type, description, targetId, false);
 		return notification;
 	}
 	

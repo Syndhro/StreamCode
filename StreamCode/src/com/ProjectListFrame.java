@@ -35,10 +35,10 @@ public class ProjectListFrame extends JFrame {
 		
 		JPanel managedProjectPanel = new JPanel();
 		managedProjectPanel.setLayout(new BoxLayout(managedProjectPanel, BoxLayout.PAGE_AXIS));
-		//managedProjectPanel.setMaximumSize(managedProjectPanel.getPreferredSize());
+		
 		JPanel collaborationProjectPanel = new JPanel();
 		collaborationProjectPanel.setLayout(new BoxLayout(collaborationProjectPanel, BoxLayout.PAGE_AXIS));
-		//collaborationProjectPanel.setMaximumSize(collaborationProjectPanel.getPreferredSize());
+	
 		
 		ArrayList<JButton> managedProjectButtons = new ArrayList<JButton>();
 		ArrayList<JButton> collaborationProjectButtons = new ArrayList<JButton>();

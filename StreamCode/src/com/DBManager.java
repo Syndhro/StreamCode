@@ -448,7 +448,7 @@ public class DBManager implements Serializable{
 				int targetId = resultSet.getInt(5);
 				boolean isDelivered = resultSet.getBoolean(6);
 				String type = resultSet.getString(7);
-				Notification newNotification = notificationFactory.createNotification(notificationId, type, "", targetId);
+				Notification newNotification = notificationFactory.createNotification(notificationId, type, "", targetId, isDelivered);
 				newNotification.setMessage(message);
 				allNotifications.add(newNotification);
 			}
