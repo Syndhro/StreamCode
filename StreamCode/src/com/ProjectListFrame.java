@@ -15,53 +15,55 @@ import java.awt.event.ActionEvent;
 
 public class ProjectListFrame extends JFrame {
 	
+	private static final long serialVersionUID = 1L;
 	ProjectListFrame thisFrame = this;
-
-	private JPanel contentPane;
 	Project project = null;
-	/**
-	 * Launch the application.
-	 */
-
-	/**
-	 * Create the frame.
-	 * @throws RemoteException 
-	 */
+	
 	public ProjectListFrame(Client client) throws RemoteException {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 800, 700);
-		contentPane = new JPanel();
 		Container mainPanel = getContentPane();						
 		mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.PAGE_AXIS));
 		
+		//recupero gli oggetti che mi servono
 		ArrayList<Project> managedProjects = new ArrayList<Project>();
 		ArrayList<Project> collaborationProjects = new ArrayList<Project>();
-		ArrayList<JButton> managedProjectButtons = new ArrayList<JButton>();
-		ArrayList<JButton> collaborationProjectButtons = new ArrayList<JButton>();
-		ArrayList<Notification> notifications = new ArrayList<Notification>();
-		notifications = client.getOfflineNotifications();
+		ArrayList<Notification> notifications = new ArrayList<Notification>();	
 		managedProjects = client.getManagedProject();
 		collaborationProjects = client.getCollaborationProject();
+		notifications = client.getOfflineNotifications();
 		
-	//	JScrollPane scrollPane = new JScrollPane(); 
-		JTextArea notificationsArea = new JTextArea();
-	
+		JPanel managedProjectPanel = new JPanel();
+		managedProjectPanel.setLayout(new BoxLayout(managedProjectPanel, BoxLayout.PAGE_AXIS));
+		//managedProjectPanel.setMaximumSize(managedProjectPanel.getPreferredSize());
+		JPanel collaborationProjectPanel = new JPanel();
+		collaborationProjectPanel.setLayout(new BoxLayout(collaborationProjectPanel, BoxLayout.PAGE_AXIS));
+		//collaborationProjectPanel.setMaximumSize(collaborationProjectPanel.getPreferredSize());
+		
+		ArrayList<JButton> managedProjectButtons = new ArrayList<JButton>();
+		ArrayList<JButton> collaborationProjectButtons = new ArrayList<JButton>();
+		JTextArea notificationsArea = new JTextArea(5, 8);
+		JScrollPane scroll = new JScrollPane (notificationsArea, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+		
+		
+		mainPanel.add(scroll);
+		mainPanel.add(managedProjectPanel);
+		mainPanel.add(collaborationProjectPanel);
+		
 		for(int i = 0; i < notifications.size(); i++){
-			notificationsArea.append(notifications.get(i).message +"\n");
-			
+			notificationsArea.append(notifications.get(i).message +"\n");		
 		}
+
 		
-	//	scrollPane.add(notificationsArea);
-		//mainPanel.add(scrollPane);
-		mainPanel.add(notificationsArea);
 		
+		//MANAGED PROJECTS---------------------------------------------------------------------------------------------
 		for(int i = 0; i < managedProjects.size(); i++){
-			JButton button = new JButton();
-			button.setText(managedProjects.get(i).getTitle());
-			button.setBackground(Color.YELLOW);
-			mainPanel.add(button);
-			managedProjectButtons.add(button);
-			button.addActionListener(new ActionListener(){
+			JButton managedProjectbutton = new JButton();
+			managedProjectbutton.setText(managedProjects.get(i).getTitle());
+			managedProjectbutton.setBackground(Color.YELLOW);
+			managedProjectPanel.add(managedProjectbutton);
+			managedProjectButtons.add(managedProjectbutton);
+			managedProjectbutton.addActionListener(new ActionListener(){
 				public void actionPerformed(ActionEvent event) {
 					int i = managedProjectButtons.indexOf(event.getSource());
 					project = client.getManagedProject().get(i);
@@ -70,61 +72,53 @@ public class ProjectListFrame extends JFrame {
 						ActivityPanel activityPanel = null;
 						try {
 							activityPanel = new ActivityPanel(i, thisFrame, client);
-						} catch (RemoteException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-						int result = activityPane.showConfirmDialog(thisFrame, activityPanel,"Activities", JOptionPane.CLOSED_OPTION);
-						if(result == activityPane.CLOSED_OPTION){
-							setVisible(false);
-							ProjectListFrame projectListFrame = null;
-							try {
+							int result = activityPane.showConfirmDialog(thisFrame, activityPanel,"Activities", JOptionPane.CLOSED_OPTION);
+							if(result == activityPane.CLOSED_OPTION){
+								setVisible(false);
+								ProjectListFrame projectListFrame = null;
 								projectListFrame = new ProjectListFrame(client);
-							} catch (RemoteException e1) {
-								// TODO Auto-generated catch block
-								e1.printStackTrace();
+								projectListFrame.setLocationRelativeTo(null);
+	 							projectListFrame.setVisible(true);	
 							}
-							projectListFrame.setLocationRelativeTo(null);
- 							projectListFrame.setVisible(true);			
-						}
-					}
+						} catch (RemoteException e) {
+							e.printStackTrace();
+						}	
+				}
 			});				
 		}
-		for(int i = 0; i < collaborationProjects.size(); i++){
-			JButton button = new JButton();
-			button.setText(collaborationProjects.get(i).getTitle());
-			button.setBackground(Color.CYAN);
-			mainPanel.add(button);
-			collaborationProjectButtons.add(button);
-			button.addActionListener(new ActionListener(){
-				public void actionPerformed(ActionEvent event) {
-					int i = collaborationProjectButtons.indexOf(event.getSource());
-					project = client.getCollaborationProject().get(i);
+		
+		//COLLABORATION PROJECTS-------------------------------------------------------------------------------------
+		for(int j = 0; j < collaborationProjects.size(); j++){
+			JButton collaborationProjectButton = new JButton();
+			collaborationProjectButton.setText(collaborationProjects.get(j).getTitle());
+			collaborationProjectButton.setBackground(Color.CYAN);
+			collaborationProjectPanel.add(collaborationProjectButton);
+			collaborationProjectButtons.add(collaborationProjectButton);
+			collaborationProjectButton.addActionListener(new ActionListener(){
+				public void actionPerformed(ActionEvent ev) {
+					int k = collaborationProjectButtons.indexOf(ev.getSource());
+					project = client.getCollaborationProject().get(k);
 					//OPEN ACTIVITY PANEL------------------------------------------------------------------
-						JOptionPane activityPane = new JOptionPane();
-						ActivityPanel activityPanel = null;
+						JOptionPane collActivityPane = new JOptionPane();
+						CollabActivityPanel collActivityPanel = null;
 						try {
-							activityPanel = new ActivityPanel(i, thisFrame, client);
+							collActivityPanel = new CollabActivityPanel(k, thisFrame, client);
+							int result = collActivityPane.showConfirmDialog(thisFrame, collActivityPanel,"Activities", JOptionPane.CLOSED_OPTION);
+							if(result == collActivityPane.CLOSED_OPTION){
+								setVisible(false);
+								ProjectListFrame projectListFrame = null;
+								projectListFrame = new ProjectListFrame(client);
+								projectListFrame.setLocationRelativeTo(null);
+	 							projectListFrame.setVisible(true);	
+							}
 						} catch (RemoteException e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
-						int result = activityPane.showConfirmDialog(thisFrame, activityPanel,"Activities", JOptionPane.CLOSED_OPTION);
-						if(result == activityPane.CLOSED_OPTION){
-							setVisible(false);
-							ProjectListFrame projectListFrame = null;
-							try {
-								projectListFrame = new ProjectListFrame(client);
-							} catch (RemoteException e1) {
-								// TODO Auto-generated catch block
-								e1.printStackTrace();
-							}
-							projectListFrame.setLocationRelativeTo(null);
- 							projectListFrame.setVisible(true);			
-						}
 					}
 			});				
 		}
+		
 		//PROJECT SETTINGS--------------------------------------------------------------------------------
 		JPanel projectSettings = new JPanel();
 		
