@@ -29,16 +29,28 @@ public class ProjectListFrame extends JFrame {
 	 */
 	public ProjectListFrame(Client client) throws RemoteException {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 450, 300);
+		setBounds(100, 100, 750, 600);
 		contentPane = new JPanel();
 		Container mainPanel = getContentPane();						
 		mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.PAGE_AXIS));
 		
 		ArrayList<Project> projects = new ArrayList<Project>();
 		ArrayList<JButton> projectButtons = new ArrayList<JButton>();
+		ArrayList<Notification> notifications = new ArrayList<Notification>();
+		notifications = client.getOfflineNotifications();
 		
+	//	JScrollPane scrollPane = new JScrollPane(); 
+		JTextArea notificationsArea = new JTextArea();
+	
+		for(int i = 0; i < notifications.size(); i++){
+			notificationsArea.append(notifications.get(i).message +"\n");
+			
+		}
+		
+	//	scrollPane.add(notificationsArea);
+		//mainPanel.add(scrollPane);
+		mainPanel.add(notificationsArea);
 		projects = client.getManagedProject();
-		
 		for(int i = 0; i < projects.size(); i++){
 			JButton button = new JButton();
 			button.setText(projects.get(i).getTitle());
