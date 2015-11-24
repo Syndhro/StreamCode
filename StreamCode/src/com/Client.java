@@ -164,13 +164,13 @@ public class Client extends UnicastRemoteObject implements ClientInterface{
 	}
 	
 	public ArrayList<Notification> getOfflineNotifications(){
-		ArrayList<Notification> myNotifications = new ArrayList<Notification>();
+		ArrayList<Notification> myOfflineNotifications = new ArrayList<Notification>();
 		try{
-			myNotifications = server.getNotificationsById(myUserId);
+			myOfflineNotifications = server.getOfflineNotificationsById(myUserId);
 		}catch(RemoteException e){
 			e.printStackTrace();
 		}
-		return myNotifications;
+		return myOfflineNotifications;
 	}
 	
 	@Override

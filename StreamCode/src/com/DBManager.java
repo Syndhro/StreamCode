@@ -555,4 +555,22 @@ public class DBManager implements Serializable{
 		}	
 		return notificationIds;
 	}
+	
+	public void modifyNotifications(ArrayList<Notification> deliveredNotifications){
+		PreparedStatement statement = null;
+		String query = "UPDATE notification SET isDelivered = 1 WHERE notificationId = ?";
+		try{
+			statement = (PreparedStatement) connection.prepareStatement(query);
+		}catch(SQLException e){
+			e.printStackTrace();
+		}
+		for(int i = 0; i < deliveredNotifications.size(); i++){
+			try{
+				statement.setInt(1, deliveredNotifications.get(i).getNotificationId());
+				statement.executeUpdate();
+			}catch(SQLException e){
+				e.printStackTrace();
+			}
+		}
+	}
 }

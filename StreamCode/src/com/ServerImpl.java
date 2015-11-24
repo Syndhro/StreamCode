@@ -3,6 +3,7 @@ package com;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.rmi.server.*;
+import java.sql.SQLException;
 
 public class ServerImpl extends UnicastRemoteObject implements Subject, ServerInterface {
 
@@ -495,6 +496,17 @@ public class ServerImpl extends UnicastRemoteObject implements Subject, ServerIn
 			}
 		}
 		return notifications;
+	}
+	
+	public ArrayList<Notification> getOfflineNotificationsById(int userId) throws RemoteException{
+		ArrayList<Notification> notDeliveredNotifications = new ArrayList<Notification>();
+		for(int i = 0; i < registeredNotifications.size(); i++){
+			if(registeredNotifications.get(i).getTargetId() == userId && registeredNotifications.get(i).isDelivered() == false){
+				notDeliveredNotifications.add(registeredNotifications.get(i));
+			}
+		}
+		dbManager.modifyNotifications(notDeliveredNotifications);
+		return notDeliveredNotifications;
 	}
 	
 	public ArrayList<User> getRegisteredUsers() {
