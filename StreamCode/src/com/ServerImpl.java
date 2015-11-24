@@ -197,6 +197,7 @@ public class ServerImpl extends UnicastRemoteObject implements Subject, ServerIn
 		user1.addFriend(user2);
 		dbManager.addFriendship(user1.getUserId(), user2.getUserId());
 		Notification notification = createNotification("friendship", user1.getUsername(), userId2);
+		registeredNotifications.add(notification);
 		if (isClientOnline(userId2)){
 			ClientInterface clientToBeNotified = getClientById(userId2);
 			clientToBeNotified.getNotification(notification);
@@ -242,6 +243,7 @@ public class ServerImpl extends UnicastRemoteObject implements Subject, ServerIn
 		for(int i = 0; i < userIds.size(); i++){
 			int idTarget = userIds.get(i).intValue();
 			Notification notification = createNotification("project_invite", project.getDescription(), idTarget);
+			registeredNotifications.add(notification);
 			user = getUserById(idTarget);
 			if (isClientOnline(idTarget)){
 				ClientInterface clientToBeNotified = getClientById(idTarget);
@@ -263,6 +265,7 @@ public class ServerImpl extends UnicastRemoteObject implements Subject, ServerIn
 			user = project.getCollaborators().get(i);
 			int targetId = user.getUserId();
 			Notification notification = createNotification("project_started", project.getDescription(), targetId);
+			registeredNotifications.add(notification);
 			if(isClientOnline(targetId)){
 				clientToBeNotified = getClientById(targetId);
 				clientToBeNotified.getNotification(notification);
@@ -282,6 +285,7 @@ public class ServerImpl extends UnicastRemoteObject implements Subject, ServerIn
 			user = activity.getActivityCollaborators().get(i);
 			int targetId = user.getUserId();
 			Notification notification = createNotification("activity_completed", activity.getDescription(), user.getUserId());
+			registeredNotifications.add(notification);
 			if(isClientOnline(targetId)){
 				ClientInterface clientToBeNotified = null;
 				clientToBeNotified = getClientById(targetId);
@@ -302,6 +306,7 @@ public class ServerImpl extends UnicastRemoteObject implements Subject, ServerIn
 			User userNextActivity = nextActivity.getActivityCollaborators().get(i);
 			int nextTargetId = userNextActivity.getUserId();
 			Notification nextNotification = createNotification("activity_started", activity.getDescription(), nextTargetId);
+			registeredNotifications.add(nextNotification);
 			if(isClientOnline(nextTargetId)){
 				ClientInterface clientNextActivity = getClientById(nextTargetId);
 				clientNextActivity.getNotification(nextNotification);
@@ -318,6 +323,7 @@ public class ServerImpl extends UnicastRemoteObject implements Subject, ServerIn
 		User user = getUserById(userId);
 		int targetId = user.getUserId();
 		Notification notification = createNotification("agent_added", activity.getDescription(), userId);
+		registeredNotifications.add(notification);
 		if(isClientOnline(targetId)){
 			ClientInterface clientToBeNotified = getClientById(targetId);
 			clientToBeNotified.getNotification(notification);
@@ -513,6 +519,7 @@ public class ServerImpl extends UnicastRemoteObject implements Subject, ServerIn
 		for(int i = 0; i < registeredNotifications.size(); i++){
 			if(registeredNotifications.get(i).getTargetId() == userId && registeredNotifications.get(i).isDelivered() == false){
 				notDeliveredNotifications.add(registeredNotifications.get(i));
+				registeredNotifications.get(i).setDelivered(true);
 			}
 		}
 		dbManager.modifyNotifications(notDeliveredNotifications);
