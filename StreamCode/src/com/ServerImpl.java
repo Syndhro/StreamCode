@@ -487,6 +487,16 @@ public class ServerImpl extends UnicastRemoteObject implements Subject, ServerIn
 		return managedProject;
 	}
 	
+	public ArrayList<Project> getCollaborationProjects(int userId) throws RemoteException{
+		ArrayList<Project> collaborationProject = new ArrayList<Project>();
+		try{
+			collaborationProject = getUserById(userId).getCollaborationProject();
+		}catch(RemoteException e){
+			e.printStackTrace();
+		}
+		return collaborationProject;
+	}
+	
 	public ArrayList<Notification> getNotificationsById(int userId) throws RemoteException{
 		ArrayList<Notification> notifications = new ArrayList<Notification>();
 		for(int i = 0; i < registeredNotifications.size(); i++){

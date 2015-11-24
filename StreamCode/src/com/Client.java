@@ -163,6 +163,17 @@ public class Client extends UnicastRemoteObject implements ClientInterface{
 		return managedProject;
 	}
 	
+	public ArrayList<Project> getCollaborationProject(){
+		ArrayList<Project> collaborationProject = new ArrayList<Project>();
+		try{
+			
+			collaborationProject = server.getCollaborationProjects(myUserId);
+		}catch(RemoteException e){
+			e.printStackTrace();
+		}
+		return collaborationProject;
+	}
+	
 	public ArrayList<Notification> getOfflineNotifications(){
 		ArrayList<Notification> myNotifications = new ArrayList<Notification>();
 		try{
