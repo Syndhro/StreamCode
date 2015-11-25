@@ -410,7 +410,7 @@ public class DBManager implements Serializable{
 				String dateTime = resultSet.getString(6);
 				boolean completed = resultSet.getBoolean(7);
 				boolean active = resultSet.getBoolean(8);
-				Activity newActivity = new Activity(activityId, name, descr, place, dateTime, completed, active);
+				Activity newActivity = new Activity(activityId, name, descr, place, dateTime, active, completed);
 				for(int i = 0; i < ServerImpl.getInstance().getRegisteredProjects().size(); i++){
 					int id = ServerImpl.getInstance().getRegisteredProjects().get(i).getProjectId();
 					if(id == projectId){
