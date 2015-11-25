@@ -84,7 +84,15 @@ public class ProjectListFrame extends JFrame {
 		for(int i = 0; i < managedProjects.size(); i++){
 			JButton managedProjectbutton = new JButton();
 			managedProjectbutton.setText(managedProjects.get(i).getTitle());
-			managedProjectbutton.setBackground(Color.YELLOW);
+			if(managedProjects.get(i).getState().equals(ProjectState.INACTIVE)){
+				managedProjectbutton.setBackground(Color.RED);
+			}
+			else if(managedProjects.get(i).getState().equals(ProjectState.COMPLETED)){
+				managedProjectbutton.setBackground(Color.GREEN);
+			}
+			else{
+				managedProjectbutton.setBackground(Color.YELLOW);
+			}
 			managedProjectPanel.add(managedProjectbutton);
 			managedProjectButtons.add(managedProjectbutton);
 			managedProjectbutton.addActionListener(new ActionListener(){

@@ -57,7 +57,16 @@ public class ActivityPanel extends JPanel {
 		for(int j = 0; j < activities.size(); j++){
 			JButton button = new JButton();
 			button.setText(activities.get(j).getName());
-			button.setBackground(Color.ORANGE);
+			if(activities.get(j).isCompleted()){
+				button.setBackground(Color.GREEN);
+			}
+			else if(activities.get(j).isActive()){
+				button.setBackground(Color.ORANGE);
+			}
+			else{
+				button.setBackground(Color.RED);
+			}
+			
 			activitiesPanel.add(button);		
 			activitiesButtons.add(button);
 			button.addActionListener(new ActionListener(){

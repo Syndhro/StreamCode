@@ -70,6 +70,9 @@ public class ActivityModifierPanel extends JPanel {
 			public void actionPerformed(ActionEvent e) {
 				try {
 					client.completeActivity(activity.getActivityId());
+					completeActivity.setEnabled(false);
+					completeActivity.setText("Completed");
+					completeActivity.setBackground(Color.GREEN);
 				} catch (RemoteException e1) {
 					e1.printStackTrace();
 				}	

@@ -284,6 +284,7 @@ public class ServerImpl extends UnicastRemoteObject implements Subject, ServerIn
 		Activity activity = getActivityById(activityId);	
 		User user;
 		activity.setCompleted(true);
+		activity.setActive(false);
 		for (int i = 0; i < activity.getActivityCollaborators().size(); i++){
 			user = activity.getActivityCollaborators().get(i);
 			int targetId = user.getUserId();
