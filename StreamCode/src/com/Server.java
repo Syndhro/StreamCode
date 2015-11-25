@@ -10,15 +10,15 @@ import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 
 public class Server{
+	
+	private final static ServerImpl server = ServerImpl.getInstance();
+	
   public static void main(String[] args) throws RemoteException, MalformedURLException, NotBoundException {
 
-    final ServerImpl server = ServerImpl.getInstance();
     server.retrieveAllUsers();
 	server.retrieveAllProjects();
 	server.retrieveAllActivities();
 	server.retrieveAllNotifications();
-	
-	ArrayList<Notification> notif = server.getNotificationsById(16);
 	
 	server.linkProjectsToCollaborators();
 	server.linkProjectsToAdmins();

@@ -49,16 +49,6 @@ public class Activity implements Serializable{
 		this.isActive = isActive;	
 	}
 	
-	//change status
-	
-	public void complete() {		//when activity is completed by all users
-		this.isCompleted = true;
-	}
-	
-	public void active() {			//when activity can be complete
-		this.isActive = true;
-	}
-	
 	//add & remove
 
 	public void addAgent(User user) {
