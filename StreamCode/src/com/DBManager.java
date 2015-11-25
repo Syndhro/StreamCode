@@ -379,7 +379,7 @@ public class DBManager implements Serializable{
 						admin = ServerImpl.getInstance().getRegisteredUsers().get(i);
 					}
 				}
-				allProjects.add(new Project(resultSet.getInt(1), resultSet.getString(2), resultSet.getString(3), Category.getCategory(resultSet.getString(4)), admin));
+				allProjects.add(new Project(resultSet.getInt(1), resultSet.getString(2), resultSet.getString(3), Category.getCategory(resultSet.getString(4)), admin, ProjectState.getState(resultSet.getString(6))));
 			}
 		}catch(SQLException e){
 			e.printStackTrace();
@@ -571,6 +571,17 @@ public class DBManager implements Serializable{
 			}catch(SQLException e){
 				e.printStackTrace();
 			}
+		}
+	}
+	public void startProject(Project project){
+		PreparedStatement statement = null;
+		String query = "UPDATE project SET state = active WHERE projectId = ?";
+		try{
+			statement = (PreparedStatement) connection.prepareStatement(query);
+			statement.setInt(1, project.getProjectId());
+			statement.executeUpdate();
+		}catch(SQLException e){
+			e.printStackTrace();
 		}
 	}
 }
