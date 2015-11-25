@@ -256,6 +256,39 @@ public class ActivityPanel extends JPanel {
 			}
 			
 		});
+		
+		//START PROJECT
+		JButton startButton = new JButton("Start Poject");
+		add(startButton);
+		if(project.getState().equals(ProjectState.ACTIVE)){
+			startButton.setEnabled(false);
+			startButton.setText("Started");
+			startButton.setBackground(Color.GREEN);
+		}
+		if(project.getState().equals(ProjectState.COMPLETED)){
+			startButton.setEnabled(false);
+			startButton.setBackground(Color.GREEN);
+			startButton.setText("Completed");
+		}
+		
+		startButton.addActionListener(new ActionListener(){
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if(activitiesButtons.isEmpty()){
+					JOptionPane.showMessageDialog(parentFrame, "You have no activities in this project, so it can't be started.Please add at least one.");
+				}
+				else{
+					if(project.getState().equals(ProjectState.INACTIVE)){
+					try {
+						client.startProject(project.getProjectId());
+					} catch (RemoteException e1) {
+						e1.printStackTrace();
+					}
+					}
+				}			
+			}	
+		});
 	}	
 }
 
