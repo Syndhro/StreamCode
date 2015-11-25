@@ -52,10 +52,7 @@ public class FriendsPanel extends JPanel {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
-				/*
-				CheckBoxPanel checkboxPanel = new CheckBoxPanel(matchingUsers);			
-				JOptionPane.showConfirmDialog(null, checkboxPanel, "Matched users",JOptionPane.OK_CANCEL_OPTION);
-				*/
+				
 				JPanel searchUsers = new JPanel();
 				searchUsers.setLayout(new BoxLayout(searchUsers, BoxLayout.PAGE_AXIS));
 				ArrayList<User> userFriends = client.getUserFriends();

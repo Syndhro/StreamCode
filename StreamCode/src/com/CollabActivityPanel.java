@@ -31,6 +31,7 @@ public class CollabActivityPanel extends JPanel {
 		
 		thisPanel = this;
 		this.parentFrame = parentFrame;
+		int myId = client.getClientId();
 		Project project = client.getCollaborationProject().get(k);
 	    setBounds(100, 100, 500, 336);								 
 	   					
@@ -58,7 +59,15 @@ public class CollabActivityPanel extends JPanel {
 		for(int j = 0; j < activities.size(); j++){
 			JButton button = new JButton();
 			button.setText(activities.get(j).getName());
-			button.setBackground(Color.ORANGE);
+			if(activities.get(j).isActive()){
+				button.setBackground(Color.ORANGE);
+			}
+			else if(activities.get(j).isCompleted()){
+				button.setBackground(Color.GREEN);
+			}
+			else{
+				button.setBackground(Color.RED);
+			}
 			activitiesPanel.add(button);		
 			activitiesButtons.add(button);
 			
@@ -72,6 +81,7 @@ public class CollabActivityPanel extends JPanel {
 					JLabel activityName = new JLabel(activity.getName());
 					JLabel activityDescription = new JLabel(activity.getDescription());
 					JLabel activityPlace = new JLabel(activity.getPlace());
+					JButton completeActivityButton = new JButton("Complete");
 					
 					JPanel activityInfoValues = new JPanel();
 					activityInfoValues.setLayout(new BoxLayout(activityInfoValues, BoxLayout.PAGE_AXIS));
@@ -83,6 +93,40 @@ public class CollabActivityPanel extends JPanel {
 					activityInfoValues.add(new JLabel(" "),"span, grow");
 					activityInfoValues.add(new JLabel("Place: ")); 
 					activityInfoValues.add(activityPlace);	
+					for(int i = 0; i < activity.getActivityCollaborators().size();i++){
+						if (activity.getActivityCollaborators().get(i).getUserId() == myId){
+							activityInfoValues.add(completeActivityButton);
+						}	
+					}
+					if(!activity.isActive()){
+						completeActivityButton.setEnabled(false);
+					}
+					completeActivityButton.addActionListener(new ActionListener(){
+
+						@Override
+						public void actionPerformed(ActionEvent e) {
+							try {
+								client.completeActivity(activity.getActivityId());
+							} catch (RemoteException e1) {
+								e1.printStackTrace();
+							}	
+						}
+						
+					});
+					//ACTIVITY COLLABORATORS
+					JPanel activityCollaboratorsPanel = new JPanel();
+					activityCollaboratorsPanel. setLayout(new BoxLayout(activityCollaboratorsPanel, BoxLayout.PAGE_AXIS));
+					ArrayList<User> activityCollaborators = new ArrayList<User>();
+					ArrayList<JButton> activityCollaboratorsButtons = new ArrayList<JButton>();
+					activityCollaborators = activity.getActivityCollaborators();
+					for(int j = 0; j < activityCollaborators.size(); j++){
+						JButton button = new JButton();
+						button.setText(activityCollaborators.get(j).getUsername());
+						button.setBackground(Color.CYAN);
+						activityCollaboratorsPanel.add(button);		
+						activityCollaboratorsButtons.add(button);
+					}
+					activityInfoValues.add(activityCollaboratorsPanel);
 					JOptionPane.showConfirmDialog(parentFrame, activityInfoValues, "Activity Info", JOptionPane.CLOSED_OPTION);
 				}				
 			});
@@ -90,6 +134,7 @@ public class CollabActivityPanel extends JPanel {
 		}
 		add(activitiesPanel);
 		
+		//PROJECTS COLLABORATORS
 		JPanel collaboratorsPanel = new JPanel();
 		collaboratorsPanel. setLayout(new BoxLayout(collaboratorsPanel, BoxLayout.PAGE_AXIS));
 		ArrayList<User> collaborators = new ArrayList<User>();

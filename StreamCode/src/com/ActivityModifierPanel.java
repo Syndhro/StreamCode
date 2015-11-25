@@ -50,6 +50,7 @@ public class ActivityModifierPanel extends JPanel {
 		JLabel activityName = new JLabel(activity.getName());
 		JLabel activityDescription = new JLabel(activity.getDescription());
 		JLabel activityPlace = new JLabel(activity.getPlace());
+		JButton completeActivity = new JButton("Complete");
 	
 		JPanel activityValues = new JPanel();
 		activityValues.setLayout(new BoxLayout(activityValues, BoxLayout.PAGE_AXIS));
@@ -60,9 +61,21 @@ public class ActivityModifierPanel extends JPanel {
 		activityValues.add(activityDescription);
 		activityValues.add(new JLabel(" "),"span, grow");
 		activityValues.add(new JLabel("Place: ")); //fare combobox
-		activityValues.add(activityPlace);	
+		activityValues.add(activityPlace);
+		activityValues.add(completeActivity);
 		add(activityValues);
 		
+		completeActivity.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				try {
+					client.completeActivity(activity.getActivityId());
+				} catch (RemoteException e1) {
+					e1.printStackTrace();
+				}	
+			}
+			
+		});
 		//MODIFY INFO ACTIVITY-------------------------------------------------
 		JButton modifyInfo = new JButton("Modify Activity Info");
 		add(modifyInfo);
