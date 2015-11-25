@@ -258,29 +258,32 @@ public class ServerImpl extends UnicastRemoteObject implements Subject, ServerIn
 	}
 	@Override
 	public void startProject(int projectId) throws RemoteException{
-		Project project = getProjectById(projectId);	
-		User user;
-		ClientInterface clientToBeNotified;
-		for (int i = 0; i < project.getCollaborators().size(); i++){
-			user = project.getCollaborators().get(i);
-			int targetId = user.getUserId();
-			Notification notification = createNotification("project_started", project.getDescription(), targetId);
-			registeredNotifications.add(notification);
-			if(isClientOnline(targetId)){
-				clientToBeNotified = getClientById(targetId);
-				clientToBeNotified.getNotification(notification);
-				notification.setDelivered(true);
+		Project project = getProjectById(projectId);
+		if (project.getActivities().size() > 0){
+			User user;
+			ClientInterface clientToBeNotified;
+			for (int i = 0; i < project.getCollaborators().size(); i++){
+				user = project.getCollaborators().get(i);
+				int targetId = user.getUserId();
+				Notification notification = createNotification("project_started", project.getDescription(), targetId);
+				registeredNotifications.add(notification);
+				if(isClientOnline(targetId)){
+					clientToBeNotified = getClientById(targetId);
+					clientToBeNotified.getNotification(notification);
+					notification.setDelivered(true);
+				}
+				dbManager.addNotification(notification);
 			}
-			dbManager.addNotification(notification);
+			project.startProject();
+			project.getActivities().get(0).setActive(true);
 		}
-		project.startProject();
 	}
 	
 	@Override 
 	public void completeActivity(int activityId) throws RemoteException{
 		Activity activity = getActivityById(activityId);	
 		User user;
-		activity.complete();
+		activity.setCompleted(true);
 		for (int i = 0; i < activity.getActivityCollaborators().size(); i++){
 			user = activity.getActivityCollaborators().get(i);
 			int targetId = user.getUserId();
