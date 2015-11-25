@@ -275,6 +275,7 @@ public class ServerImpl extends UnicastRemoteObject implements Subject, ServerIn
 				dbManager.addNotification(notification);
 			}
 			project.startProject();
+			dbManager.startProject(project);
 			project.getActivities().get(0).setActive(true);
 		}
 	}
@@ -300,13 +301,15 @@ public class ServerImpl extends UnicastRemoteObject implements Subject, ServerIn
 		}
 		Project currentProject = activity.getParentProject();
 		Activity nextActivity = null;
+		boolean isLast = true;
 		for(int i = 0; i < currentProject.getActivities().size()-1; i++){
 			if(currentProject.getActivities().get(i).equals(activity)){
 				nextActivity = currentProject.getActivities().get(i+1);
+				isLast = false;
 				break;
 			}
 		}
-		if (nextActivity != null){
+		if (!isLast){
 			for(int i=0; i < nextActivity.getActivityCollaborators().size(); i++){
 				User userNextActivity = nextActivity.getActivityCollaborators().get(i);
 				int nextTargetId = userNextActivity.getUserId();
@@ -319,11 +322,11 @@ public class ServerImpl extends UnicastRemoteObject implements Subject, ServerIn
 				}
 			dbManager.addNotification(nextNotification);
 			}
+			nextActivity.setActive(true);
 		}
 		else{
 			currentProject.setState(ProjectState.COMPLETED);
 		}
-		nextActivity.setActive(true);
 	}
 	
 	@Override

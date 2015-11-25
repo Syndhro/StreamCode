@@ -575,7 +575,7 @@ public class DBManager implements Serializable{
 	}
 	public void startProject(Project project){
 		PreparedStatement statement = null;
-		String query = "UPDATE project SET state = active WHERE projectId = ?";
+		String query = "UPDATE project SET state = 'active' WHERE projectId = ?";
 		try{
 			statement = (PreparedStatement) connection.prepareStatement(query);
 			statement.setInt(1, project.getProjectId());
