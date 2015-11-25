@@ -282,6 +282,14 @@ public class ActivityPanel extends JPanel {
 					if(project.getState().equals(ProjectState.INACTIVE)){
 					try {
 						client.startProject(project.getProjectId());
+						JOptionPane.showMessageDialog(parentFrame, "Project started successfully");
+						Window w = SwingUtilities.getWindowAncestor(thisPanel);	//codice per nascondere 
+						w.setVisible(false);									//la vecchia finestra		
+						JOptionPane newactivityPane2 = new JOptionPane();
+						ActivityPanel newactivityPanel2 = null;
+						newactivityPanel2 = new ActivityPanel(i, parentFrame, client);
+						
+						newactivityPane2.showConfirmDialog(thisPanel, newactivityPanel2,"Activities", JOptionPane.CLOSED_OPTION);
 					} catch (RemoteException e1) {
 						e1.printStackTrace();
 					}
