@@ -119,8 +119,10 @@ public class ActivityPanel extends JPanel {
 		JPanel activitySettings = new JPanel();
 		JButton addActivityButton = new JButton("Add activity");
 		JButton addCollaboratorsButton = new JButton("Invite collaborators");
+		JButton removeProject =  new JButton("Delete Project");
 		activitySettings.add(addActivityButton);
 		activitySettings.add(addCollaboratorsButton);
+		activitySettings.add(removeProject);
 		add(activitySettings);
 		addActivityButton.addActionListener(new ActionListener(){
 		
@@ -214,7 +216,28 @@ public class ActivityPanel extends JPanel {
 			}
 		});
 		
-		//MODIFY INFO PROJECT
+		//REMOVE PROJECT-------------------------------------------------------------------------------------------------------------------------------
+		removeProject.addActionListener(new ActionListener() {	
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				try {
+					client.removeProject(project.getProjectId());
+					parentFrame.dispose();
+					/*
+					ProjectListFrame projectListFrame = new ProjectListFrame(client);
+					projectListFrame.setLocationRelativeTo(null);
+					projectListFrame.setVisible(true);	
+					*/
+					
+				} catch (RemoteException e1) {
+					e1.printStackTrace();
+				}
+			}
+		});
+		
+		
+		
+		//MODIFY INFO PROJECT--------------------------------------------------------------------------------------------------------------------------
 		JButton modifyProjectInfo = new JButton("Modify Project Info");
 		add(modifyProjectInfo);
 		modifyProjectInfo.addActionListener(new ActionListener(){
