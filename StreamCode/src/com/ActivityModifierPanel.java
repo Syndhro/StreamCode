@@ -23,10 +23,10 @@ public class ActivityModifierPanel extends JPanel {
 	ActivityPanel parentPanel;
 	Activity activity;
 	
-	public ActivityModifierPanel(int projectIndex, int activityIndex, JPanel thisPanel2, Client client) {
+	public ActivityModifierPanel(int projectIndex, int activityIndex, JPanel previousPanel, ProjectListFrame parentFrame, Client client) {
 		
 		thisPanel = this;
-		this.parentPanel = (ActivityPanel) thisPanel2;
+		this.parentPanel = (ActivityPanel) previousPanel;
 		activity = client.getManagedProject().get(projectIndex).getActivities().get(activityIndex);
 	    setBounds(100, 100, 500, 336);
 	    
@@ -87,6 +87,7 @@ public class ActivityModifierPanel extends JPanel {
 				activityValues2.add(activityPlace2);
 				activityValues2.setVisible(true);
 				
+				//CHIUDERE LA FINESTRA PRECEDENTE
 				JOptionPane creatingProject = new JOptionPane();
 				int result = creatingProject.showConfirmDialog(thisPanel, activityValues2, "Modify Activity Values", JOptionPane.OK_CANCEL_OPTION);
 				if (result == creatingProject.OK_OPTION){	
@@ -98,10 +99,19 @@ public class ActivityModifierPanel extends JPanel {
 						}
 						
 						Window w = SwingUtilities.getWindowAncestor(thisPanel);	//codice per nascondere 
-						w.setVisible(false);									//la vecchia finestra		
+						w.setVisible(false);
+						Window w2 = SwingUtilities.getWindowAncestor(w);
+						w2.setVisible(false);
+						//la vecchia finestra		
 						JOptionPane newactivityPane2 = new JOptionPane();
-						ActivityModifierPanel newactivityPanel2 = new ActivityModifierPanel(projectIndex, activityIndex, thisPanel2, client);
-						newactivityPane2.showConfirmDialog(thisPanel2, newactivityPanel2,"Activities", JOptionPane.CLOSED_OPTION);
+						ActivityPanel newactivityPanel2 = null;
+						try {
+							newactivityPanel2 = new ActivityPanel(projectIndex, parentFrame, client);
+						} catch (RemoteException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						}
+						newactivityPane2.showConfirmDialog(previousPanel, newactivityPanel2,"Activities", JOptionPane.CLOSED_OPTION);
 				}
 				
 			}
@@ -140,7 +150,7 @@ public class ActivityModifierPanel extends JPanel {
 					}
 					JOptionPane invitingFriends = new JOptionPane();
 					int userId = 0;
-					int result2 = invitingFriends.showConfirmDialog(thisPanel2, inviteFriends, "Invite your friends",JOptionPane.OK_CANCEL_OPTION); 
+					int result2 = invitingFriends.showConfirmDialog(previousPanel, inviteFriends, "Invite your friends",JOptionPane.OK_CANCEL_OPTION); 
 					if (result2 == invitingFriends.OK_OPTION){
 						
 						try {
@@ -163,8 +173,8 @@ public class ActivityModifierPanel extends JPanel {
 							Window w = SwingUtilities.getWindowAncestor(thisPanel);	//codice per nascondere 
 							w.setVisible(false);									//la vecchia finestra							
 							JOptionPane newactivityPane = new JOptionPane();
-							ActivityModifierPanel newactivityPanel = new ActivityModifierPanel(projectIndex, activityIndex, thisPanel2, client);
-							newactivityPane.showConfirmDialog(thisPanel2, newactivityPanel,"Activities", JOptionPane.CLOSED_OPTION);
+							ActivityModifierPanel newactivityPanel = new ActivityModifierPanel(projectIndex, activityIndex, previousPanel, parentFrame, client);
+							newactivityPane.showConfirmDialog(previousPanel, newactivityPanel,"Activities", JOptionPane.CLOSED_OPTION);
 						}catch(RemoteException e1) {
 							e1.printStackTrace();
 						}	

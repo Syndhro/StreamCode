@@ -68,7 +68,7 @@ public class CollabActivityPanel extends JPanel {
 					int x = activitiesButtons.indexOf(e.getSource());
 					Activity activity = project.getActivities().get(x);
 					//creare un dialog per modificare l'activity
-					ActivityModifierPanel activityModifier = new ActivityModifierPanel(k, x, (JPanel)thisPanel, client); 
+					ActivityModifierPanel activityModifier = new ActivityModifierPanel(k, x, (JPanel)thisPanel,parentFrame, client); 
 					  
 				    JOptionPane activityModifierPane = new JOptionPane();
 				    int result3 = activityModifierPane.showConfirmDialog(thisPanel, activityModifier, "Modify activity", JOptionPane.OK_CANCEL_OPTION);
