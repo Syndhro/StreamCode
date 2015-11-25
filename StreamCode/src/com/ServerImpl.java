@@ -277,6 +277,7 @@ public class ServerImpl extends UnicastRemoteObject implements Subject, ServerIn
 			project.startProject();
 			dbManager.startProject(project);
 			project.getActivities().get(0).setActive(true);
+			dbManager.activeActivity(project.getActivities().get(0));
 		}
 	}
 	
@@ -285,6 +286,7 @@ public class ServerImpl extends UnicastRemoteObject implements Subject, ServerIn
 		Activity activity = getActivityById(activityId);	
 		User user;
 		activity.setCompleted(true);
+		dbManager.completeActivity(activity);
 		activity.setActive(false);
 		for (int i = 0; i < activity.getActivityCollaborators().size(); i++){
 			user = activity.getActivityCollaborators().get(i);
@@ -323,6 +325,7 @@ public class ServerImpl extends UnicastRemoteObject implements Subject, ServerIn
 			dbManager.addNotification(nextNotification);
 			}
 			nextActivity.setActive(true);
+			dbManager.activeActivity(nextActivity);
 		}
 		else{
 			currentProject.setState(ProjectState.COMPLETED);

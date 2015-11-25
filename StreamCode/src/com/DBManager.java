@@ -584,4 +584,40 @@ public class DBManager implements Serializable{
 			e.printStackTrace();
 		}
 	}
+	
+	public void activeActivity(Activity activity){
+		PreparedStatement statement = null;
+		String query = "UPDATE activity SET isActive = 1 WHERE activityId = ?";
+		try{
+			statement = (PreparedStatement) connection.prepareStatement(query);
+			statement.setInt(1, activity.getActivityId());
+			statement.executeUpdate();
+		}catch(SQLException e){
+			e.printStackTrace();
+		}
+	}
+	
+	public void disactiveActivity(Activity activity){
+		PreparedStatement statement = null;
+		String query = "UPDATE activity SET isActive = 0 WHERE activityId = ?";
+		try{
+			statement = (PreparedStatement) connection.prepareStatement(query);
+			statement.setInt(1, activity.getActivityId());
+			statement.executeUpdate();
+		}catch(SQLException e){
+			e.printStackTrace();
+		}
+	}
+	
+	public void completeActivity(Activity activity){
+		PreparedStatement statement = null;
+		String query = "UPDATE activity SET isCompleted = 1 WHERE activityId = ?";
+		try{
+			statement = (PreparedStatement) connection.prepareStatement(query);
+			statement.setInt(1, activity.getActivityId());
+			statement.executeUpdate();
+		}catch(SQLException e){
+			e.printStackTrace();
+		}
+	}
 }
