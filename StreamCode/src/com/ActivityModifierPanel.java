@@ -64,7 +64,11 @@ public class ActivityModifierPanel extends JPanel {
 		activityValues.add(activityPlace);
 		activityValues.add(completeActivity);
 		add(activityValues);
-		
+		//Complete activity
+		if(!activity.isActive() || activity.isCompleted())
+		{
+			completeActivity.setEnabled(false);
+		}
 		completeActivity.addActionListener(new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent e) {
