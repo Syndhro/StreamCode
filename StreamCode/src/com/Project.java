@@ -16,11 +16,11 @@ public class Project implements Serializable{
 	
 	//constructors
 	
-	public Project(int projectId, String title, String description, Category cat, User admin){
+	public Project(int projectId, String title, String description, Category cat, User admin, ProjectState state){
 		this.projectId = projectId;
 		this.projectCollaborators = new ArrayList<User>();
 		this.projectActivities = new ArrayList<Activity>();
-		this.state = ProjectState.INACTIVE;
+		this.state = state;
 		this.title = title;
 		this.description = description;
 		this.category = cat;
@@ -69,6 +69,10 @@ public class Project implements Serializable{
 	
 	public void setCategory(Category category) {
 		this.category = category;
+	}
+	
+	public void setState(ProjectState state){
+		this.state = state;
 	}
 	
 	//getters

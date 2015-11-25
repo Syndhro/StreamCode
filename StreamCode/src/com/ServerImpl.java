@@ -210,7 +210,7 @@ public class ServerImpl extends UnicastRemoteObject implements Subject, ServerIn
 	public void addProject(String title, String description, Category category, int userId) throws RemoteException {
 		User user = getUserById(userId);
 		int projectId = dbManager.getLastProjectId();
-		Project project = new Project(projectId+1, title, description, category, user);
+		Project project = new Project(projectId+1, title, description, category, user, ProjectState.INACTIVE);
 		registeredProjects.add(project);
 		dbManager.addProject(project);
 		for(int i = 0; i < registeredUsers.size(); i++){
@@ -299,23 +299,28 @@ public class ServerImpl extends UnicastRemoteObject implements Subject, ServerIn
 		}
 		Project currentProject = activity.getParentProject();
 		Activity nextActivity = null;
-		for(int i = 0; i < currentProject.getActivities().size(); i++){
+		for(int i = 0; i < currentProject.getActivities().size()-1; i++){
 			if(currentProject.getActivities().get(i).equals(activity)){
 				nextActivity = currentProject.getActivities().get(i+1);
 				break;
 			}
 		}
-		for(int i=0; i < nextActivity.getActivityCollaborators().size(); i++){
-			User userNextActivity = nextActivity.getActivityCollaborators().get(i);
-			int nextTargetId = userNextActivity.getUserId();
-			Notification nextNotification = createNotification("activity_started", activity.getDescription(), nextTargetId);
-			registeredNotifications.add(nextNotification);
-			if(isClientOnline(nextTargetId)){
-				ClientInterface clientNextActivity = getClientById(nextTargetId);
-				clientNextActivity.getNotification(nextNotification);
-				nextNotification.setDelivered(true);
-			}
+		if (nextActivity != null){
+			for(int i=0; i < nextActivity.getActivityCollaborators().size(); i++){
+				User userNextActivity = nextActivity.getActivityCollaborators().get(i);
+				int nextTargetId = userNextActivity.getUserId();
+				Notification nextNotification = createNotification("activity_started", activity.getDescription(), nextTargetId);
+				registeredNotifications.add(nextNotification);
+				if(isClientOnline(nextTargetId)){
+					ClientInterface clientNextActivity = getClientById(nextTargetId);
+					clientNextActivity.getNotification(nextNotification);
+					nextNotification.setDelivered(true);
+				}
 			dbManager.addNotification(nextNotification);
+			}
+		}
+		else{
+			currentProject.setState(ProjectState.COMPLETED);
 		}
 		nextActivity.setActive(true);
 	}
