@@ -29,6 +29,7 @@ public class ProjectListFrame extends JFrame {
 		ArrayList<Project> managedProjects = new ArrayList<Project>();
 		ArrayList<Project> collaborationProjects = new ArrayList<Project>();
 		ArrayList<Notification> notifications = new ArrayList<Notification>();	
+		
 		managedProjects = client.getManagedProject();
 		collaborationProjects = client.getCollaborationProject();
 		notifications = client.getOfflineNotifications();
@@ -39,6 +40,26 @@ public class ProjectListFrame extends JFrame {
 		JPanel collaborationProjectPanel = new JPanel();
 		collaborationProjectPanel.setLayout(new BoxLayout(collaborationProjectPanel, BoxLayout.PAGE_AXIS));
 	
+		//LISTA DEGLI AMICI----------------------------------------------------------------------------------------------------------------------------
+		JButton friendsButton = new JButton("See your friends :)");
+		
+		friendsButton.addActionListener(new ActionListener(){
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				JPanel friendsPanel = new JPanel();
+				friendsPanel.setLayout(new BoxLayout(friendsPanel, BoxLayout.PAGE_AXIS));
+				ArrayList<User> friends = new ArrayList<User>();
+				friends = client.getUserFriends();
+				for(int i = 0; i < friends.size(); i++){
+					JLabel friendLabel = new JLabel(friends.get(i).getUsername());			
+					friendsPanel.add(friendLabel);
+					friendsPanel.add(new JLabel(" "),"span, grow");
+				}
+				JOptionPane.showConfirmDialog(mainPanel,friendsPanel, "Friends List", JOptionPane.CLOSED_OPTION);
+			}
+			
+		});
 		
 		ArrayList<JButton> managedProjectButtons = new ArrayList<JButton>();
 		ArrayList<JButton> collaborationProjectButtons = new ArrayList<JButton>();
@@ -49,6 +70,7 @@ public class ProjectListFrame extends JFrame {
 		mainPanel.add(scroll);
 		mainPanel.add(managedProjectPanel);
 		mainPanel.add(collaborationProjectPanel);
+		mainPanel.add(friendsButton);
 		
 		for(int i = 0; i < notifications.size(); i++){
 			notificationsArea.append(notifications.get(i).message +"\n");		
