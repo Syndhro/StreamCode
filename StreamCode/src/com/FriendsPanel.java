@@ -76,7 +76,7 @@ public class FriendsPanel extends JPanel {
 						searchUsers.add(b);			
 					}
 				}
-					 
+				if(!checkboxes.isEmpty()){
 				int result = JOptionPane.showConfirmDialog(thisPanel, searchUsers, "Matched users",JOptionPane.OK_CANCEL_OPTION);
 				if(result == JOptionPane.OK_OPTION){
 					ArrayList<Integer> selected = new ArrayList<Integer>();
@@ -98,7 +98,12 @@ public class FriendsPanel extends JPanel {
 					}
 					JOptionPane.showMessageDialog(thisPanel, "You have new friends :)");
 					
+					}
 				}
+				else{
+					JOptionPane.showMessageDialog(thisPanel, "No matches");
+				}
+				
 			}		
 		});
 	}

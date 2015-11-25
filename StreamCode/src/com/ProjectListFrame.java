@@ -65,8 +65,13 @@ public class ProjectListFrame extends JFrame {
 		
 		ArrayList<JButton> managedProjectButtons = new ArrayList<JButton>();
 		ArrayList<JButton> collaborationProjectButtons = new ArrayList<JButton>();
+		JPanel notificationsPanel = new JPanel();
+		notificationsPanel.setLayout(new BoxLayout(notificationsPanel, BoxLayout.PAGE_AXIS));
 		JTextArea notificationsArea = new JTextArea(8, 12);
-		JScrollPane scroll = new JScrollPane (notificationsArea, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+		JLabel notificationsLabel = new JLabel("Notifications");
+		notificationsPanel.add(notificationsLabel);
+		notificationsPanel.add(notificationsArea);
+		JScrollPane scroll = new JScrollPane (notificationsPanel, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
 		
 		
 		mainPanel.add(scroll);
