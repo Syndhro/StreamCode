@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Container;
 import java.awt.EventQueue;
+import java.awt.FlowLayout;
 import java.awt.LayoutManager;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
@@ -21,9 +22,9 @@ public class ProjectListFrame extends JFrame {
 	
 	public ProjectListFrame(Client client) throws RemoteException {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 800, 700);
+		setBounds(100, 100, 600, 400);
 		Container mainPanel = getContentPane();						
-		mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.PAGE_AXIS));
+		mainPanel.setLayout(new FlowLayout());
 		
 		//recupero gli oggetti che mi servono
 		ArrayList<Project> managedProjects = new ArrayList<Project>();
@@ -36,13 +37,14 @@ public class ProjectListFrame extends JFrame {
 		
 		JPanel managedProjectPanel = new JPanel();
 		managedProjectPanel.setLayout(new BoxLayout(managedProjectPanel, BoxLayout.PAGE_AXIS));
+		managedProjectPanel.add(new JLabel("My Projects"));
 		
 		JPanel collaborationProjectPanel = new JPanel();
 		collaborationProjectPanel.setLayout(new BoxLayout(collaborationProjectPanel, BoxLayout.PAGE_AXIS));
+		collaborationProjectPanel.add(new JLabel("Other's Projects"));
 	
 		//LISTA DEGLI AMICI----------------------------------------------------------------------------------------------------------------------------
-		JButton friendsButton = new JButton("See your friends :)");
-		
+		JButton friendsButton = new JButton("See your friends :)");	
 		friendsButton.addActionListener(new ActionListener(){
 
 			@Override
@@ -63,7 +65,7 @@ public class ProjectListFrame extends JFrame {
 		
 		ArrayList<JButton> managedProjectButtons = new ArrayList<JButton>();
 		ArrayList<JButton> collaborationProjectButtons = new ArrayList<JButton>();
-		JTextArea notificationsArea = new JTextArea(5, 8);
+		JTextArea notificationsArea = new JTextArea(8, 12);
 		JScrollPane scroll = new JScrollPane (notificationsArea, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
 		
 		
