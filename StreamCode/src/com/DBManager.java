@@ -353,10 +353,6 @@ public class DBManager implements Serializable{
 		}catch(SQLException e){
 			e.printStackTrace();
 		}
-		
-		for(int i = 0; i < allUsers.size(); i++){
-			System.out.println(allUsers.get(i).toString());
-		}
 		return allUsers;
 	}
 
@@ -383,10 +379,7 @@ public class DBManager implements Serializable{
 			}
 		}catch(SQLException e){
 			e.printStackTrace();
-		}	
-		for(int i = 0; i < allProjects.size(); i++){
-			System.out.println(allProjects.get(i).toString());
-		}	
+		}		
 		return allProjects;
 	}
 	
@@ -423,10 +416,7 @@ public class DBManager implements Serializable{
 			}
 		}catch(SQLException e){
 			e.printStackTrace();
-		}		
-		for(int i = 0; i < allActivity.size(); i++){
-			System.out.println(allActivity.get(i).toString());
-		}		
+		}			
 		return allActivity;
 	}
 	
@@ -454,10 +444,7 @@ public class DBManager implements Serializable{
 			}
 		}catch(SQLException e){
 			e.printStackTrace();
-		}		
-		for(int i = 0; i < allNotifications.size(); i++){
-			System.out.println(allNotifications.get(i).toString());
-		}		
+		}				
 		return allNotifications;
 	}
 	
