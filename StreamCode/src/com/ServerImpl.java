@@ -383,12 +383,14 @@ public class ServerImpl extends UnicastRemoteObject implements Subject, ServerIn
 	public void removeActivity(int projectId, int activityId) throws RemoteException {
 		Project project = getProjectById(projectId);
 		Activity activity = getActivityById(activityId);
+		
 		for(int i = 0; i < activity.getActivityCollaborators().size(); i++){
 			activity.getActivityCollaborators().get(i).getUserActivities().remove(activity);
 		}
 		project.getActivities().remove(activity);
 		dbManager.removeActivity(activity);
 		registeredActivities.remove(activity);
+		
 	}
 	
 	@Override

@@ -31,6 +31,7 @@ public class ActivityPanel extends JPanel {
 		thisPanel = this;
 		this.parentFrame = parentFrame;
 		Project project = client.getManagedProject().get(i);
+		ArrayList<User> collaborators = project.getCollaborators();
 	    setBounds(100, 100, 500, 336);								 
 	   					
 	    JLabel projectName = new JLabel(project.getTitle());
@@ -103,15 +104,35 @@ public class ActivityPanel extends JPanel {
 		
 		JPanel collaboratorsPanel = new JPanel();
 		collaboratorsPanel. setLayout(new BoxLayout(collaboratorsPanel, BoxLayout.PAGE_AXIS));
-		ArrayList<User> collaborators = new ArrayList<User>();
 		ArrayList<JButton> collaboratorsButtons = new ArrayList<JButton>();
-		collaborators = project.getCollaborators();
+		
 		for(int j = 0; j < collaborators.size(); j++){
 			JButton button = new JButton();
 			button.setText(collaborators.get(j).getUsername());
 			button.setBackground(Color.CYAN);
 			collaboratorsPanel.add(button);		
 			collaboratorsButtons.add(button);
+			button.addActionListener(new ActionListener(){
+				@Override
+				public void actionPerformed(ActionEvent event){
+					int i =  collaboratorsButtons.indexOf(event.getSource());
+					int result = JOptionPane.showConfirmDialog(parentFrame, "Are you sure do you want to remove the selected collaborator?");
+					if(result == JOptionPane.YES_OPTION){
+						
+						User collaborator = collaborators.get(i);
+						try {
+							client.removeCollaborator(project.getProjectId(), collaborator.getUserId());
+							Window w = SwingUtilities.getWindowAncestor(thisPanel);	//codice per nascondere 
+							w.setVisible(false);									//la vecchia finestra
+							JOptionPane newactivityPane = new JOptionPane();
+							ActivityPanel newactivityPanel = new ActivityPanel(i, parentFrame, client);
+							newactivityPane.showConfirmDialog(parentFrame, newactivityPanel,"Activities", JOptionPane.CLOSED_OPTION);			
+						} catch (RemoteException e) {
+							e.printStackTrace();
+						}
+					}				
+				}
+			});
 		}
 		add(collaboratorsPanel);
 		
@@ -120,6 +141,8 @@ public class ActivityPanel extends JPanel {
 		JButton addActivityButton = new JButton("Add activity");
 		JButton addCollaboratorsButton = new JButton("Invite collaborators");
 		JButton removeProject =  new JButton("Delete Project");
+		
+		
 		activitySettings.add(addActivityButton);
 		activitySettings.add(addCollaboratorsButton);
 		activitySettings.add(removeProject);
@@ -229,8 +252,6 @@ public class ActivityPanel extends JPanel {
 				}
 			}
 		});
-		
-		
 		
 		//MODIFY INFO PROJECT--------------------------------------------------------------------------------------------------------------------------
 		JButton modifyProjectInfo = new JButton("Modify Project Info");
