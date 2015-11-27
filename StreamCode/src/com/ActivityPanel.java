@@ -223,11 +223,6 @@ public class ActivityPanel extends JPanel {
 				try {
 					client.removeProject(project.getProjectId());
 					parentFrame.dispose();
-					/*
-					ProjectListFrame projectListFrame = new ProjectListFrame(client);
-					projectListFrame.setLocationRelativeTo(null);
-					projectListFrame.setVisible(true);	
-					*/
 					
 				} catch (RemoteException e1) {
 					e1.printStackTrace();

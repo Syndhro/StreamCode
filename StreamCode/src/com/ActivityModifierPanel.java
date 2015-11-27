@@ -22,12 +22,14 @@ public class ActivityModifierPanel extends JPanel {
 	ActivityModifierPanel thisPanel;
 	ActivityPanel parentPanel;
 	Activity activity;
+	Project project;
 	
 	public ActivityModifierPanel(int projectIndex, int activityIndex, JPanel previousPanel, ProjectListFrame parentFrame, Client client) {
 		
 		thisPanel = this;
 		this.parentPanel = (ActivityPanel) previousPanel;
-		activity = client.getManagedProject().get(projectIndex).getActivities().get(activityIndex);
+		project = client.getManagedProject().get(projectIndex);
+		activity = project.getActivities().get(activityIndex);
 	    setBounds(100, 100, 500, 336);
 	    
 	    //ACTIVITY COLLABORATORS LIST
@@ -137,7 +139,35 @@ public class ActivityModifierPanel extends JPanel {
 			}
 			
 		});
-	    
+	    //REMOVE ACTIVITY BUTTON--------------------------------------------------------------------
+		JButton removeActivityButton = new JButton("Remove Activity");
+		add(removeActivityButton);
+		removeActivityButton.addActionListener(new ActionListener(){
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				try {
+					client.removeActivity(project.getProjectId(), activity.getActivityId());
+					Window w = SwingUtilities.getWindowAncestor(thisPanel);	//codice per nascondere 
+					w.setVisible(false);
+					Window w2 = SwingUtilities.getWindowAncestor(w);
+					w2.setVisible(false);
+					//la vecchia finestra		
+					JOptionPane newactivityPane2 = new JOptionPane();
+					ActivityPanel newactivityPanel2 = null;
+					try {
+						newactivityPanel2 = new ActivityPanel(projectIndex, parentFrame, client);
+					} catch (RemoteException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+					newactivityPane2.showConfirmDialog(previousPanel, newactivityPanel2,"Activities", JOptionPane.CLOSED_OPTION);
+				} catch (RemoteException e1) {
+					e1.printStackTrace();
+				};
+				
+			}
+		});
 	    //ADD COLLABORATORS BUTTON--------------------------------------------------
 		JButton addCollaboratorsButton = new JButton("Invite collaborators");
 		add(addCollaboratorsButton);
