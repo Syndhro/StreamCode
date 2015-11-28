@@ -98,21 +98,27 @@ public class CollabActivityPanel extends JPanel {
 							activityInfoValues.add(completeActivityButton);
 						}	
 					}
-					if(!activity.isActive()){
+				
+					if(!activity.isActive() || activity.isCompleted())
+					{
 						completeActivityButton.setEnabled(false);
 					}
 					completeActivityButton.addActionListener(new ActionListener(){
-
 						@Override
 						public void actionPerformed(ActionEvent e) {
 							try {
-								client.completeActivity(activity.getActivityId());
+								client.completeActivity(activity.getActivityId(), client.getClientId());
+								completeActivityButton.setEnabled(false);
+								completeActivityButton.setText("Completed");
+								completeActivityButton.setBackground(Color.GREEN);
 							} catch (RemoteException e1) {
 								e1.printStackTrace();
 							}	
 						}
 						
 					});
+				
+					
 					//ACTIVITY COLLABORATORS
 					JPanel activityCollaboratorsPanel = new JPanel();
 					activityCollaboratorsPanel. setLayout(new BoxLayout(activityCollaboratorsPanel, BoxLayout.PAGE_AXIS));
@@ -127,7 +133,21 @@ public class CollabActivityPanel extends JPanel {
 						activityCollaboratorsButtons.add(button);
 					}
 					activityInfoValues.add(activityCollaboratorsPanel);
-					JOptionPane.showConfirmDialog(parentFrame, activityInfoValues, "Activity Info", JOptionPane.CLOSED_OPTION);
+					int result = JOptionPane.showConfirmDialog(parentFrame, activityInfoValues, "Activity Info", JOptionPane.CLOSED_OPTION);
+					if(result == JOptionPane.OK_OPTION){
+						Window w = SwingUtilities.getWindowAncestor(thisPanel);	//codice per nascondere 
+						w.setVisible(false);									//la vecchia finestra
+									
+						JOptionPane newactivityPane3 = new JOptionPane();
+						CollabActivityPanel newactivityPanel3 = null;
+						try {
+							newactivityPanel3 = new CollabActivityPanel(k, parentFrame, client);
+						} catch (RemoteException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						}
+						newactivityPane3.showConfirmDialog(parentFrame, newactivityPanel3,"Activities", JOptionPane.CLOSED_OPTION);
+					}
 				}				
 			});
 		

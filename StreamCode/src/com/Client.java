@@ -124,8 +124,8 @@ public class Client extends UnicastRemoteObject implements ClientInterface{
 		server.modifyActivity(activityId, name, description, place, dateTime);
 	}
 
-	public void completeActivity(int activityId) throws RemoteException {
-		server.completeActivity(activityId);
+	public void completeActivity(int activityId, int userId) throws RemoteException {
+		server.completeActivity(activityId, userId);
 	}
 	
 	public int getClientId() throws RemoteException{

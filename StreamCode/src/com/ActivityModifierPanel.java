@@ -75,7 +75,7 @@ public class ActivityModifierPanel extends JPanel {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				try {
-					client.completeActivity(activity.getActivityId());
+					client.completeActivity(activity.getActivityId(), client.getClientId());
 					completeActivity.setEnabled(false);
 					completeActivity.setText("Completed");
 					completeActivity.setBackground(Color.GREEN);
