@@ -289,8 +289,9 @@ public class ServerImpl extends UnicastRemoteObject implements Subject, ServerIn
 		Activity activity = getActivityById(activityId);	
 		User user;
 		activity.setCompleted(true);
-		dbManager.completeActivity(activity);
 		activity.setActive(false);
+		dbManager.completeActivity(activity);
+		
 		for (int i = 0; i < activity.getActivityCollaborators().size(); i++){
 			if(activity.getActivityCollaborators().get(i).getUserId()!= userId){
 				user = activity.getActivityCollaborators().get(i);
@@ -303,9 +304,9 @@ public class ServerImpl extends UnicastRemoteObject implements Subject, ServerIn
 					clientToBeNotified.getNotification(notification);
 					notification.setDelivered(true);
 				}
-				dbManager.addNotification(notification);
 			}
 		}
+		
 		Project currentProject = activity.getParentProject();
 		Activity nextActivity = null;
 		boolean isLast = true;
@@ -315,19 +316,21 @@ public class ServerImpl extends UnicastRemoteObject implements Subject, ServerIn
 				isLast = false;
 				break;
 			}
-		}
+		}		
 		if (!isLast){
 			for(int i=0; i < nextActivity.getActivityCollaborators().size(); i++){
 				User userNextActivity = nextActivity.getActivityCollaborators().get(i);
 				int nextTargetId = userNextActivity.getUserId();
-				Notification nextNotification = createNotification("activity_started", activity.getDescription(), nextTargetId);
-				registeredNotifications.add(nextNotification);
-				if(isClientOnline(nextTargetId)){
-					ClientInterface clientNextActivity = getClientById(nextTargetId);
-					clientNextActivity.getNotification(nextNotification);
-					nextNotification.setDelivered(true);
+				if(nextTargetId != userId){
+					Notification nextNotification = createNotification("activity_started", activity.getDescription(), nextTargetId);
+					registeredNotifications.add(nextNotification);
+					if(isClientOnline(nextTargetId)){
+						ClientInterface clientNextActivity = getClientById(nextTargetId);
+						clientNextActivity.getNotification(nextNotification);
+						nextNotification.setDelivered(true);
+					}
+					dbManager.addNotification(nextNotification);
 				}
-			dbManager.addNotification(nextNotification);
 			}
 			nextActivity.setActive(true);
 			dbManager.activeActivity(nextActivity);
@@ -335,6 +338,7 @@ public class ServerImpl extends UnicastRemoteObject implements Subject, ServerIn
 		else{
 			currentProject.setState(ProjectState.COMPLETED);
 		}
+		
 	}
 	
 	@Override

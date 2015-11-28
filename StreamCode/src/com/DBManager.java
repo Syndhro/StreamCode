@@ -611,6 +611,7 @@ public class DBManager implements Serializable{
 			statement = (PreparedStatement) connection.prepareStatement(query);
 			statement.setInt(1, activity.getActivityId());
 			statement.executeUpdate();
+			disactiveActivity(activity);
 		}catch(SQLException e){
 			e.printStackTrace();
 		}
