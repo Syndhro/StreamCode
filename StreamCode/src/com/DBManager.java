@@ -580,6 +580,18 @@ public class DBManager implements Serializable{
 		}
 	}
 	
+	public void completeProject(Project project){
+		PreparedStatement statement = null;
+		String query = "UPDATE project SET state = 'completed' WHERE projectId = ?";
+		try{
+			statement = (PreparedStatement) connection.prepareStatement(query);
+			statement.setInt(1, project.getProjectId());
+			statement.executeUpdate();
+		}catch(SQLException e){
+			e.printStackTrace();
+		}
+	}
+	
 	public void activeActivity(Activity activity){
 		PreparedStatement statement = null;
 		String query = "UPDATE activity SET isActive = 1 WHERE activityId = ?";

@@ -337,6 +337,7 @@ public class ServerImpl extends UnicastRemoteObject implements Subject, ServerIn
 		}
 		else{
 			currentProject.setState(ProjectState.COMPLETED);
+			dbManager.completeProject(currentProject);
 		}
 		
 	}

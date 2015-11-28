@@ -6,6 +6,7 @@ import java.awt.Container;
 import java.awt.EventQueue;
 import java.awt.FlowLayout;
 import java.awt.LayoutManager;
+import java.awt.Window;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 
@@ -25,7 +26,24 @@ public class ProjectListFrame extends JFrame {
 		setBounds(100, 100, 600, 400);
 		Container mainPanel = getContentPane();						
 		mainPanel.setLayout(new FlowLayout());
-		
+		 JButton refresh = new JButton("Refresh");
+		    refresh.addActionListener(new ActionListener(){
+
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					thisFrame.dispose();
+					ProjectListFrame newFrame = null;
+					try {
+						newFrame = new ProjectListFrame(client);
+					} catch (RemoteException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+					newFrame.setLocationRelativeTo(null);
+					newFrame.setVisible(true);
+				}  	
+		    });
+		add(refresh);
 		//recupero gli oggetti che mi servono
 		ArrayList<Project> managedProjects = new ArrayList<Project>();
 		ArrayList<Project> collaborationProjects = new ArrayList<Project>();

@@ -32,8 +32,27 @@ public class ActivityPanel extends JPanel {
 		this.parentFrame = parentFrame;
 		Project project = client.getManagedProject().get(i);
 		ArrayList<User> collaborators = project.getCollaborators();
-	    setBounds(100, 100, 500, 336);								 
-	   					
+	    setBounds(100, 100, 500, 336);			
+	    JButton refresh = new JButton("Refresh");
+	    refresh.addActionListener(new ActionListener(){
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				Window w = SwingUtilities.getWindowAncestor(thisPanel);	//codice per nascondere 
+				w.setVisible(false);									//la vecchia finestra
+							
+				JOptionPane newactivityPane3 = new JOptionPane();
+				ActivityPanel newactivityPanel3 = null;
+				try {
+					newactivityPanel3 = new ActivityPanel(i, parentFrame, client);
+				} catch (RemoteException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				newactivityPane3.showConfirmDialog(parentFrame, newactivityPanel3,"Activities", JOptionPane.CLOSED_OPTION);
+			}  	
+	    });
+	   	add(refresh);	
 	    JLabel projectName = new JLabel(project.getTitle());
 		JLabel projectDescription = new JLabel(project.getDescription());
 		JLabel projectCategory = new JLabel(project.getCategory().toString());
