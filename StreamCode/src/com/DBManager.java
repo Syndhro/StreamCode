@@ -225,7 +225,7 @@ public class DBManager implements Serializable{
 	public void removeProjectMembership(int userId, int projectId) {
 		PreparedStatement statement = null;		
 		try{
-			String query = "DELETE FORM project_membership WHERE userId=? AND projectId=?";
+			String query = "DELETE FROM project_membership WHERE userId=? AND projectId=?";
 			statement = (PreparedStatement) connection.prepareStatement(query);
 			statement.setInt(1, userId);
 			statement.setInt(2, projectId);

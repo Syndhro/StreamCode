@@ -38,7 +38,8 @@ public class CollabActivityPanel extends JPanel {
 	    JLabel projectName = new JLabel(project.getTitle());
 		JLabel projectDescription = new JLabel(project.getDescription());
 		JLabel projectCategory = new JLabel(project.getCategory().toString());
-	
+		JLabel projectAdmin = new JLabel(project.getAdmin().getUsername());
+		
 		JPanel projectInfoValues = new JPanel();
 		projectInfoValues.setLayout(new BoxLayout(projectInfoValues, BoxLayout.PAGE_AXIS));
 		projectInfoValues.add(new JLabel("Name: "));
@@ -49,6 +50,9 @@ public class CollabActivityPanel extends JPanel {
 		projectInfoValues.add(new JLabel(" "),"span, grow");
 		projectInfoValues.add(new JLabel("Category: ")); 
 		projectInfoValues.add(projectCategory);	
+		projectInfoValues.add(new JLabel(" "),"span, grow");
+		projectInfoValues.add(new JLabel("Created by: ")); 
+		projectInfoValues.add(projectAdmin);
 		add(projectInfoValues);
 		
 	    JPanel activitiesPanel = new JPanel();

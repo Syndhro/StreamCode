@@ -115,7 +115,11 @@ public class ServerImpl extends UnicastRemoteObject implements Subject, ServerIn
 
 	public void registerClient(ClientInterface client) throws RemoteException{
 		onlineClients.add(client);
-		//client.getNotification("Registrato");
+	}
+	
+	public void unregisterClient(ClientInterface client) throws RemoteException{
+		onlineClients.remove(client);
+		System.out.println("User with id=" + client.getClientId() + " logged out");
 	}
 
 	public void registerObserver(Observer o) {
@@ -162,9 +166,8 @@ public class ServerImpl extends UnicastRemoteObject implements Subject, ServerIn
 	}
 
 	@Override
-	public void logout(int userId) throws RemoteException {
-		User user = getUserById(userId);
-		removeObserver(user); //rimuovo utente dalla lista degli utenti loggati	
+	public void logout(ClientInterface client) throws RemoteException {
+		unregisterClient(client); //rimuovo utente dalla lista degli utenti loggati	
 	}
 	
 	public boolean isClientOnline(int clientId) throws RemoteException{
@@ -355,8 +358,8 @@ public class ServerImpl extends UnicastRemoteObject implements Subject, ServerIn
 	//REMOVERS-----------------------------------------------------------------------------------
 
 	@Override
-	public void unregisterUser(int userId, String password) throws RemoteException {
-		logout(userId);
+	public void unregisterUser(int userId, String password, ClientInterface client) throws RemoteException {
+		logout(client);
 		User user = getUserById(userId);
 		dbManager.removeUser(user.getUsername(), password);
 		registeredUsers.remove(user);

@@ -37,6 +37,8 @@ public class ActivityPanel extends JPanel {
 	    JLabel projectName = new JLabel(project.getTitle());
 		JLabel projectDescription = new JLabel(project.getDescription());
 		JLabel projectCategory = new JLabel(project.getCategory().toString());
+		
+		
 	
 		JPanel projectInfoValues = new JPanel();
 		projectInfoValues.setLayout(new BoxLayout(projectInfoValues, BoxLayout.PAGE_AXIS));
