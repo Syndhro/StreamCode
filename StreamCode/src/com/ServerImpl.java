@@ -388,6 +388,11 @@ public class ServerImpl extends UnicastRemoteObject implements Subject, ServerIn
 			activity.getActivityCollaborators().get(i).getUserActivities().remove(activity);
 		}
 		project.getActivities().remove(activity);
+		if (activity.isActive()){
+			int activityPosition = project.getActivities().indexOf(activity);
+			if(activityPosition != -1)
+				project.getActivities().get(activityPosition+1).setActive(true);
+		}
 		dbManager.removeActivity(activity);
 		registeredActivities.remove(activity);
 		
