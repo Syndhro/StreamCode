@@ -161,12 +161,11 @@ public class DBManager implements Serializable{
 	public void removeUser(String username, String password) {
 		PreparedStatement statement = null;
 		try{
-			String query = "DELETE from user WHERE username=? AND password=?";
+			String query = "DELETE FROM user WHERE user.username=? AND user.password=?";
 			statement = (PreparedStatement) connection.prepareStatement(query);
 			statement.setString(1, username);
 			statement.setString(2, password);
-			statement.executeUpdate();	
-
+			statement.executeUpdate();
 		}catch(SQLException e){ 
 			e.printStackTrace();
 		}
@@ -175,10 +174,15 @@ public class DBManager implements Serializable{
 	public void removeProject(Project project) {
 		PreparedStatement statement = null;
 		try{
-			String query = "DELETE from project WHERE projectId=?";
+			String query = "DELETE p.* , a.* FROM project p INNER JOIN activity a ON p.projectId = a.projectId WHERE p.projectId = ?";
 			statement = (PreparedStatement) connection.prepareStatement(query);
 			statement.setInt(1, project.getProjectId());
-			statement.executeUpdate();	
+			statement.executeUpdate();
+			
+			String query2 = "DELETE pm.* , am.* FROM project_membership pm INNER JOIN activity_membership am ON pm.userId = am.userId WHERE pm.projectId = ?";
+			statement = (PreparedStatement) connection.prepareStatement(query2);
+			statement.setInt(1, project.getProjectId());
+			statement.executeUpdate();
 
 		}catch(SQLException e){
 			e.printStackTrace();
@@ -189,10 +193,14 @@ public class DBManager implements Serializable{
 	public void removeActivity(Activity activity) {
 		PreparedStatement statement = null;
 		try{
-			String query = "DELETE from activity WHERE activityId=?";
+			String query = "DELETE FROM activity WHERE activityId=?";
 			statement = (PreparedStatement) connection.prepareStatement(query);
 			statement.setInt(1, activity.getActivityId());
-			statement.executeUpdate();	
+			statement.executeUpdate();
+			
+			String query2 = "DELETE FROM activity_membership WHERE activityId=?";
+			statement = (PreparedStatement) connection.prepareStatement(query2);
+			statement.setInt(1, activity.getActivityId());
 
 		}catch(SQLException e){
 			e.printStackTrace();
@@ -203,7 +211,7 @@ public class DBManager implements Serializable{
 	public void removeFriendship(int user1, int user2) {
 		PreparedStatement statement = null;		
 		try{
-			String query = "DELETE from friendship WHERE userId1=? AND userId2=?";
+			String query = "DELETE FROM friendship WHERE userId1=? userId2=?";
 			statement = (PreparedStatement) connection.prepareStatement(query);
 			statement.setInt(1, user1);
 			statement.setInt(2, user2);
@@ -217,7 +225,7 @@ public class DBManager implements Serializable{
 	public void removeProjectMembership(int userId, int projectId) {
 		PreparedStatement statement = null;		
 		try{
-			String query = "DELETE from project_membership WHERE userId=? AND projectId=?";
+			String query = "DELETE FORM project_membership WHERE userId=? AND projectId=?";
 			statement = (PreparedStatement) connection.prepareStatement(query);
 			statement.setInt(1, userId);
 			statement.setInt(2, projectId);
@@ -231,7 +239,7 @@ public class DBManager implements Serializable{
 	public void removeActivityMembership(int userId, int activityId) {
 		PreparedStatement statement = null;		
 		try{
-			String query = "DELETE from activity_membership WHERE userId=? AND activityId=?";
+			String query = "DELETE FROM activity_membership WHERE userId=? AND activityId=?";
 			statement = (PreparedStatement) connection.prepareStatement(query);
 			statement.setInt(1, userId);
 			statement.setInt(2, activityId);
@@ -244,7 +252,7 @@ public class DBManager implements Serializable{
 	public void removeNotification(int notificationId) {
 		PreparedStatement statement = null;		
 		try{
-			String query = "DELETE from notification WHERE notificationId=?";
+			String query = "DELETE FROM notification WHERE notificationId=?";
 			statement = (PreparedStatement) connection.prepareStatement(query);
 			statement.setInt(1, notificationId);
 			statement.executeUpdate();	
