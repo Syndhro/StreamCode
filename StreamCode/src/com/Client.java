@@ -72,7 +72,7 @@ public class Client extends UnicastRemoteObject implements ClientInterface{
 
 
 	public void removeActivity(int projectId, int activityId) throws RemoteException {
-		server.removeActivity(projectId, activityId);
+		server.removeActivity(projectId, activityId, this.myUserId);
 	}
 
 
