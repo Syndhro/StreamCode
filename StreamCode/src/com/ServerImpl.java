@@ -293,8 +293,8 @@ public class ServerImpl extends UnicastRemoteObject implements Subject, ServerIn
 		dbManager.completeActivity(activity);
 		
 		for (int i = 0; i < activity.getActivityCollaborators().size(); i++){
-			if(activity.getActivityCollaborators().get(i).getUserId()!= userId){
-				user = activity.getActivityCollaborators().get(i);
+			user = activity.getActivityCollaborators().get(i);
+			if(user.getUserId()!= userId){
 				int targetId = user.getUserId();
 				Notification notification = createNotification("activity_completed", activity.getDescription(), user.getUserId());
 				registeredNotifications.add(notification);
@@ -415,6 +415,11 @@ public class ServerImpl extends UnicastRemoteObject implements Subject, ServerIn
 		project.getCollaborators().remove(user);
 		user.getCollaborationProject().remove(project);
 		dbManager.removeProjectMembership(user.getUserId(), project.getProjectId());
+		for (int i = 0; i < project.getActivities().size(); i++){
+			Activity activity = project.getActivities().get(i);
+			activity.removeAgent(user);
+			user.getUserActivities().remove(activity);
+		}
 	}
 
 	@Override

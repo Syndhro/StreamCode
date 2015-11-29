@@ -165,7 +165,13 @@ public class ActivityPanel extends JPanel {
 		
 		
 		activitySettings.add(addActivityButton);
+		if(project.getState() == ProjectState.COMPLETED){
+			addActivityButton.setEnabled(false);
+		}
 		activitySettings.add(addCollaboratorsButton);
+		if(project.getState() == ProjectState.COMPLETED){
+			addCollaboratorsButton.setEnabled(false);
+		}
 		activitySettings.add(removeProject);
 		add(activitySettings);
 		addActivityButton.addActionListener(new ActionListener(){
@@ -277,6 +283,9 @@ public class ActivityPanel extends JPanel {
 		//MODIFY INFO PROJECT--------------------------------------------------------------------------------------------------------------------------
 		JButton modifyProjectInfo = new JButton("Modify Project Info");
 		add(modifyProjectInfo);
+		if(project.getState() == ProjectState.COMPLETED){
+			modifyProjectInfo.setEnabled(false);
+		}
 		modifyProjectInfo.addActionListener(new ActionListener(){
 
 			@Override

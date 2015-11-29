@@ -88,6 +88,9 @@ public class ActivityModifierPanel extends JPanel {
 		//MODIFY INFO ACTIVITY-------------------------------------------------
 		JButton modifyInfo = new JButton("Modify Activity Info");
 		add(modifyInfo);
+		if(activity.isCompleted()){
+			modifyInfo.setEnabled(false);
+		}
 		modifyInfo.addActionListener(new ActionListener(){
 
 			@Override
@@ -170,6 +173,9 @@ public class ActivityModifierPanel extends JPanel {
 		});
 	    //ADD COLLABORATORS BUTTON--------------------------------------------------
 		JButton addCollaboratorsButton = new JButton("Invite collaborators");
+		if(activity.isCompleted()){
+			addCollaboratorsButton.setEnabled(false);
+		}
 		add(addCollaboratorsButton);
 	    addCollaboratorsButton.addActionListener(new ActionListener(){
 			@Override
