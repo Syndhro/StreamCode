@@ -393,50 +393,47 @@ public class ServerImpl extends UnicastRemoteObject implements Subject, ServerIn
 	public void removeActivity(int projectId, int activityId, int userId) throws RemoteException {
 		Project project = getProjectById(projectId);
 		Activity activity = getActivityById(activityId);
+		boolean isLast = true;
+		Activity nextActivity = null;
 		
 		for(int i = 0; i < activity.getActivityCollaborators().size(); i++){
 			activity.getActivityCollaborators().get(i).getUserActivities().remove(activity);
 		}
-		project.getActivities().remove(activity);
 		if (activity.isActive()){
 			int activityPosition = project.getActivities().indexOf(activity);
-			if(activityPosition != -1)
-				project.getActivities().get(activityPosition+1).setActive(true);
-		}
-		dbManager.removeActivity(activity);
-		registeredActivities.remove(activity);
-		
-		Activity nextActivity = null;
-		boolean isLast = true;
-		for(int i = 0; i < project.getActivities().size()-1; i++){
-			if(project.getActivities().get(i).equals(activity)){
-				nextActivity = project.getActivities().get(i+1);
-				isLast = false;
-				break;
-			}
-		}		
-		if (!isLast){
-			for(int i=0; i < nextActivity.getActivityCollaborators().size(); i++){
-				User userNextActivity = nextActivity.getActivityCollaborators().get(i);
-				int nextTargetId = userNextActivity.getUserId();
-				if(nextTargetId != userId){
-					Notification nextNotification = createNotification("activity_started", activity.getDescription(), nextTargetId);
-					registeredNotifications.add(nextNotification);
-					if(isClientOnline(nextTargetId)){
-						ClientInterface clientNextActivity = getClientById(nextTargetId);
-						clientNextActivity.getNotification(nextNotification);
-						nextNotification.setDelivered(true);
-					}
-					dbManager.addNotification(nextNotification);
+			if(activityPosition != -1){
+				if(activityPosition != (project.getActivities().size() - 1)){ //se è l ultimo elemento della lista
+					nextActivity = project.getActivities().get(activityPosition+1);
+					nextActivity.setActive(true);
+					dbManager.activeActivity(nextActivity);
+					isLast = false;
 				}
 			}
-			nextActivity.setActive(true);
-			dbManager.activeActivity(nextActivity);
+			if (!isLast){
+				for(int i=0; i < nextActivity.getActivityCollaborators().size(); i++){
+					User userNextActivity = nextActivity.getActivityCollaborators().get(i);
+					int nextTargetId = userNextActivity.getUserId();
+					if(nextTargetId != userId){
+						Notification nextNotification = createNotification("activity_started", activity.getDescription(), nextTargetId);
+						registeredNotifications.add(nextNotification);
+						if(isClientOnline(nextTargetId)){
+							ClientInterface clientNextActivity = getClientById(nextTargetId);
+							clientNextActivity.getNotification(nextNotification);
+							nextNotification.setDelivered(true);
+						}
+						dbManager.addNotification(nextNotification);
+					}
+				}
+			}
+			else{
+				project.setState(ProjectState.COMPLETED);
+				dbManager.completeProject(project);
+			}
+			
 		}
-		else{
-			project.setState(ProjectState.COMPLETED);
-			dbManager.completeProject(project);
-		}
+		project.getActivities().remove(activity);	
+		dbManager.removeActivity(activity);
+		registeredActivities.remove(activity);			
 	}
 	
 	@Override
