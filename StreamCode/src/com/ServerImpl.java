@@ -593,6 +593,11 @@ public class ServerImpl extends UnicastRemoteObject implements Subject, ServerIn
 		return collaborationProject;
 	}
 	
+	public ArrayList<Activity> getMyActivities(int userId) throws RemoteException{
+		ArrayList<Activity> myActivities = new ArrayList<Activity>();
+		myActivities = getUserById(userId).getUserActivities();
+		return myActivities;
+	}
 	public ArrayList<Notification> getNotificationsById(int userId) throws RemoteException{
 		ArrayList<Notification> notifications = new ArrayList<Notification>();
 		for(int i = 0; i < registeredNotifications.size(); i++){

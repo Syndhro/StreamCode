@@ -20,10 +20,11 @@ public class ProjectListFrame extends JFrame {
 	private static final long serialVersionUID = 1L;
 	ProjectListFrame thisFrame = this;
 	Project project = null;
+	Activity activity = null;
 	
 	public ProjectListFrame(Client client) throws RemoteException {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 600, 400);
+		setBounds(100, 100, 700, 400);
 		Container mainPanel = getContentPane();						
 		mainPanel.setLayout(new FlowLayout());
 		 JButton refresh = new JButton("Refresh");
@@ -48,10 +49,12 @@ public class ProjectListFrame extends JFrame {
 		ArrayList<Project> managedProjects = new ArrayList<Project>();
 		ArrayList<Project> collaborationProjects = new ArrayList<Project>();
 		ArrayList<Notification> notifications = new ArrayList<Notification>();	
+		ArrayList<Activity> activities = new ArrayList<Activity>();
 		
 		managedProjects = client.getManagedProject();
 		collaborationProjects = client.getCollaborationProject();
 		notifications = client.getOfflineNotifications();
+		activities = client.getMyActivities();
 		
 		JPanel managedProjectPanel = new JPanel();
 		managedProjectPanel.setLayout(new BoxLayout(managedProjectPanel, BoxLayout.PAGE_AXIS));
@@ -85,14 +88,22 @@ public class ProjectListFrame extends JFrame {
 		ArrayList<JButton> collaborationProjectButtons = new ArrayList<JButton>();
 		JPanel notificationsPanel = new JPanel();
 		notificationsPanel.setLayout(new BoxLayout(notificationsPanel, BoxLayout.PAGE_AXIS));
+		JPanel activitiesPanel = new JPanel();
+		activitiesPanel.setLayout(new BoxLayout(activitiesPanel, BoxLayout.PAGE_AXIS));
 		JTextArea notificationsArea = new JTextArea(8, 12);
+		JTextArea myActivitiesArea = new JTextArea(10, 14);
 		JLabel notificationsLabel = new JLabel("Notifications");
+		JLabel activityiesLabel = new JLabel("My Activities");
 		notificationsPanel.add(notificationsLabel);
 		notificationsPanel.add(notificationsArea);
+		activitiesPanel.add(activityiesLabel);
+		activitiesPanel.add(myActivitiesArea);
 		JScrollPane scroll = new JScrollPane (notificationsPanel, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+		JScrollPane scrollActivities = new JScrollPane (activitiesPanel, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
 		
 		
 		mainPanel.add(scroll);
+		mainPanel.add(scrollActivities);
 		mainPanel.add(managedProjectPanel);
 		mainPanel.add(collaborationProjectPanel);
 		mainPanel.add(friendsButton);
@@ -173,6 +184,27 @@ public class ProjectListFrame extends JFrame {
 					}
 			});				
 		}
+		
+		//GENERAL ACTIVITIES
+	
+		for(int j = 0; j < activities.size(); j++){
+			JLabel activityLabel = new JLabel(activities.get(j).getName());
+			JLabel parentProjectLabel = new JLabel(activities.get(j).getParentProject().getTitle());
+			JLabel activityActive = new JLabel("yes");
+			JLabel activityNoActive = new JLabel("no");
+			myActivitiesArea.append("Name Activity: " + activities.get(j).getName() + "\n");
+			myActivitiesArea.append("Name Project: " + activities.get(j).getParentProject().getTitle() + "\n");			
+			if(activities.get(j).isActive()){			
+				myActivitiesArea.append("Active: yes" + "\n"); 
+			}
+			else{
+				myActivitiesArea.append("Active: no" + "\n"); 			
+			}
+			myActivitiesArea.append("\n");
+		}
+		
+		
+		
 		
 		//PROJECT SETTINGS--------------------------------------------------------------------------------
 		JPanel projectSettings = new JPanel();
