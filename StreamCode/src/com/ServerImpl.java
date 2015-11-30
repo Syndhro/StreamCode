@@ -16,6 +16,7 @@ public class ServerImpl extends UnicastRemoteObject implements Subject, ServerIn
 	private ArrayList<Observer> loggedUsers;
 	private ArrayList<Notification> registeredNotifications;
 	private ArrayList<ClientInterface> onlineClients;
+	private ServerInterfaceObserver serverInterface;
 	
 	//CONSTRUCTORS---------------------------------------------------------------------
 
@@ -139,6 +140,14 @@ public class ServerImpl extends UnicastRemoteObject implements Subject, ServerIn
 		}
 	}
 	
+	public void addInterfaceObserver(ServerInterfaceObserver serverInterface){
+		this.serverInterface = serverInterface;
+	}
+	
+	public void updateInterface(){
+		serverInterface.update();
+	}
+	
 	//LOGIN-LOGOUT----------------------------------------------------------------------------
 	@Override
 	public int check(String username, String password) throws RemoteException {
@@ -166,6 +175,7 @@ public class ServerImpl extends UnicastRemoteObject implements Subject, ServerIn
 				if(registeredUsers.get(i).getUsername().equals(username)){
 					userId = registeredUsers.get(i).getUserId();
 					registerClient(client);
+					updateInterface();
 				}
 			}
 		return userId;
@@ -173,7 +183,8 @@ public class ServerImpl extends UnicastRemoteObject implements Subject, ServerIn
 
 	@Override
 	public void logout(ClientInterface client) throws RemoteException {
-		unregisterClient(client); //rimuovo utente dalla lista degli utenti loggati	
+		unregisterClient(client); //rimuovo utente dalla lista degli utenti loggati
+		updateInterface();
 	}
 	
 	public boolean isClientOnline(int clientId) throws RemoteException{
@@ -197,6 +208,7 @@ public class ServerImpl extends UnicastRemoteObject implements Subject, ServerIn
 		int id = dbManager.getUserId(username, password);
 		User user = new User(id, username);
 		registeredUsers.add(user);
+		updateInterface();
 	}
 	
 	@Override
@@ -225,6 +237,7 @@ public class ServerImpl extends UnicastRemoteObject implements Subject, ServerIn
 		for(int i = 0; i < registeredUsers.size(); i++){
 			if(user.getUsername().equals(registeredUsers.get(i).getUsername())){
 				registeredUsers.get(i).addManagedProject(project);
+				updateInterface();
 			}
 		}
 	}
@@ -287,6 +300,7 @@ public class ServerImpl extends UnicastRemoteObject implements Subject, ServerIn
 			dbManager.startProject(project);
 			project.getActivities().get(0).setActive(true);
 			dbManager.activeActivity(project.getActivities().get(0));
+			updateInterface();
 		}
 	}
 	
@@ -344,6 +358,7 @@ public class ServerImpl extends UnicastRemoteObject implements Subject, ServerIn
 		else{
 			currentProject.setState(ProjectState.COMPLETED);
 			dbManager.completeProject(currentProject);
+			updateInterface();
 		}
 		
 	}
@@ -374,6 +389,7 @@ public class ServerImpl extends UnicastRemoteObject implements Subject, ServerIn
 		User user = getUserById(userId);
 		dbManager.removeUser(user.getUsername(), password);
 		registeredUsers.remove(user);
+		updateInterface();
 	}
 	
 	@Override
@@ -393,6 +409,7 @@ public class ServerImpl extends UnicastRemoteObject implements Subject, ServerIn
 		}
 		dbManager.removeProject(project);
 		registeredProjects.remove(project);
+		updateInterface();
 	}
 	
 	@Override
@@ -434,6 +451,7 @@ public class ServerImpl extends UnicastRemoteObject implements Subject, ServerIn
 			else{
 				project.setState(ProjectState.COMPLETED);
 				dbManager.completeProject(project);
+				//DA VEDERE STA ROBA QUA
 			}
 			
 		}
@@ -607,6 +625,30 @@ public class ServerImpl extends UnicastRemoteObject implements Subject, ServerIn
 	
 	public ArrayList<Activity> getRegisteredActivities() {
 		return registeredActivities;
+	}
+	
+	public ArrayList<ClientInterface> getOnlineClients() {
+		return onlineClients;
+	}
+	
+	public ArrayList<Project> getActiveProjects(){
+		ArrayList<Project> activeProjects = new ArrayList<Project>();
+		for (int i = 0; i < registeredProjects.size(); i++){
+			if(registeredProjects.get(i).getState() == ProjectState.ACTIVE){
+				activeProjects.add(registeredProjects.get(i));
+			}
+		}
+		return activeProjects;
+	}
+	
+	public ArrayList<Project> getCompletedProjects(){
+		ArrayList<Project> completedProjects = new ArrayList<Project>();
+		for (int i = 0; i < registeredProjects.size(); i++){
+			if(registeredProjects.get(i).getState() == ProjectState.COMPLETED){
+				completedProjects.add(registeredProjects.get(i));
+			}
+		}
+		return completedProjects;
 	}
 	
 	//TEST PRINT-----------------------------------------------------------------------------------
