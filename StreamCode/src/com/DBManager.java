@@ -174,15 +174,30 @@ public class DBManager implements Serializable{
 	public void removeProject(Project project) {
 		PreparedStatement statement = null;
 		try{
-			String query = "DELETE p.* , a.* FROM project p INNER JOIN activity a ON p.projectId = a.projectId WHERE p.projectId = ?";
+			String query = "DELETE FROM project WHERE projectId = ?";
 			statement = (PreparedStatement) connection.prepareStatement(query);
 			statement.setInt(1, project.getProjectId());
 			statement.executeUpdate();
 			
-			String query2 = "DELETE pm.* , am.* FROM project_membership pm INNER JOIN activity_membership am ON pm.userId = am.userId WHERE pm.projectId = ?";
+			String query2 = "DELETE FROM activity a ON WHERE projectId = ?";
 			statement = (PreparedStatement) connection.prepareStatement(query2);
 			statement.setInt(1, project.getProjectId());
 			statement.executeUpdate();
+			
+			String query3 = "DELETE FROM project_membership WHERE projectId = ?";
+			statement = (PreparedStatement) connection.prepareStatement(query3);
+			statement.setInt(1, project.getProjectId());
+			statement.executeUpdate();
+			
+			ArrayList<Activity> projectActivities = project.getActivities();
+			
+			for(int i = 0; i < projectActivities.size(); i++){
+				int activityId = projectActivities.get(i).getActivityId();
+				String query4 = "DELETE FROM activity_membership WHERE activityId = ?";
+				statement = (PreparedStatement) connection.prepareStatement(query4);
+				statement.setInt(1, activityId);
+				statement.executeUpdate();
+			}
 
 		}catch(SQLException e){
 			e.printStackTrace();
@@ -193,8 +208,13 @@ public class DBManager implements Serializable{
 	public void removeActivity(Activity activity) {
 		PreparedStatement statement = null;
 		try{
-			String query = "DELETE a.* , am.* FROM activity a INNER JOIN activity_membership am ON am.activityId = a.activityId WHERE a.activityId=?";
+			String query = "DELETE FROM activity WHERE activityId=?";
 			statement = (PreparedStatement) connection.prepareStatement(query);
+			statement.setInt(1, activity.getActivityId());
+			statement.executeUpdate();
+			
+			String query2 = "DELETE FROM activity_membership WHERE activityId=?";
+			statement = (PreparedStatement) connection.prepareStatement(query2);
 			statement.setInt(1, activity.getActivityId());
 			statement.executeUpdate();
 
@@ -223,6 +243,12 @@ public class DBManager implements Serializable{
 		try{
 			String query = "DELETE pm.* , am.* FROM project_membership pm INNER JOIN activity_membership am ON am.userId = pm.userId WHERE pm.userId=? AND projectId=?";
 			statement = (PreparedStatement) connection.prepareStatement(query);
+			statement.setInt(1, userId);
+			statement.setInt(2, projectId);
+			statement.executeUpdate();
+			
+			String query2 = "DELETE FROM project_membership WHERE userId=? AND projectId=?";
+			statement = (PreparedStatement) connection.prepareStatement(query2);
 			statement.setInt(1, userId);
 			statement.setInt(2, projectId);
 			statement.executeUpdate();
