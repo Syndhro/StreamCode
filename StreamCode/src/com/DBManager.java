@@ -179,7 +179,7 @@ public class DBManager implements Serializable{
 			statement.setInt(1, project.getProjectId());
 			statement.executeUpdate();
 			
-			String query2 = "DELETE FROM activity a ON WHERE projectId = ?";
+			String query2 = "DELETE FROM activity WHERE projectId = ?";
 			statement = (PreparedStatement) connection.prepareStatement(query2);
 			statement.setInt(1, project.getProjectId());
 			statement.executeUpdate();

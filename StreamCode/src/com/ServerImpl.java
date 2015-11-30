@@ -147,8 +147,14 @@ public class ServerImpl extends UnicastRemoteObject implements Subject, ServerIn
 		if(id == -1){
 			return -1;
 		}
-		if(id == -2){
+		else if(id == -2){
 			return -2;
+		}
+		else{
+			for(int i = 0; i < onlineClients.size(); i++){
+				if (id == onlineClients.get(i).getClientId())
+					return -3;
+			}
 		}
 		return id;
 	}

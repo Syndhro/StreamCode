@@ -117,6 +117,9 @@ public class Graphics {
 					else if(verifier == -2){
 						JOptionPane.showMessageDialog(loginFrame, "Wrong Password");
 					}
+					else if(verifier == -3){
+						JOptionPane.showMessageDialog(loginFrame, "Someone has already logged in with this account!");
+					}
 					
 					//LOGIN CORRECT--------------------------------------------------------------------------------------
 					else{
