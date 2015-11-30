@@ -23,6 +23,7 @@ public class ActivityModifierPanel extends JPanel {
 	ActivityPanel parentPanel;
 	Activity activity;
 	Project project;
+	ArrayList<User> collaborators;
 	
 	public ActivityModifierPanel(int projectIndex, int activityIndex, JPanel previousPanel, ProjectListFrame parentFrame, Client client) {
 		
@@ -35,16 +36,34 @@ public class ActivityModifierPanel extends JPanel {
 	    //ACTIVITY COLLABORATORS LIST
 	    JPanel collaboratorsPanel = new JPanel();
 		collaboratorsPanel. setLayout(new BoxLayout(collaboratorsPanel, BoxLayout.PAGE_AXIS));
-		ArrayList<User> collaborators = new ArrayList<User>();
 		ArrayList<JButton> collaboratorsButtons = new ArrayList<JButton>();
 		collaborators = activity.getActivityCollaborators();
 		for(int j = 0; j < collaborators.size(); j++){
 			if(!collaborators.isEmpty()){
-			JButton button = new JButton();
-			button.setText(collaborators.get(j).getUsername());
-			button.setBackground(Color.CYAN);
-			collaboratorsPanel.add(button);		
-			collaboratorsButtons.add(button);
+				JButton button = new JButton();
+				button.setText(collaborators.get(j).getUsername());
+				button.setBackground(Color.CYAN);
+				collaboratorsPanel.add(button);		
+				collaboratorsButtons.add(button);
+				button.addActionListener(new ActionListener(){
+					public void actionPerformed(ActionEvent event){
+						int i =  collaboratorsButtons.indexOf(event.getSource());
+						int result = JOptionPane.showConfirmDialog(parentFrame, "Are you sure do you want to remove the selected agent?");
+						if(result == JOptionPane.YES_OPTION){	
+							User collaborator = collaborators.get(i);
+							try {
+								client.removeAgent(activity.getActivityId(), collaborator.getUserId());
+								Window w = SwingUtilities.getWindowAncestor(thisPanel);	//codice per nascondere 
+								w.setVisible(false);									//la vecchia finestra
+								JOptionPane newactivityPane = new JOptionPane();
+								ActivityModifierPanel newactivityPanel = new ActivityModifierPanel(projectIndex, activityIndex, previousPanel, parentFrame, client);
+								newactivityPane.showConfirmDialog(parentFrame, newactivityPanel,"Activities", JOptionPane.CLOSED_OPTION);			
+							} catch (RemoteException e) {
+								e.printStackTrace();
+							}
+						}				
+					}
+				});
 			}
 		}
 		add(collaboratorsPanel);
@@ -238,5 +257,5 @@ public class ActivityModifierPanel extends JPanel {
 			}
 		});
 	}
-
+	
 }
