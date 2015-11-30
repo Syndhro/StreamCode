@@ -26,11 +26,11 @@ public class ActivityPanel extends JPanel {
 	 * Create the panel.
 	 * @throws RemoteException 
 	 */
-	public ActivityPanel(int i, ProjectListFrame parentFrame, Client client) throws RemoteException {
+	public ActivityPanel(int z, ProjectListFrame parentFrame, Client client) throws RemoteException {
 		
 		thisPanel = this;
 		this.parentFrame = parentFrame;
-		Project project = client.getManagedProject().get(i);
+		Project project = client.getManagedProject().get(z);
 		ArrayList<User> collaborators = project.getCollaborators();
 	    setBounds(100, 100, 500, 336);			
 	    JButton refresh = new JButton("Refresh");
@@ -44,7 +44,7 @@ public class ActivityPanel extends JPanel {
 				JOptionPane newactivityPane3 = new JOptionPane();
 				ActivityPanel newactivityPanel3 = null;
 				try {
-					newactivityPanel3 = new ActivityPanel(i, parentFrame, client);
+					newactivityPanel3 = new ActivityPanel(z, parentFrame, client);
 				} catch (RemoteException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
@@ -98,7 +98,7 @@ public class ActivityPanel extends JPanel {
 					int x = activitiesButtons.indexOf(e.getSource());
 					Activity activity = project.getActivities().get(x);
 					//creare un dialog per modificare l'activity
-					ActivityModifierPanel activityModifier = new ActivityModifierPanel(i, x, thisPanel,parentFrame, client); 
+					ActivityModifierPanel activityModifier = new ActivityModifierPanel(z, x, thisPanel,parentFrame, client); 
 					  
 				    JOptionPane activityModifierPane = new JOptionPane();
 				    int result3 = activityModifierPane.showConfirmDialog(thisPanel, activityModifier, "Modify activity", JOptionPane.OK_CANCEL_OPTION);
@@ -111,7 +111,7 @@ public class ActivityPanel extends JPanel {
 						JOptionPane newactivityPane3 = new JOptionPane();
 						ActivityPanel newactivityPanel3 = null;
 						try {
-							newactivityPanel3 = new ActivityPanel(i, parentFrame, client);
+							newactivityPanel3 = new ActivityPanel(z, parentFrame, client);
 						} catch (RemoteException e1) {
 							// TODO Auto-generated catch block
 							e1.printStackTrace();
@@ -146,7 +146,7 @@ public class ActivityPanel extends JPanel {
 							Window w = SwingUtilities.getWindowAncestor(thisPanel);	//codice per nascondere 
 							w.setVisible(false);									//la vecchia finestra
 							JOptionPane newactivityPane = new JOptionPane();
-							ActivityPanel newactivityPanel = new ActivityPanel(i, parentFrame, client);
+							ActivityPanel newactivityPanel = new ActivityPanel(z, parentFrame, client);
 							newactivityPane.showConfirmDialog(parentFrame, newactivityPanel,"Activities", JOptionPane.CLOSED_OPTION);			
 						} catch (RemoteException e) {
 							e.printStackTrace();
@@ -205,7 +205,7 @@ public class ActivityPanel extends JPanel {
 							w.setVisible(false);									//la vecchia finestra
 							client.addActivity(project.getProjectId(), activityName.getText(), activityDescription.getText(), activityPlace.getText(), "Ora_attuale");				
 							JOptionPane newactivityPane = new JOptionPane();
-							ActivityPanel newactivityPanel = new ActivityPanel(i, parentFrame, client);
+							ActivityPanel newactivityPanel = new ActivityPanel(z, parentFrame, client);
 							newactivityPane.showConfirmDialog(parentFrame, newactivityPanel,"Activities", JOptionPane.CLOSED_OPTION);			
 						}catch(RemoteException e2) {
 							e2.printStackTrace();
@@ -257,7 +257,7 @@ public class ActivityPanel extends JPanel {
 							Window w = SwingUtilities.getWindowAncestor(thisPanel);	//codice per nascondere 
 							w.setVisible(false);									//la vecchia finestra							
 							JOptionPane newactivityPane = new JOptionPane();
-							ActivityPanel newactivityPanel = new ActivityPanel(i, parentFrame, client);
+							ActivityPanel newactivityPanel = new ActivityPanel(z, parentFrame, client);
 							newactivityPane.showConfirmDialog(parentFrame, newactivityPanel,"Activities", JOptionPane.CLOSED_OPTION);
 						}catch(RemoteException e1) {
 							e1.printStackTrace();
@@ -323,7 +323,7 @@ public class ActivityPanel extends JPanel {
 						JOptionPane newactivityPane2 = new JOptionPane();
 						ActivityPanel newactivityPanel2 = null;
 						try {
-							newactivityPanel2 = new ActivityPanel(i, parentFrame, client);
+							newactivityPanel2 = new ActivityPanel(z, parentFrame, client);
 						} catch (RemoteException e1) {
 							// TODO Auto-generated catch block
 							e1.printStackTrace();
@@ -365,7 +365,7 @@ public class ActivityPanel extends JPanel {
 						w.setVisible(false);									//la vecchia finestra		
 						JOptionPane newactivityPane2 = new JOptionPane();
 						ActivityPanel newactivityPanel2 = null;
-						newactivityPanel2 = new ActivityPanel(i, parentFrame, client);
+						newactivityPanel2 = new ActivityPanel(z, parentFrame, client);
 						
 						newactivityPane2.showConfirmDialog(thisPanel, newactivityPanel2,"Activities", JOptionPane.CLOSED_OPTION);
 					} catch (RemoteException e1) {
