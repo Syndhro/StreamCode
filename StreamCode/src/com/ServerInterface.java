@@ -35,4 +35,6 @@ public interface ServerInterface extends Remote {
 	public abstract void registerClient(ClientInterface client) throws RemoteException;
 	public abstract Project getProjectById(int projectId) throws RemoteException;
 	public abstract ArrayList<Project> getCollaborationProjects(int myUserId) throws RemoteException;
+	public abstract void sendBroadcast(String description, ArrayList<Integer> ids)throws RemoteException;
+	public abstract ArrayList<Activity> getMyActivities(int myUserId)throws RemoteException;
 }
