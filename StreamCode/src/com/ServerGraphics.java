@@ -104,17 +104,6 @@ public class ServerGraphics implements ServerInterfaceObserver{
 		totProjNumberLabel = new JLabel(Integer.toString(server.getServerImpl().getRegisteredProjects().size()));
 		statisticsPanel.add(totProjNumberLabel);
 		
-		JButton button = new JButton("Refresh!");
-		
-		button.addActionListener(new ActionListener(){
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				update();
-			}
-		});
-		
-		statisticsPanel.add(button);
-		
 		serverFrame.add(statisticsPanel);
 		
 	}
