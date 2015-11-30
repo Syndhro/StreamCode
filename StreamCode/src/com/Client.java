@@ -190,6 +190,13 @@ public class Client extends UnicastRemoteObject implements ClientInterface{
 		System.out.println(notification.getMessage());
 	}
 
+	public void sendBroadcast(String message, ArrayList<Integer> ids){
+		try {
+			server.sendBroadcast(message, ids);
+		} catch (RemoteException e) {
+			e.printStackTrace();
+		}
+	}
 	
 	
 	public static void main(String[] args) throws RemoteException, NotBoundException{

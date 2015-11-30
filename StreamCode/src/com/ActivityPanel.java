@@ -375,6 +375,34 @@ public class ActivityPanel extends JPanel {
 				}			
 			}	
 		});
+		
+		//NOTIFICA BORADCAST
+		JButton notifyCollaboratorsButton = new JButton("Notify others :)");
+		add(notifyCollaboratorsButton);
+		notifyCollaboratorsButton.addActionListener(new ActionListener(){
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				ArrayList<User> projectCollabos = new ArrayList<User>();
+				projectCollabos = project.getCollaborators();
+				JTextField broadcastMex = new JTextField("Hello guys, Welcome to my project.");
+				
+				JPanel broadcastPanel = new JPanel();
+				broadcastPanel.setLayout(new BoxLayout(broadcastPanel, BoxLayout.PAGE_AXIS));
+				broadcastPanel.add(new JLabel("Insert the message to notify to others: "));
+				broadcastPanel.add(broadcastMex);
+				
+				int result = JOptionPane.showConfirmDialog(thisPanel, broadcastPanel, "Notify others", JOptionPane.OK_CANCEL_OPTION);
+				if(result == JOptionPane.OK_OPTION){
+					ArrayList<Integer> ids = new ArrayList<Integer>();
+					for(int i = 0; i < projectCollabos.size(); i++){
+						ids.add(projectCollabos.get(i).getUserId());
+					}
+					client.sendBroadcast(broadcastMex.getText(), ids);
+					JOptionPane.showMessageDialog(parentFrame, "Done!");
+				}
+			}
+		});
 	}	
 }
 

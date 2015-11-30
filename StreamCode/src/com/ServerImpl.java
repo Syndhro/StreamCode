@@ -366,6 +366,24 @@ public class ServerImpl extends UnicastRemoteObject implements Subject, ServerIn
 		dbManager.addNotification(notification);
 	}
 	
+	@Override
+	public void sendBroadcast(String description, ArrayList<Integer> ids){
+		for(int i = 0; i < ids.size(); i++){	
+			Notification notification = createNotification("broadcast", description, ids.get(i));
+			registeredNotifications.add(notification);
+			try {
+				if(isClientOnline(ids.get(i))){
+					ClientInterface client = getClientById(ids.get(i));				
+					client.getNotification(notification);			
+					notification.setDelivered(true);			
+				}
+			} catch (RemoteException e) {
+				e.printStackTrace();
+			}			
+			dbManager.addNotification(notification);			
+		}
+	}
+	
 	//REMOVERS-----------------------------------------------------------------------------------
 
 	@Override
