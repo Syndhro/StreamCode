@@ -144,7 +144,7 @@ public class ServerImpl extends UnicastRemoteObject implements Subject, ServerIn
 		this.serverInterface = serverInterface;
 	}
 	
-	public void updateInterface(){
+	private void updateInterface(){
 		serverInterface.update();
 	}
 	
@@ -170,11 +170,11 @@ public class ServerImpl extends UnicastRemoteObject implements Subject, ServerIn
 
 	@Override
 	public int login(String username, String password, ClientInterface client) throws RemoteException {
-		int userId = -1;
+		int userId = -1; //initialization (not 0 because exists)
 			for(int i = 0; i < registeredUsers.size(); i++){
 				if(registeredUsers.get(i).getUsername().equals(username)){
 					userId = registeredUsers.get(i).getUserId();
-					registerClient(client);
+					registerClient(client); //add the client to online ones
 					updateInterface();
 				}
 			}

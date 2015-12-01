@@ -21,98 +21,74 @@ public class ProjectListFrame extends JFrame {
 	ProjectListFrame thisFrame = this;
 	Project project = null;
 	Activity activity = null;
+	ArrayList<Project> managedProjects;
+	ArrayList<Project> collaborationProjects;
+	ArrayList<Notification> notifications;
+	ArrayList<Activity> activities;
+	
+	Container mainPanel;
+	JButton refresh = new JButton("Refresh");
+	JButton friendsButton = new JButton("See your friends :)");
+	JButton addFriendButton = new JButton("Add Friend");
+	JButton addProjectButton = new JButton("Add project");
+	JPanel managedProjectPanel;
+	JPanel collaborationProjectPanel;
+	JPanel notificationsPanel;
+	JPanel activitiesPanel;
+	JPanel projectSettings;
+	ArrayList<JButton> managedProjectButtons;
+	ArrayList<JButton> collaborationProjectButtons;
+	JTextArea notificationsArea;
+	JTextArea myActivitiesArea;
+	JLabel notificationsLabel;
+	JLabel activityiesLabel;
 	
 	public ProjectListFrame(Client client) throws RemoteException {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 700, 400);
-		Container mainPanel = getContentPane();						
-		mainPanel.setLayout(new FlowLayout());
-		 JButton refresh = new JButton("Refresh");
-		    refresh.addActionListener(new ActionListener(){
-
-				@Override
-				public void actionPerformed(ActionEvent e) {
-					thisFrame.dispose();
-					ProjectListFrame newFrame = null;
-					try {
-						newFrame = new ProjectListFrame(client);
-					} catch (RemoteException e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
-					}
-					newFrame.setLocationRelativeTo(null);
-					newFrame.setVisible(true);
-				}  	
-		    });
-		add(refresh);
-		//recupero gli oggetti che mi servono
-		ArrayList<Project> managedProjects = new ArrayList<Project>();
-		ArrayList<Project> collaborationProjects = new ArrayList<Project>();
-		ArrayList<Notification> notifications = new ArrayList<Notification>();	
-		ArrayList<Activity> activities = new ArrayList<Activity>();
-		
+		mainPanel = getContentPane();						
+		mainPanel.setLayout(new FlowLayout());	
+			
+		//RETRIEVE NEEDED OBJECTS
 		managedProjects = client.getManagedProject();
 		collaborationProjects = client.getCollaborationProject();
-		notifications = client.getOfflineNotifications();
+		notifications = client.getOfflineNotifications();	
 		activities = client.getMyActivities();
-		
-		JPanel managedProjectPanel = new JPanel();
+
+		managedProjectPanel = new JPanel();
 		managedProjectPanel.setLayout(new BoxLayout(managedProjectPanel, BoxLayout.PAGE_AXIS));
 		managedProjectPanel.add(new JLabel("My Projects"));
+		managedProjectButtons = new ArrayList<JButton>();
+		mainPanel.add(managedProjectPanel);
 		
-		JPanel collaborationProjectPanel = new JPanel();
+		collaborationProjectPanel = new JPanel();
 		collaborationProjectPanel.setLayout(new BoxLayout(collaborationProjectPanel, BoxLayout.PAGE_AXIS));
 		collaborationProjectPanel.add(new JLabel("Other's Projects"));
-	
-		//LISTA DEGLI AMICI----------------------------------------------------------------------------------------------------------------------------
-		JButton friendsButton = new JButton("See your friends :)");	
-		friendsButton.addActionListener(new ActionListener(){
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				JPanel friendsPanel = new JPanel();
-				friendsPanel.setLayout(new BoxLayout(friendsPanel, BoxLayout.PAGE_AXIS));
-				ArrayList<User> friends = new ArrayList<User>();
-				friends = client.getUserFriends();
-				for(int i = 0; i < friends.size(); i++){
-					JLabel friendLabel = new JLabel(friends.get(i).getUsername());			
-					friendsPanel.add(friendLabel);
-					friendsPanel.add(new JLabel(" "),"span, grow");
-				}
-				JOptionPane.showConfirmDialog(mainPanel,friendsPanel, "Friends List", JOptionPane.CLOSED_OPTION);
-			}
-			
-		});
-		
-		ArrayList<JButton> managedProjectButtons = new ArrayList<JButton>();
-		ArrayList<JButton> collaborationProjectButtons = new ArrayList<JButton>();
-		JPanel notificationsPanel = new JPanel();
-		notificationsPanel.setLayout(new BoxLayout(notificationsPanel, BoxLayout.PAGE_AXIS));
-		JPanel activitiesPanel = new JPanel();
-		activitiesPanel.setLayout(new BoxLayout(activitiesPanel, BoxLayout.PAGE_AXIS));
-		JTextArea notificationsArea = new JTextArea(8, 12);
-		JTextArea myActivitiesArea = new JTextArea(10, 14);
-		JLabel notificationsLabel = new JLabel("Notifications");
-		JLabel activityiesLabel = new JLabel("My Activities");
-		notificationsPanel.add(notificationsLabel);
-		notificationsPanel.add(notificationsArea);
-		activitiesPanel.add(activityiesLabel);
-		activitiesPanel.add(myActivitiesArea);
-		JScrollPane scroll = new JScrollPane (notificationsPanel, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
-		JScrollPane scrollActivities = new JScrollPane (activitiesPanel, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
-		
-		
-		mainPanel.add(scroll);
-		mainPanel.add(scrollActivities);
-		mainPanel.add(managedProjectPanel);
+		collaborationProjectButtons = new ArrayList<JButton>();
 		mainPanel.add(collaborationProjectPanel);
-		mainPanel.add(friendsButton);
-		
+			
+		notificationsPanel = new JPanel();
+		notificationsPanel.setLayout(new BoxLayout(notificationsPanel, BoxLayout.PAGE_AXIS));
+		notificationsArea = new JTextArea(8, 12);
 		for(int i = 0; i < notifications.size(); i++){
 			notificationsArea.append(notifications.get(i).message +"\n");		
 		}
-
+		notificationsLabel = new JLabel("Notifications");
+		notificationsPanel.add(notificationsLabel);
+		notificationsPanel.add(notificationsArea);
+		JScrollPane scrollNotifications = new JScrollPane (notificationsPanel, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+		mainPanel.add(scrollNotifications);
 		
+		activitiesPanel = new JPanel();
+		activitiesPanel.setLayout(new BoxLayout(activitiesPanel, BoxLayout.PAGE_AXIS));
+		myActivitiesArea = new JTextArea(10, 14);
+		activityiesLabel = new JLabel("My Activities");
+		activitiesPanel.add(activityiesLabel);
+		activitiesPanel.add(myActivitiesArea);
+		JScrollPane scrollActivities = new JScrollPane (activitiesPanel, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+		mainPanel.add(scrollActivities);
+		
+		mainPanel.add(friendsButton);	
 		
 		//MANAGED PROJECTS---------------------------------------------------------------------------------------------
 		for(int i = 0; i < managedProjects.size(); i++){
@@ -129,20 +105,19 @@ public class ProjectListFrame extends JFrame {
 			}
 			managedProjectPanel.add(managedProjectbutton);
 			managedProjectButtons.add(managedProjectbutton);
+			
 			managedProjectbutton.addActionListener(new ActionListener(){
 				public void actionPerformed(ActionEvent event) {
 					int i = managedProjectButtons.indexOf(event.getSource());
 					project = client.getManagedProject().get(i);
 					//OPEN ACTIVITY PANEL------------------------------------------------------------------
-						JOptionPane activityPane = new JOptionPane();
 						ActivityPanel activityPanel = null;
 						try {
 							activityPanel = new ActivityPanel(i, thisFrame, client);
-							int result = activityPane.showConfirmDialog(thisFrame, activityPanel,"Activities", JOptionPane.CLOSED_OPTION);
-							if(result == activityPane.CLOSED_OPTION){
+							int result = JOptionPane.showConfirmDialog(thisFrame, activityPanel,"Activities", JOptionPane.CLOSED_OPTION);
+							if(result == JOptionPane.CLOSED_OPTION){
 								setVisible(false);
-								ProjectListFrame projectListFrame = null;
-								projectListFrame = new ProjectListFrame(client);
+								ProjectListFrame projectListFrame = new ProjectListFrame(client);
 								projectListFrame.setLocationRelativeTo(null);
 	 							projectListFrame.setVisible(true);	
 							}
@@ -165,33 +140,25 @@ public class ProjectListFrame extends JFrame {
 					int k = collaborationProjectButtons.indexOf(ev.getSource());
 					project = client.getCollaborationProject().get(k);
 					//OPEN ACTIVITY PANEL------------------------------------------------------------------
-						JOptionPane collActivityPane = new JOptionPane();
-						CollabActivityPanel collActivityPanel = null;
+					CollabActivityPanel collActivityPanel = null;
 						try {
 							collActivityPanel = new CollabActivityPanel(k, thisFrame, client);
-							int result = collActivityPane.showConfirmDialog(thisFrame, collActivityPanel,"Activities", JOptionPane.CLOSED_OPTION);
-							if(result == collActivityPane.CLOSED_OPTION){
+							int result = JOptionPane.showConfirmDialog(thisFrame, collActivityPanel,"Activities", JOptionPane.CLOSED_OPTION);
+							if(result == JOptionPane.CLOSED_OPTION){
 								setVisible(false);
-								ProjectListFrame projectListFrame = null;
-								projectListFrame = new ProjectListFrame(client);
+								ProjectListFrame projectListFrame = new ProjectListFrame(client);
 								projectListFrame.setLocationRelativeTo(null);
 	 							projectListFrame.setVisible(true);	
 							}
 						} catch (RemoteException e) {
-							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
-					}
+				}
 			});				
 		}
 		
-		//GENERAL ACTIVITIES
-	
+		//GENERAL ACTIVITIES SUMMARY
 		for(int j = 0; j < activities.size(); j++){
-			JLabel activityLabel = new JLabel(activities.get(j).getName());
-			JLabel parentProjectLabel = new JLabel(activities.get(j).getParentProject().getTitle());
-			JLabel activityActive = new JLabel("yes");
-			JLabel activityNoActive = new JLabel("no");
 			myActivitiesArea.append("Name Activity: " + activities.get(j).getName() + "\n");
 			myActivitiesArea.append("Name Project: " + activities.get(j).getParentProject().getTitle() + "\n");			
 			if(activities.get(j).isActive()){			
@@ -203,33 +170,31 @@ public class ProjectListFrame extends JFrame {
 			myActivitiesArea.append("\n");
 		}
 		
-		
-		
-		
 		//PROJECT SETTINGS--------------------------------------------------------------------------------
-		JPanel projectSettings = new JPanel();
+		projectSettings = new JPanel();
+		mainPanel.add(projectSettings);
 		
-		JButton btnAddFriend = new JButton("Add Friend");
-		btnAddFriend.addActionListener(new ActionListener() {
+		//ADD FRIEND PROCESS
+		addFriendButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				FriendsPanel friendsPanel = new FriendsPanel(client);
-				int result4 = JOptionPane.showConfirmDialog(mainPanel, friendsPanel, "Friends", JOptionPane.OK_CANCEL_OPTION);
+				JOptionPane.showConfirmDialog(mainPanel, friendsPanel, "Friends", JOptionPane.OK_CANCEL_OPTION);
 			}
-		});
-		projectSettings.add(btnAddFriend);
-		JButton addProjectButton = new JButton("Add project");
+		});	
+		projectSettings.add(addFriendButton);
+		
+		//ADD PROJECT PROCESS
+		
 		projectSettings.add(addProjectButton);
-		getContentPane().add(projectSettings);
 		addProjectButton.addActionListener(new ActionListener(){
 
-			@SuppressWarnings("static-access")
 			public void actionPerformed(ActionEvent e) {
 				
 				JTextField projectTitle = new JTextField(15);
 				JTextField projectDescription = new JTextField(40);
 				String[] categories = Category.getStringsArray();			
+				@SuppressWarnings({ "rawtypes", "unchecked" })
 				JComboBox projectCategory = new JComboBox(categories);
-				
 				
 				JPanel projectValues = new JPanel();
 				projectValues.setLayout(new BoxLayout(projectValues, BoxLayout.PAGE_AXIS));
@@ -242,35 +207,62 @@ public class ProjectListFrame extends JFrame {
 				projectValues.add(new JLabel("Insert category: ")); //fare combobox
 				projectValues.add(projectCategory);
 				projectValues.setVisible(true);
-				//
-				JOptionPane creatingProject = new JOptionPane();
-				int result = creatingProject.showConfirmDialog(thisFrame, projectValues, "Please Enter Project Values", JOptionPane.OK_CANCEL_OPTION);
-				
-				if (result == creatingProject.OK_OPTION){
-					if(!projectTitle.getText().equals("")){				
+
+
+				int result = JOptionPane.showConfirmDialog(thisFrame, projectValues, "Please Enter Project Values", JOptionPane.OK_CANCEL_OPTION);			
+				if (result == JOptionPane.OK_OPTION){
+					if(!projectTitle.getText().equals("")){	
+						ProjectListFrame projectListFrame = null;
 							try {
 								client.addProject(projectTitle.getText(), projectDescription.getText(), Category.getCategory(projectCategory.getSelectedItem().toString()), client.getClientId());
-							} catch (RemoteException e1) {
-								// TODO Auto-generated catch block
-								e1.printStackTrace();
-							}
-							dispose();
-							ProjectListFrame projectListFrame = null;
-							try {
-								projectListFrame = new ProjectListFrame(client);
-							} catch (RemoteException e1) {
-								// TODO Auto-generated catch block
+								dispose();
+								projectListFrame = new ProjectListFrame(client);			
+							} catch (RemoteException e1) {			
 								e1.printStackTrace();
 							}
 							projectListFrame.setLocationRelativeTo(null);
  							projectListFrame.setVisible(true);						
 					}
-				
 					else{
 						JOptionPane.showMessageDialog(thisFrame, "A project must have a name");
 					}
 				}
 			}
+		});
+		
+		//REFRESH BUTTON
+		refresh.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				thisFrame.dispose();
+				ProjectListFrame newFrame = null;
+				try {
+					newFrame = new ProjectListFrame(client);
+				} catch (RemoteException e1) {
+					e1.printStackTrace();
+				}
+				newFrame.setLocationRelativeTo(null);
+				newFrame.setVisible(true);
+			}  	
+		});
+		add(refresh);
+
+		
+		//LISTA DEGLI AMICI----------------------------------------------------------------------------------------------------------------------------	
+		friendsButton.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				JPanel friendsPanel = new JPanel();
+				friendsPanel.setLayout(new BoxLayout(friendsPanel, BoxLayout.PAGE_AXIS));
+				ArrayList<User> friends = new ArrayList<User>();
+				friends = client.getUserFriends();
+				for(int i = 0; i < friends.size(); i++){
+					JLabel friendLabel = new JLabel(friends.get(i).getUsername());			
+					friendsPanel.add(friendLabel);
+					friendsPanel.add(new JLabel(" "),"span, grow");
+				}
+				JOptionPane.showConfirmDialog(mainPanel,friendsPanel, "Friends List", JOptionPane.CLOSED_OPTION);
+			}	
 		});
 		
 		//ON CLOSING
@@ -287,6 +279,17 @@ public class ProjectListFrame extends JFrame {
 						e.printStackTrace();
 					}
 		        	System.exit(0);
+		        }
+		        else{
+		        	ProjectListFrame projectListFrame = null;
+					try {
+						dispose();
+						projectListFrame = new ProjectListFrame(client);			
+					} catch (RemoteException e1) {			
+						e1.printStackTrace();
+					}
+					projectListFrame.setLocationRelativeTo(null);
+					projectListFrame.setVisible(true);				
 		        }
 		    }
 		});

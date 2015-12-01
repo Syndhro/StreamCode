@@ -16,7 +16,6 @@ import java.util.ArrayList;
 
 import javax.swing.SwingConstants;
 
-import javafx.scene.paint.Color;
 
 public class ServerGraphics implements ServerInterfaceObserver{
 
