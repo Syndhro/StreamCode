@@ -65,10 +65,10 @@ public class CollabActivityPanel extends JPanel {
 		projectInfoValues.add(new JLabel("Created by: ")); 
 		projectInfoValues.add(projectAdmin);
 		add(projectInfoValues);
-		add(collaboratorsPanel);
-		add(activitiesPanel);
+		
 	
 	    activitiesPanel = new JPanel();
+	    add(activitiesPanel);
 	    activitiesPanel.setLayout(new BoxLayout(activitiesPanel, BoxLayout.PAGE_AXIS));    
 		activitiesButtons = new ArrayList<JButton>();
 		
@@ -169,6 +169,7 @@ public class CollabActivityPanel extends JPanel {
 		//PROJECTS COLLABORATORS
 		collaboratorsPanel = new JPanel();
 		collaboratorsPanel.setLayout(new BoxLayout(collaboratorsPanel, BoxLayout.PAGE_AXIS));		
+		add(collaboratorsPanel);
 		collaboratorsButtons = new ArrayList<JButton>();		
 		for(int j = 0; j < collaborators.size(); j++){
 			JButton button = new JButton();
