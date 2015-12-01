@@ -4,26 +4,17 @@ import java.awt.EventQueue;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-import java.awt.BorderLayout;
-import java.awt.Container;
-
 import javax.swing.JTextField;
 import javax.swing.SpringLayout;
-import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
-import javax.swing.JCheckBox;
 import javax.swing.JPasswordField;
-import javax.swing.JTextArea;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.rmi.RemoteException;
-import java.util.ArrayList;
 import java.awt.Font;
 
 public class ClientGUI {
@@ -107,14 +98,12 @@ public class ClientGUI {
 		loginButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				String username = textField.getText();
+				@SuppressWarnings("deprecation")
 				String password = passwordField.getText();
 				try {
 					int verifier = client.check(username, password);
 					if (verifier == -1){
-						JOptionPane panel = new JOptionPane();
-						panel.showMessageDialog(loginFrame, "Wrong Username");
-						panel.setVisible(true);
-						
+						JOptionPane.showMessageDialog(loginFrame, "Wrong Username");						
 					}
 					else if(verifier == -2){
 						JOptionPane.showMessageDialog(loginFrame, "Wrong Password");
@@ -174,13 +163,14 @@ public class ClientGUI {
 				registerPanel.add(new JLabel("Confirm Password: "));
 				registerPanel.add(registerConfirmPassword);
 				registerPanel.setVisible(true);
+			
+				int result = JOptionPane.showConfirmDialog(loginFrame, registerPanel, "Please Enter Username and Password Values", JOptionPane.OK_CANCEL_OPTION);
 				
-				JOptionPane registeringUser = new JOptionPane();
-				int result = registeringUser.showConfirmDialog(loginFrame, registerPanel, "Please Enter Username and Password Values", JOptionPane.OK_CANCEL_OPTION);
-				
-				if (result == registeringUser.OK_OPTION){
+				if (result == JOptionPane.OK_OPTION){
 					String rUsername = registerUsername.getText();
+					@SuppressWarnings("deprecation")
 					String rPassword = registerPassword.getText();
+					@SuppressWarnings("deprecation")
 					String rConfPassword = registerConfirmPassword.getText();
 					
 					if (rPassword.equals(rConfPassword)){
@@ -190,17 +180,13 @@ public class ClientGUI {
 							exception.printStackTrace();
 						}
 					}
-					else{
-						JOptionPane passNotEquals = new JOptionPane();
-						passNotEquals.showMessageDialog(registeringUser, "Warning: different passwords inserted!");
-						passNotEquals.setVisible(true);
+					else{				
+						JOptionPane.showMessageDialog(registerPanel, "Warning: different passwords inserted!");
 					}
-
-				}
-				
-				registeringUser.setVisible(true);
+				}	
 			}
 		});
+		
 		springLayout.putConstraint(SpringLayout.WEST, registerButton, 6, SpringLayout.EAST, lblNew);
 		loginFrame.getContentPane().add(registerButton);
 	}

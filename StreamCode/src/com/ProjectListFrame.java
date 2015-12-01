@@ -1,17 +1,12 @@
 package com;
 
-import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Container;
-import java.awt.EventQueue;
 import java.awt.FlowLayout;
-import java.awt.LayoutManager;
-import java.awt.Window;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 
 import javax.swing.*;
-import javax.swing.border.EmptyBorder;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
