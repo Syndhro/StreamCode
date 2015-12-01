@@ -19,6 +19,7 @@ import javax.swing.SwingUtilities;
 
 public class ActivityModifierPanel extends JPanel {
 	
+	private static final long serialVersionUID = 1L;
 	ActivityModifierPanel thisPanel;
 	ActivityPanel parentPanel;
 	Activity activity;
@@ -29,10 +30,12 @@ public class ActivityModifierPanel extends JPanel {
 		
 		thisPanel = this;
 		this.parentPanel = (ActivityPanel) previousPanel;
-		project = client.getManagedProject().get(projectIndex);
-		activity = project.getActivities().get(activityIndex);
 	    setBounds(100, 100, 500, 336);
 	    
+	    //RETRIEVING NEEDED OBJECTS
+	    project = client.getManagedProject().get(projectIndex);
+		activity = project.getActivities().get(activityIndex);
+	        
 	    //ACTIVITY COLLABORATORS LIST
 	    JPanel collaboratorsPanel = new JPanel();
 		collaboratorsPanel. setLayout(new BoxLayout(collaboratorsPanel, BoxLayout.PAGE_AXIS));

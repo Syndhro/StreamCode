@@ -1,11 +1,10 @@
 package com;
 
 import java.io.Serializable;
-import java.sql.Time;
-import java.util.Date;
 
 public abstract class Notification implements Serializable{
 
+	private static final long serialVersionUID = 1L;
 	protected int notificationId;
 	protected String message;
 	protected String time;

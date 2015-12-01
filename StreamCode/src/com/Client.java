@@ -1,9 +1,6 @@
 package com;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.Serializable;
 import java.rmi.*;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
@@ -12,16 +9,16 @@ import java.util.ArrayList;
 
 import javax.swing.JOptionPane;
 
-import com.mysql.jdbc.authentication.MysqlClearPasswordPlugin;
-
 public class Client extends UnicastRemoteObject implements ClientInterface{
 	
+	private static final long serialVersionUID = 1L;
 	Registry registry;
 	static ServerInterface server;
 	private int myUserId;
 	
 	public Client()throws RemoteException{};
 	
+	@SuppressWarnings("deprecation")
 	public void startup() throws NotBoundException, IOException {
   		System.setSecurityManager(new RMISecurityManager());
 

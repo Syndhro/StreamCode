@@ -19,47 +19,48 @@ import javax.swing.SwingUtilities;
 
 public class ActivityPanel extends JPanel {
 
+	private static final long serialVersionUID = 1L;
 	ProjectListFrame parentFrame;
 	ActivityPanel thisPanel; 
 	
-	/**
-	 * Create the panel.
-	 * @throws RemoteException 
-	 */
+	Project project;
+	ArrayList<User> collaborators;
+	ArrayList<Activity> activities;
+	ArrayList<JButton> activitiesButtons;
+	ArrayList<JButton> collaboratorsButtons;
+	
+	JPanel projectInfoValues;
+	JPanel activitiesPanel;
+	JPanel collaboratorsPanel;
+	JPanel activitySettings;
+	JButton refreshButton = new JButton("Refresh");
+	JButton addActivityButton = new JButton("Add activity");
+	JButton addCollaboratorsButton = new JButton("Invite collaborators");
+	JButton removeProject =  new JButton("Delete Project");
+	JButton modifyProjectInfo = new JButton("Modify Project Info");
+	JButton startButton = new JButton("Start Poject");
+	JButton notifyCollaboratorsButton = new JButton("Notify others :)");
+	JLabel projectName;
+	JLabel projectDescription;
+	JLabel projectCategory;
+	
+	
 	public ActivityPanel(int z, ProjectListFrame parentFrame, Client client) throws RemoteException {
 		
-		thisPanel = this;
+	    thisPanel = this;
 		this.parentFrame = parentFrame;
-		Project project = client.getManagedProject().get(z);
-		ArrayList<User> collaborators = project.getCollaborators();
 	    setBounds(100, 100, 500, 336);			
-	    JButton refresh = new JButton("Refresh");
-	    refresh.addActionListener(new ActionListener(){
 
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				Window w = SwingUtilities.getWindowAncestor(thisPanel);	//codice per nascondere 
-				w.setVisible(false);									//la vecchia finestra
-							
-				JOptionPane newactivityPane3 = new JOptionPane();
-				ActivityPanel newactivityPanel3 = null;
-				try {
-					newactivityPanel3 = new ActivityPanel(z, parentFrame, client);
-				} catch (RemoteException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-				newactivityPane3.showConfirmDialog(parentFrame, newactivityPanel3,"Activities", JOptionPane.CLOSED_OPTION);
-			}  	
-	    });
-	   	add(refresh);	
-	    JLabel projectName = new JLabel(project.getTitle());
-		JLabel projectDescription = new JLabel(project.getDescription());
-		JLabel projectCategory = new JLabel(project.getCategory().toString());
+	   	//RETRIEVE OBJECTS NEEDED
+		project = client.getManagedProject().get(z);
+		collaborators = project.getCollaborators();
+		activities = project.getActivities();   	
 		
+	    projectName = new JLabel(project.getTitle());
+		projectDescription = new JLabel(project.getDescription());
+		projectCategory = new JLabel(project.getCategory().toString());
 		
-	
-		JPanel projectInfoValues = new JPanel();
+		projectInfoValues = new JPanel();
 		projectInfoValues.setLayout(new BoxLayout(projectInfoValues, BoxLayout.PAGE_AXIS));
 		projectInfoValues.add(new JLabel("Name: "));
 		projectInfoValues.add(projectName);
@@ -71,83 +72,70 @@ public class ActivityPanel extends JPanel {
 		projectInfoValues.add(projectCategory);	
 		add(projectInfoValues);
 		
-	    JPanel activitiesPanel = new JPanel();
+	    activitiesPanel = new JPanel();
+	    add(activitiesPanel);
 	    activitiesPanel.setLayout(new BoxLayout(activitiesPanel, BoxLayout.PAGE_AXIS));
-	    ArrayList<Activity> activities = new ArrayList<Activity>();
-		ArrayList<JButton> activitiesButtons = new ArrayList<JButton>();
-		activities = project.getActivities();
+	   
+		ArrayList<JButton> activitiesButtons = new ArrayList<JButton>();		
 		for(int j = 0; j < activities.size(); j++){
-			JButton button = new JButton();
-			button.setText(activities.get(j).getName());
+			JButton activityButton = new JButton();
+			activityButton.setText(activities.get(j).getName());
 			if(activities.get(j).isCompleted()){
-				button.setBackground(Color.GREEN);
+				activityButton.setBackground(Color.GREEN);
 			}
 			else if(activities.get(j).isActive()){
-				button.setBackground(Color.ORANGE);
+				activityButton.setBackground(Color.ORANGE);
 			}
 			else{
-				button.setBackground(Color.RED);
-			}
-			
-			activitiesPanel.add(button);		
-			activitiesButtons.add(button);
-			button.addActionListener(new ActionListener(){
-
+				activityButton.setBackground(Color.RED);
+			}			
+			activitiesPanel.add(activityButton);		
+			activitiesButtons.add(activityButton);
+			activityButton.addActionListener(new ActionListener(){
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					int x = activitiesButtons.indexOf(e.getSource());
-					Activity activity = project.getActivities().get(x);
-					//creare un dialog per modificare l'activity
 					ActivityModifierPanel activityModifier = new ActivityModifierPanel(z, x, thisPanel,parentFrame, client); 
-					  
-				    JOptionPane activityModifierPane = new JOptionPane();
-				    int result3 = activityModifierPane.showConfirmDialog(thisPanel, activityModifier, "Modify activity", JOptionPane.OK_CANCEL_OPTION);
-				    
-				    
-				    if(result3 ==activityModifierPane.OK_OPTION){
-				    	Window w = SwingUtilities.getWindowAncestor(thisPanel);	//codice per nascondere 
-						w.setVisible(false);									//la vecchia finestra
-									
-						JOptionPane newactivityPane3 = new JOptionPane();
-						ActivityPanel newactivityPanel3 = null;
+
+				    int result = JOptionPane.showConfirmDialog(thisPanel, activityModifier, "Modify activity", JOptionPane.OK_CANCEL_OPTION);			    
+				    if(result == JOptionPane.OK_OPTION){
+				    	Window w = SwingUtilities.getWindowAncestor(thisPanel); 
+						w.setVisible(false);												
+						ActivityPanel newactivityPanel = null;
 						try {
-							newactivityPanel3 = new ActivityPanel(z, parentFrame, client);
+							newactivityPanel = new ActivityPanel(z, parentFrame, client);
 						} catch (RemoteException e1) {
-							// TODO Auto-generated catch block
 							e1.printStackTrace();
 						}
-						newactivityPane3.showConfirmDialog(parentFrame, newactivityPanel3,"Activities", JOptionPane.CLOSED_OPTION);
+						JOptionPane.showConfirmDialog(parentFrame, newactivityPanel,"Activities", JOptionPane.CLOSED_OPTION);
 				    }				
 				}				
 			});
 		}
-		add(activitiesPanel);
-		
-		JPanel collaboratorsPanel = new JPanel();
+			
+		collaboratorsPanel = new JPanel();
 		collaboratorsPanel. setLayout(new BoxLayout(collaboratorsPanel, BoxLayout.PAGE_AXIS));
-		ArrayList<JButton> collaboratorsButtons = new ArrayList<JButton>();
-		
+		add(collaboratorsPanel);
+		collaboratorsButtons = new ArrayList<JButton>();		
 		for(int j = 0; j < collaborators.size(); j++){
-			JButton button = new JButton();
-			button.setText(collaborators.get(j).getUsername());
-			button.setBackground(Color.CYAN);
-			collaboratorsPanel.add(button);		
-			collaboratorsButtons.add(button);
-			button.addActionListener(new ActionListener(){
+			JButton collaboratorButton = new JButton();
+			collaboratorButton.setText(collaborators.get(j).getUsername());
+			collaboratorButton.setBackground(Color.CYAN);
+			collaboratorsPanel.add(collaboratorButton);		
+			collaboratorsButtons.add(collaboratorButton);
+			collaboratorButton.addActionListener(new ActionListener(){
 				@Override
 				public void actionPerformed(ActionEvent event){
 					int i =  collaboratorsButtons.indexOf(event.getSource());
 					int result = JOptionPane.showConfirmDialog(parentFrame, "Are you sure do you want to remove the selected collaborator?");
-					if(result == JOptionPane.YES_OPTION){
-						
+					if(result == JOptionPane.YES_OPTION){			
 						User collaborator = collaborators.get(i);
 						try {
 							client.removeCollaborator(project.getProjectId(), collaborator.getUserId());
 							Window w = SwingUtilities.getWindowAncestor(thisPanel);	//codice per nascondere 
 							w.setVisible(false);									//la vecchia finestra
-							JOptionPane newactivityPane = new JOptionPane();
 							ActivityPanel newactivityPanel = new ActivityPanel(z, parentFrame, client);
-							newactivityPane.showConfirmDialog(parentFrame, newactivityPanel,"Activities", JOptionPane.CLOSED_OPTION);			
+							JOptionPane.showConfirmDialog(parentFrame, newactivityPanel,"Activities", JOptionPane.CLOSED_OPTION);			
 						} catch (RemoteException e) {
 							e.printStackTrace();
 						}
@@ -155,16 +143,11 @@ public class ActivityPanel extends JPanel {
 				}
 			});
 		}
-		add(collaboratorsPanel);
 		
 		//ACTIVITY SETTINGS-----------------------------------------------------------------
-		JPanel activitySettings = new JPanel();
-		JButton addActivityButton = new JButton("Add activity");
-		JButton addCollaboratorsButton = new JButton("Invite collaborators");
-		JButton removeProject =  new JButton("Delete Project");
-		
-		
+		activitySettings = new JPanel();		
 		activitySettings.add(addActivityButton);
+		
 		if(project.getState() == ProjectState.COMPLETED){
 			addActivityButton.setEnabled(false);
 		}
@@ -173,7 +156,25 @@ public class ActivityPanel extends JPanel {
 			addCollaboratorsButton.setEnabled(false);
 		}
 		activitySettings.add(removeProject);
+		if(project.getState() == ProjectState.COMPLETED){
+			modifyProjectInfo.setEnabled(false);
+		}
+		activitySettings.add(modifyProjectInfo);	
+		activitySettings.add(startButton);
+		activitySettings.add(notifyCollaboratorsButton);
 		add(activitySettings);
+		
+		if(project.getState().equals(ProjectState.ACTIVE)){
+			startButton.setEnabled(false);
+			startButton.setText("Started");
+			startButton.setBackground(Color.GREEN);
+		}
+		if(project.getState().equals(ProjectState.COMPLETED)){
+			startButton.setEnabled(false);
+			startButton.setBackground(Color.GREEN);
+			startButton.setText("Completed");
+		}
+		
 		addActivityButton.addActionListener(new ActionListener(){
 		
 			@Override
@@ -193,20 +194,17 @@ public class ActivityPanel extends JPanel {
 				activityValues.add(new JLabel("Insert place: "));
 				activityValues.add(activityPlace);
 				activityValues.setVisible(true);
-		
-				JOptionPane creatingActivity = new JOptionPane();
-				int result = creatingActivity.showConfirmDialog(parentFrame, activityValues, "Please Enter Activity Values", JOptionPane.OK_CANCEL_OPTION);
-				if (result == creatingActivity.OK_OPTION){
+
+				int result = JOptionPane.showConfirmDialog(parentFrame, activityValues, "Please Enter Activity Values", JOptionPane.OK_CANCEL_OPTION);
+				if (result == JOptionPane.OK_OPTION){
 					if(!activityName.getText().equals("")){
-						Project managedProject = project;
 						try{
 						
-							Window w = SwingUtilities.getWindowAncestor(thisPanel);	//codice per nascondere 
-							w.setVisible(false);									//la vecchia finestra
+							Window w = SwingUtilities.getWindowAncestor(thisPanel);	
+							w.setVisible(false);									
 							client.addActivity(project.getProjectId(), activityName.getText(), activityDescription.getText(), activityPlace.getText(), "Ora_attuale");				
-							JOptionPane newactivityPane = new JOptionPane();
 							ActivityPanel newactivityPanel = new ActivityPanel(z, parentFrame, client);
-							newactivityPane.showConfirmDialog(parentFrame, newactivityPanel,"Activities", JOptionPane.CLOSED_OPTION);			
+							JOptionPane.showConfirmDialog(parentFrame, newactivityPanel,"Activities", JOptionPane.CLOSED_OPTION);			
 						}catch(RemoteException e2) {
 							e2.printStackTrace();
 						}
@@ -217,6 +215,7 @@ public class ActivityPanel extends JPanel {
 				}
 			}
 		});		
+		
 		//ADD COLLABORATORS---------------------------------------------------------------------
 		addCollaboratorsButton.addActionListener(new ActionListener(){
 			@Override
@@ -239,10 +238,9 @@ public class ActivityPanel extends JPanel {
 							inviteFriends.add(box);
 						}
 					}				
-					JOptionPane invitingFriends = new JOptionPane();
 					ArrayList<Integer> selected = new ArrayList<Integer>();
-					int result2 = invitingFriends.showConfirmDialog(parentFrame, inviteFriends, "Invite your friends",JOptionPane.OK_CANCEL_OPTION); 
-					if (result2 == invitingFriends.OK_OPTION){
+					int result2 = JOptionPane.showConfirmDialog(parentFrame, inviteFriends, "Invite your friends",JOptionPane.OK_CANCEL_OPTION); 
+					if (result2 == JOptionPane.OK_OPTION){
 						try {
 							for(int i = 0; i < checkboxes.size(); i++){
 								for(int j = 0; j < collaborators.size(); j++){
@@ -254,11 +252,10 @@ public class ActivityPanel extends JPanel {
 								}														
 							}
 							client.addCollaborators(project.getProjectId(), selected);
-							Window w = SwingUtilities.getWindowAncestor(thisPanel);	//codice per nascondere 
-							w.setVisible(false);									//la vecchia finestra							
-							JOptionPane newactivityPane = new JOptionPane();
+							Window w = SwingUtilities.getWindowAncestor(thisPanel);
+							w.setVisible(false);															
 							ActivityPanel newactivityPanel = new ActivityPanel(z, parentFrame, client);
-							newactivityPane.showConfirmDialog(parentFrame, newactivityPanel,"Activities", JOptionPane.CLOSED_OPTION);
+							JOptionPane.showConfirmDialog(parentFrame, newactivityPanel,"Activities", JOptionPane.CLOSED_OPTION);
 						}catch(RemoteException e1) {
 							e1.printStackTrace();
 						}	
@@ -280,77 +277,45 @@ public class ActivityPanel extends JPanel {
 			}
 		});
 		
-		//MODIFY INFO PROJECT--------------------------------------------------------------------------------------------------------------------------
-		JButton modifyProjectInfo = new JButton("Modify Project Info");
-		add(modifyProjectInfo);
-		if(project.getState() == ProjectState.COMPLETED){
-			modifyProjectInfo.setEnabled(false);
-		}
+		//MODIFY INFO PROJECT--------------------------------------------------------------------------------------------------------------------------		
 		modifyProjectInfo.addActionListener(new ActionListener(){
-
 			@Override
 			public void actionPerformed(ActionEvent e) {
-
-				JTextField projectName2 = new JTextField(15);
-				JTextField projectDescription2 = new JTextField(40);
+				JTextField projectName = new JTextField(15);
+				JTextField projectDescription = new JTextField(40);
 				String[] categories = Category.getStringsArray();			
-				JComboBox projectCategory2 = new JComboBox(categories);
+				@SuppressWarnings({ "rawtypes", "unchecked" })
+				JComboBox projectCategory = new JComboBox(categories);
 						
-				JPanel projectValues2 = new JPanel();
-				projectValues2.setLayout(new BoxLayout(projectValues2, BoxLayout.PAGE_AXIS));
-				projectValues2.add(new JLabel("Insert title: "));
-				projectValues2.add(projectName2);
-				projectValues2.add(new JLabel(" "),"span, grow");
-				projectValues2.add(new JLabel("Insert description: "));
-				projectValues2.add(projectDescription2);
-				projectValues2.add(new JLabel(" "),"span, grow");
-				projectValues2.add(new JLabel("Insert category: ")); //fare combobox
-				projectValues2.add(projectCategory2);
-				projectValues2.setVisible(true);
+				JPanel projectValues = new JPanel();
+				projectValues.setLayout(new BoxLayout(projectValues, BoxLayout.PAGE_AXIS));
+				projectValues.add(new JLabel("Insert title: "));
+				projectValues.add(projectName);
+				projectValues.add(new JLabel(" "),"span, grow");
+				projectValues.add(new JLabel("Insert description: "));
+				projectValues.add(projectDescription);
+				projectValues.add(new JLabel(" "),"span, grow");
+				projectValues.add(new JLabel("Insert category: "));
+				projectValues.add(projectCategory);
+				projectValues.setVisible(true);
 				
-				JOptionPane creatingProject = new JOptionPane();
-				int result2 = creatingProject.showConfirmDialog(thisPanel, projectValues2, "Modify Project Values", JOptionPane.OK_CANCEL_OPTION);
-				if (result2 == creatingProject.OK_OPTION){	
+				int result = JOptionPane.showConfirmDialog(thisPanel, projectValues, "Modify Project Values", JOptionPane.OK_CANCEL_OPTION);
+				if (result == JOptionPane.OK_OPTION){	
 						try {
-							client.modifyProject(project.getProjectId(), projectName2.getText(), projectDescription2.getText(), Category.getCategory(projectCategory2.getSelectedItem().toString()));
+							client.modifyProject(project.getProjectId(), projectName.getText(), projectDescription.getText(), Category.getCategory(projectCategory.getSelectedItem().toString()));									
+							Window w = SwingUtilities.getWindowAncestor(thisPanel);
+							w.setVisible(false);										
+							ActivityPanel newactivityPanel = new ActivityPanel(z, parentFrame, client);
+							JOptionPane.showConfirmDialog(thisPanel, newactivityPanel,"Activities", JOptionPane.CLOSED_OPTION);
 						} catch (RemoteException e1) {
-							// TODO Auto-generated catch block
 							e1.printStackTrace();
-						}
-						
-						Window w = SwingUtilities.getWindowAncestor(thisPanel);	//codice per nascondere 
-						w.setVisible(false);									//la vecchia finestra		
-						JOptionPane newactivityPane2 = new JOptionPane();
-						ActivityPanel newactivityPanel2 = null;
-						try {
-							newactivityPanel2 = new ActivityPanel(z, parentFrame, client);
-						} catch (RemoteException e1) {
-							// TODO Auto-generated catch block
-							e1.printStackTrace();
-						}
-						newactivityPane2.showConfirmDialog(thisPanel, newactivityPanel2,"Activities", JOptionPane.CLOSED_OPTION);
-				}
-				
-			}
-			
+						}				
+				}				
+			}			
 		});
 		
-		//START PROJECT
-		JButton startButton = new JButton("Start Poject");
-		add(startButton);
-		if(project.getState().equals(ProjectState.ACTIVE)){
-			startButton.setEnabled(false);
-			startButton.setText("Started");
-			startButton.setBackground(Color.GREEN);
-		}
-		if(project.getState().equals(ProjectState.COMPLETED)){
-			startButton.setEnabled(false);
-			startButton.setBackground(Color.GREEN);
-			startButton.setText("Completed");
-		}
-		
+		//START PROJECT	
 		startButton.addActionListener(new ActionListener(){
-
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if(activitiesButtons.isEmpty()){
@@ -361,13 +326,10 @@ public class ActivityPanel extends JPanel {
 					try {
 						client.startProject(project.getProjectId());
 						JOptionPane.showMessageDialog(parentFrame, "Project started successfully");
-						Window w = SwingUtilities.getWindowAncestor(thisPanel);	//codice per nascondere 
-						w.setVisible(false);									//la vecchia finestra		
-						JOptionPane newactivityPane2 = new JOptionPane();
-						ActivityPanel newactivityPanel2 = null;
-						newactivityPanel2 = new ActivityPanel(z, parentFrame, client);
-						
-						newactivityPane2.showConfirmDialog(thisPanel, newactivityPanel2,"Activities", JOptionPane.CLOSED_OPTION);
+						Window w = SwingUtilities.getWindowAncestor(thisPanel);	
+						w.setVisible(false);									
+						ActivityPanel newactivityPanel = new ActivityPanel(z, parentFrame, client);						
+						JOptionPane.showConfirmDialog(thisPanel, newactivityPanel,"Activities", JOptionPane.CLOSED_OPTION);
 					} catch (RemoteException e1) {
 						e1.printStackTrace();
 					}
@@ -377,16 +339,11 @@ public class ActivityPanel extends JPanel {
 		});
 		
 		//NOTIFICA BORADCAST
-		JButton notifyCollaboratorsButton = new JButton("Notify others :)");
-		add(notifyCollaboratorsButton);
 		notifyCollaboratorsButton.addActionListener(new ActionListener(){
-
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				ArrayList<User> projectCollabos = new ArrayList<User>();
-				projectCollabos = project.getCollaborators();
-				JTextField broadcastMex = new JTextField("Hello guys, Welcome to my project.");
-				
+				ArrayList<User> projectCollabos = project.getCollaborators();
+				JTextField broadcastMex = new JTextField("Hello guys, Welcome to my project.");		
 				JPanel broadcastPanel = new JPanel();
 				broadcastPanel.setLayout(new BoxLayout(broadcastPanel, BoxLayout.PAGE_AXIS));
 				broadcastPanel.add(new JLabel("Insert the message to notify to others: "));
@@ -403,6 +360,23 @@ public class ActivityPanel extends JPanel {
 				}
 			}
 		});
+			    
+	    //REFRESH
+	    refreshButton.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				Window w = SwingUtilities.getWindowAncestor(thisPanel);	
+				w.setVisible(false);									
+				ActivityPanel newactivityPanel3 = null;
+				try {
+					newactivityPanel3 = new ActivityPanel(z, parentFrame, client);
+				} catch (RemoteException e1) {
+					e1.printStackTrace();
+				}
+				JOptionPane.showConfirmDialog(parentFrame, newactivityPanel3,"Activities", JOptionPane.CLOSED_OPTION);
+			}  	
+	    });
+	   	add(refreshButton);	
 	}	
 }
 

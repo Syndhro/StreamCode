@@ -28,7 +28,7 @@ public class ClientGUI {
 	private JLabel lblNew;
 	private JButton registerButton;
 	private JButton loginButton;
-	private static Client client; // = new Client();
+	private static Client client; 
 
 	/**
 	 * Launch the application.

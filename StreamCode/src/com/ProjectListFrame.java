@@ -13,19 +13,19 @@ import java.awt.event.ActionEvent;
 public class ProjectListFrame extends JFrame {
 	
 	private static final long serialVersionUID = 1L;
-	ProjectListFrame thisFrame = this;
-	Project project = null;
-	Activity activity = null;
+	ProjectListFrame thisFrame;
+	Project project;
+	Activity activity;
 	ArrayList<Project> managedProjects;
 	ArrayList<Project> collaborationProjects;
 	ArrayList<Notification> notifications;
 	ArrayList<Activity> activities;
 	
 	Container mainPanel;
-	JButton refresh = new JButton("Refresh");
-	JButton friendsButton = new JButton("See your friends :)");
-	JButton addFriendButton = new JButton("Add Friend");
-	JButton addProjectButton = new JButton("Add project");
+	JButton refresh;
+	JButton friendsButton;
+	JButton addFriendButton;
+	JButton addProjectButton;
 	JPanel managedProjectPanel;
 	JPanel collaborationProjectPanel;
 	JPanel notificationsPanel;
@@ -44,6 +44,15 @@ public class ProjectListFrame extends JFrame {
 		mainPanel = getContentPane();						
 		mainPanel.setLayout(new FlowLayout());	
 			
+		//INITIALIZATIONS
+		project = null;
+		activity = null;
+		thisFrame = this;
+		refresh = new JButton("Refresh");
+		friendsButton = new JButton("See your friends :)");
+		addFriendButton = new JButton("Add Friend");
+		addProjectButton = new JButton("Add project");
+		
 		//RETRIEVE NEEDED OBJECTS
 		managedProjects = client.getManagedProject();
 		collaborationProjects = client.getCollaborationProject();
@@ -178,8 +187,7 @@ public class ProjectListFrame extends JFrame {
 		});	
 		projectSettings.add(addFriendButton);
 		
-		//ADD PROJECT PROCESS
-		
+		//ADD PROJECT PROCESS	
 		projectSettings.add(addProjectButton);
 		addProjectButton.addActionListener(new ActionListener(){
 
@@ -199,7 +207,7 @@ public class ProjectListFrame extends JFrame {
 				projectValues.add(new JLabel("Insert description: "));
 				projectValues.add(projectDescription);
 				projectValues.add(new JLabel(" "),"span, grow");
-				projectValues.add(new JLabel("Insert category: ")); //fare combobox
+				projectValues.add(new JLabel("Insert category: ")); 
 				projectValues.add(projectCategory);
 				projectValues.setVisible(true);
 
@@ -209,7 +217,12 @@ public class ProjectListFrame extends JFrame {
 					if(!projectTitle.getText().equals("")){	
 						ProjectListFrame projectListFrame = null;
 							try {
-								client.addProject(projectTitle.getText(), projectDescription.getText(), Category.getCategory(projectCategory.getSelectedItem().toString()), client.getClientId());
+								String projectTitleString = projectTitle.getText();
+								String projectDescriptionString = projectDescription.getText();
+								String projectCategoryString = projectCategory.getSelectedItem().toString();
+								Category projectCategoryCategory =  Category.getCategory(projectCategoryString);
+								int clientId = client.getClientId();
+								client.addProject(projectTitleString, projectDescriptionString, projectCategoryCategory, clientId);
 								dispose();
 								projectListFrame = new ProjectListFrame(client);			
 							} catch (RemoteException e1) {			

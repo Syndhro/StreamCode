@@ -4,13 +4,12 @@ import java.io.Serializable;
 import java.sql.*;
 import java.util.ArrayList;
 
-import javax.print.attribute.standard.RequestingUserName;
-
 import com.mysql.jdbc.PreparedStatement;
 import com.mysql.jdbc.Statement;
 
 public class DBManager implements Serializable{
-	
+
+	private static final long serialVersionUID = 1L;
 	private static DBManager uniqueInstance;
 	private Connection connection;
 	private Credential credentials;
@@ -463,8 +462,8 @@ public class DBManager implements Serializable{
 			while (resultSet.next()){
 				int notificationId = resultSet.getInt(1);
 				String message = resultSet.getString(2);
-				String date = resultSet.getString(3);
-				String time = resultSet.getString(4);
+				//String date = resultSet.getString(3);
+				//String time = resultSet.getString(4);
 				int targetId = resultSet.getInt(5);
 				boolean isDelivered = resultSet.getBoolean(6);
 				String type = resultSet.getString(7);

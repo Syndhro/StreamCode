@@ -3,10 +3,10 @@ package com;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.rmi.server.*;
-import java.sql.SQLException;
 
 public class ServerImpl extends UnicastRemoteObject implements Subject, ServerInterface {
 
+	private static final long serialVersionUID = 1L;
 	private static ServerImpl uniqueInstance;
 	private DBManager dbManager;
 	private NotificationSimpleFactory notificationFactory;
@@ -113,7 +113,6 @@ public class ServerImpl extends UnicastRemoteObject implements Subject, ServerIn
 	
 	//OBSERVER PATTERN------------------------------------------------------------------------
 	
-
 	public void registerClient(ClientInterface client) throws RemoteException{
 		onlineClients.add(client);
 	}
@@ -230,16 +229,12 @@ public class ServerImpl extends UnicastRemoteObject implements Subject, ServerIn
 	@Override
 	public void addProject(String title, String description, Category category, int userId) throws RemoteException {
 		User user = getUserById(userId);
-		int projectId = dbManager.getLastProjectId();
-		Project project = new Project(projectId+1, title, description, category, user, ProjectState.INACTIVE);
-		registeredProjects.add(project);
+		int lastProjectId = dbManager.getLastProjectId();
+		Project project = new Project(lastProjectId+1, title, description, category, user, ProjectState.INACTIVE);//I need the state because when I retrieve from database 																										  
+		registeredProjects.add(project);																	  //not all projects are inactive
 		dbManager.addProject(project);
-		for(int i = 0; i < registeredUsers.size(); i++){
-			if(user.getUsername().equals(registeredUsers.get(i).getUsername())){
-				registeredUsers.get(i).addManagedProject(project);
-				updateInterface();
-			}
-		}
+		user.addManagedProject(project);
+		updateInterface();
 	}
 	
 	@Override
