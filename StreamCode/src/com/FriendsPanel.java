@@ -1,44 +1,41 @@
 package com;
 
 import javax.swing.JPanel;
-import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 
 import javax.swing.JTextField;
-import javax.swing.JTextArea;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
-import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 
 public class FriendsPanel extends JPanel {
-	
+
+	private static final long serialVersionUID = 1L;
 	private FriendsPanel thisPanel;
 	private int myId;
 
+	JTextField searchInput;
+	JButton searchButton; 
 	/**
 	 * Create the panel.
 	 */
 	public FriendsPanel(Client client) {
 		
-		JTextField searchInput = new JTextField();
+		searchInput = new JTextField();
 		add(searchInput);
 		searchInput.setColumns(10);
 		thisPanel = this;
-		
+		searchButton = new JButton("Search");
+		add(searchButton);
 		try {
 			myId = client.getClientId();
 		} catch (RemoteException e2) {
 			e2.printStackTrace();
 		}
-		
-		JButton searchButton = new JButton("Search");
-		add(searchButton);
-		
 		
 		searchButton.addActionListener(new ActionListener(){
 			@Override

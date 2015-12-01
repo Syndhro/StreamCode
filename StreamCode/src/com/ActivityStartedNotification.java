@@ -2,6 +2,8 @@ package com;
 
 public class ActivityStartedNotification extends Notification{
 	
+	private static final long serialVersionUID = 1L;
+
 	public ActivityStartedNotification(int notificationId, NotificationType type, String description, int targetId, boolean isDelivered){
 		this.message = "The activity (" + description + ") is completed";
 		this.type = type;

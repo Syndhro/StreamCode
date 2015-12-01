@@ -3,17 +3,16 @@ package com;
 import java.io.Serializable;
 import java.util.ArrayList;
 
-import javax.xml.crypto.Data;
-
 public class Activity implements Serializable{
 
+	private static final long serialVersionUID = 1L;
 	private int activityId;
 	private Project parentProject;
 	private String name;
 	private String description;
 	private String place;
 	private String dateTime;
-	private ArrayList<User> activityCollaborators; //corretto che siano oggetti in modo da chiamare il metodo update di ognuno quando necessario
+	private ArrayList<User> activityCollaborators; 
 	private boolean isCompleted;
 	private boolean isActive;
 	

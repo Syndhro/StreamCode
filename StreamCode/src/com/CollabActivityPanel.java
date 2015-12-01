@@ -1,7 +1,6 @@
 package com;
 
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -10,37 +9,49 @@ import java.util.ArrayList;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 
 public class CollabActivityPanel extends JPanel {
 
+	private static final long serialVersionUID = 1L;
 	ProjectListFrame parentFrame;
 	CollabActivityPanel thisPanel; 
+	Project project;
+	ArrayList<Activity> activities;
+	ArrayList<User> collaborators;
+	ArrayList<JButton> activitiesButtons;
+	ArrayList<JButton> collaboratorsButtons;
+
+	JPanel projectInfoValues;
+	JPanel activitiesPanel;
+	JPanel collaboratorsPanel;
+	JLabel projectName;
+	JLabel projectDescription;
+	JLabel projectCategory;
+	JLabel projectAdmin;
+	int myId;
 	
-	/**
-	 * Create the panel.
-	 * @throws RemoteException 
-	 */
 	public CollabActivityPanel(int k, ProjectListFrame parentFrame, Client client) throws RemoteException {
 		
 		thisPanel = this;
-		this.parentFrame = parentFrame;
-		int myId = client.getClientId();
-		Project project = client.getCollaborationProject().get(k);
-	    setBounds(100, 100, 500, 336);								 
-	   					
-	    JLabel projectName = new JLabel(project.getTitle());
-		JLabel projectDescription = new JLabel(project.getDescription());
-		JLabel projectCategory = new JLabel(project.getCategory().toString());
-		JLabel projectAdmin = new JLabel(project.getAdmin().getUsername());
+		this.parentFrame = parentFrame;	
+	    setBounds(100, 100, 500, 336);	
+	    
+	    //RETRIEVE OBJECTS NEEDED
+	    myId = client.getClientId();
+		project = client.getCollaborationProject().get(k);		
+		activities = project.getActivities();
+		collaborators = project.getCollaborators();
+	      
+	    projectName = new JLabel(project.getTitle());
+		projectDescription = new JLabel(project.getDescription());
+		projectCategory = new JLabel(project.getCategory().toString());
+		projectAdmin = new JLabel(project.getAdmin().getUsername());
 		
-		JPanel projectInfoValues = new JPanel();
+		projectInfoValues = new JPanel();
 		projectInfoValues.setLayout(new BoxLayout(projectInfoValues, BoxLayout.PAGE_AXIS));
 		projectInfoValues.add(new JLabel("Name: "));
 		projectInfoValues.add(projectName);
@@ -54,12 +65,13 @@ public class CollabActivityPanel extends JPanel {
 		projectInfoValues.add(new JLabel("Created by: ")); 
 		projectInfoValues.add(projectAdmin);
 		add(projectInfoValues);
+		add(collaboratorsPanel);
+		add(activitiesPanel);
+	
+	    activitiesPanel = new JPanel();
+	    activitiesPanel.setLayout(new BoxLayout(activitiesPanel, BoxLayout.PAGE_AXIS));    
+		activitiesButtons = new ArrayList<JButton>();
 		
-	    JPanel activitiesPanel = new JPanel();
-	    activitiesPanel.setLayout(new BoxLayout(activitiesPanel, BoxLayout.PAGE_AXIS));
-	    ArrayList<Activity> activities = new ArrayList<Activity>();
-		ArrayList<JButton> activitiesButtons = new ArrayList<JButton>();
-		activities = project.getActivities();
 		for(int j = 0; j < activities.size(); j++){
 			JButton button = new JButton();
 			button.setText(activities.get(j).getName());
@@ -139,31 +151,25 @@ public class CollabActivityPanel extends JPanel {
 					activityInfoValues.add(activityCollaboratorsPanel);
 					int result = JOptionPane.showConfirmDialog(parentFrame, activityInfoValues, "Activity Info", JOptionPane.CLOSED_OPTION);
 					if(result == JOptionPane.OK_OPTION){
-						Window w = SwingUtilities.getWindowAncestor(thisPanel);	//codice per nascondere 
-						w.setVisible(false);									//la vecchia finestra
-									
-						JOptionPane newactivityPane3 = new JOptionPane();
-						CollabActivityPanel newactivityPanel3 = null;
+						Window w = SwingUtilities.getWindowAncestor(thisPanel);	
+						w.setVisible(false);									
+						CollabActivityPanel newactivityPanel = null;
 						try {
-							newactivityPanel3 = new CollabActivityPanel(k, parentFrame, client);
+							newactivityPanel = new CollabActivityPanel(k, parentFrame, client);
 						} catch (RemoteException e1) {
-							// TODO Auto-generated catch block
 							e1.printStackTrace();
 						}
-						newactivityPane3.showConfirmDialog(parentFrame, newactivityPanel3,"Activities", JOptionPane.CLOSED_OPTION);
+						JOptionPane.showConfirmDialog(parentFrame, newactivityPanel,"Activities", JOptionPane.CLOSED_OPTION);
 					}
 				}				
 			});
 		
 		}
-		add(activitiesPanel);
-		
+
 		//PROJECTS COLLABORATORS
-		JPanel collaboratorsPanel = new JPanel();
-		collaboratorsPanel. setLayout(new BoxLayout(collaboratorsPanel, BoxLayout.PAGE_AXIS));
-		ArrayList<User> collaborators = new ArrayList<User>();
-		ArrayList<JButton> collaboratorsButtons = new ArrayList<JButton>();
-		collaborators = project.getCollaborators();
+		collaboratorsPanel = new JPanel();
+		collaboratorsPanel.setLayout(new BoxLayout(collaboratorsPanel, BoxLayout.PAGE_AXIS));		
+		collaboratorsButtons = new ArrayList<JButton>();		
 		for(int j = 0; j < collaborators.size(); j++){
 			JButton button = new JButton();
 			button.setText(collaborators.get(j).getUsername());
@@ -171,7 +177,6 @@ public class CollabActivityPanel extends JPanel {
 			collaboratorsPanel.add(button);		
 			collaboratorsButtons.add(button);
 		}
-		add(collaboratorsPanel);
 	}
 }
 

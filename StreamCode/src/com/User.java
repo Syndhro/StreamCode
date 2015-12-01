@@ -5,6 +5,7 @@ import java.util.ArrayList;
 
 public class User implements Observer, Serializable {
 
+	private static final long serialVersionUID = 1L;
 	private int userId;
 	private String username;
 	private ArrayList<Project> collaborationProjects;
@@ -22,20 +23,7 @@ public class User implements Observer, Serializable {
 		userActivities = new ArrayList<Activity>();
 		userFriends = new ArrayList<User>();
 	}
-	
-	//chain of responsability
 
-	public void next() {
-		//chain of responsability
-	}
-
-	@Override
-	//observer
-	
-	public void update() {
-		
-	}
-	
 	public void update(Notification notification) {
 		System.out.println(notification.getMessage());
 	}
@@ -97,6 +85,12 @@ public class User implements Observer, Serializable {
 	
 	public void addFriend(User user) {
 		userFriends.add(user);	
+	}
+
+	@Override
+	public void update() {
+		// TODO Auto-generated method stub
+		
 	}
 
 }
