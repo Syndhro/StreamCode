@@ -7,19 +7,14 @@ import java.rmi.RemoteException;
 
 public class Server{
 	
-	private final static ServerImpl server = ServerImpl.getInstance();
+	private static ServerImpl server;
+	
+	public Server(){
+		server = ServerImpl.getInstance();
+	};
 	
 	public void startup() throws RemoteException, MalformedURLException, NotBoundException {
-
-		server.retrieveAllUsers();
-		server.retrieveAllProjects();
-		server.retrieveAllActivities();
-		server.retrieveAllNotifications();
-		
-		server.linkProjectsToCollaborators();
-		server.linkProjectsToAdmins();
-		server.linkActivitiesToUsers();
-		server.linkFriends();
+		server.restoreFromDatabase();
 	    Naming.rebind("server", server);
 	}
 	

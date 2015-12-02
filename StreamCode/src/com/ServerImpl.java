@@ -112,6 +112,18 @@ public class ServerImpl extends UnicastRemoteObject implements Subject, ServerIn
 		}
 	};
 	
+	public void restoreFromDatabase() throws RemoteException{
+		retrieveAllUsers();
+		retrieveAllProjects();
+		retrieveAllActivities();
+		retrieveAllNotifications();
+		
+		linkProjectsToCollaborators();
+		linkProjectsToAdmins();
+		linkActivitiesToUsers();
+		linkFriends();
+	}
+	
 	//OBSERVER PATTERN------------------------------------------------------------------------
 	public void registerClient(ClientInterface client) throws RemoteException{
 		onlineClients.add(client);
