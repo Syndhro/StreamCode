@@ -48,7 +48,4 @@ public enum NotificationType implements Serializable{
 		
 		return notType;
 	}
-	
-	
-
 }

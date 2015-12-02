@@ -15,8 +15,7 @@ public class Project implements Serializable{
 	private ArrayList<User> projectCollaborators;
 	private ProjectState state;
 	
-	//constructors
-	
+	//CONSTRUCTOR
 	public Project(int projectId, String title, String description, Category cat, User admin, ProjectState state){
 		this.projectId = projectId;
 		this.projectCollaborators = new ArrayList<User>();
@@ -43,9 +42,8 @@ public class Project implements Serializable{
 	public void removeActivity(Activity activity) {
 		this.projectActivities.remove(activity);
 	}
-	
-	//start/end
-	
+
+	//START/END
 	public void startProject() {
 		this.state = ProjectState.ACTIVE;
 	}
@@ -54,8 +52,7 @@ public class Project implements Serializable{
 		this.state = ProjectState.COMPLETED;
 	}
 	
-	//setters
-	
+	//SETTERS
 	public void setAdmin(User user) {
 		this.admin = user;
 	}
@@ -76,8 +73,7 @@ public class Project implements Serializable{
 		this.state = state;
 	}
 	
-	//getters
-	
+	//GETTERS
 	public String getTitle() {
 		return this.title;
 	}
@@ -108,12 +104,5 @@ public class Project implements Serializable{
 	
 	public ArrayList<User> getCollaborators() {
 		return this.projectCollaborators;
-	}
-
-	@Override
-	public String toString() {
-		return "Project [projectId=" + projectId + ", \ntitle=" + title + ", \ndescription=" + description + ", \ncategory="
-				+ category + ", \nadminId=" + admin + ", \nprojectActivities=" + projectActivities + ", \nprojectUsers="
-				+ projectCollaborators + ", \nstate=" + state + "]\n\n";
 	}
 }

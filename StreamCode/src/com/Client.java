@@ -28,6 +28,11 @@ public class Client extends UnicastRemoteObject implements ClientInterface{
   		
   	}
 	
+	//OBSERVER PATTERN
+	@Override
+	public void getNotification(Notification notification) throws RemoteException {
+		JOptionPane.showMessageDialog(null, notification.getMessage());
+	}
 	
 	public void registerUser(String username, String password) throws RemoteException {
 		server.registerUser(username, password);
@@ -176,7 +181,6 @@ public class Client extends UnicastRemoteObject implements ClientInterface{
 		try {
 			activities = server.getMyActivities(myUserId);
 		} catch (RemoteException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} 
 		return activities;
@@ -191,63 +195,11 @@ public class Client extends UnicastRemoteObject implements ClientInterface{
 		}
 		return myOfflineNotifications;
 	}
-	
-	@Override
-	public void getNotification(Notification notification) throws RemoteException {
-		JOptionPane.showMessageDialog(null, notification.getMessage());
-		System.out.println(notification.getMessage());
-	}
 
 	public void sendBroadcast(String message, ArrayList<Integer> ids){
 		try {
 			server.sendBroadcast(message, ids);
 		} catch (RemoteException e) {
-			e.printStackTrace();
-		}
-	}
-	
-	
-	public static void main(String[] args) throws RemoteException, NotBoundException{
-  		
-		Client client = new Client();
-		try{
-			client.startup();
-		}catch(Exception e){
-			e.printStackTrace();
-		}
-		
-		try{
-			int verifier = client.check("andreavaghi", "vaghi");
-			if (verifier == -1)
-				System.out.println("Wrong Username");
-			else if (verifier == -2)
-				System.out.println("Wrong Password");
-			else{
-				client.login("andreavaghi", "vaghi");
-				server.registerClient(client);
-				}
-			
-			ArrayList<Notification> notif = client.getOfflineNotifications();
-			
-			for(int i = 0; i < notif.size(); i++){
-				System.out.println(notif.get(i).getMessage());
-			}
-			
-			//client.stampa();
-			
-			client.addProject("Comple Spe", "A casa di spe", Category.getCategory("sport"), client.getClientId());
-			
-			client.addFriend(client.getClientId(), 17);
-			
-			client.addFriend(client.getClientId(), 18);
-			
-			ArrayList<Integer> userIds = new ArrayList<>();
-			userIds.add(17);
-			userIds.add(18);
-			
-			client.addCollaborators(1, userIds);
-			
-		}catch(RemoteException e){
 			e.printStackTrace();
 		}
 	}

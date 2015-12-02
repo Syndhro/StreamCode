@@ -171,6 +171,12 @@ public class ProjectListFrame extends JFrame {
 			else{
 				myActivitiesArea.append("Active: no" + "\n"); 			
 			}
+			if(activities.get(j).isCompleted()){			
+				myActivitiesArea.append("Completed: yes" + "\n"); 
+			}
+			else{
+				myActivitiesArea.append("Completed: no" + "\n"); 			
+			}
 			myActivitiesArea.append("\n");
 		}
 		

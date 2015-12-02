@@ -3,7 +3,7 @@ package com;
 import java.io.Serializable;
 import java.util.ArrayList;
 
-public class User implements Observer, Serializable {
+public class User implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	private int userId;
@@ -24,10 +24,29 @@ public class User implements Observer, Serializable {
 		userFriends = new ArrayList<User>();
 	}
 
-	public void update(Notification notification) {
-		System.out.println(notification.getMessage());
+	//ADDERS
+
+	public void addCollaborationProject(Project project) {
+		this.collaborationProjects.add(project);
+	}
+	
+	public void addManagedProject(Project project) {
+		this.managedProjects.add(project);
 	}
 
+	public void addUserActivities(Activity activity) {
+		this.userActivities.add(activity);
+	}
+	
+	public void addUserNotifications(Notification notification){
+		this.userNotifications.add(notification);
+	}
+
+	public void addFriend(User user) {
+		userFriends.add(user);	
+	}
+	
+	//GETTERS
 	public int getUserId() {
 		return userId;
 	}
@@ -55,42 +74,4 @@ public class User implements Observer, Serializable {
 	public ArrayList<Notification> getUserNotification(){
 		return userNotifications;
 	}
-
-	public void setUsername(String username) {
-		this.username = username;
-	}
-
-	public void addCollaborationProject(Project project) {
-		this.collaborationProjects.add(project);
-	}
-	
-	public void addManagedProject(Project project) {
-		this.managedProjects.add(project);
-	}
-
-	public void addUserActivities(Activity activity) {
-		this.userActivities.add(activity);
-	}
-	
-	public void addUserNotifications(Notification notification){
-		this.userNotifications.add(notification);
-	}
-
-	@Override
-	public String toString() {
-		return "User [userId=" + userId + ", \nusername=" + username + ", \nuserProjects=" + collaborationProjects
-				+ ", \nuserActivities=" + userActivities + ", \nuserFriend=" + userFriends + "]\n\n";
-	}
-	
-	
-	public void addFriend(User user) {
-		userFriends.add(user);	
-	}
-
-	@Override
-	public void update() {
-		// TODO Auto-generated method stub
-		
-	}
-
 }

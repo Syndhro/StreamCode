@@ -16,15 +16,8 @@ public class Activity implements Serializable{
 	private boolean isCompleted;
 	private boolean isActive;
 	
-	//constructors
-
-	public Activity(Project parentProject){
-		this.parentProject = parentProject;
-		this.activityCollaborators = new ArrayList<User>();
-		this.isCompleted = false; //uncompleted
-		this.isActive = false; //unactive	
-	}
-	
+	//CONSTRUCTORS
+	//WHEN CREATED 
 	public Activity(int activityId, Project parentProject, String name, String description, String place, String dateTime){
 		this.activityId = activityId;
 		this.parentProject = parentProject;
@@ -33,10 +26,11 @@ public class Activity implements Serializable{
 		this.place = place;
 		this.dateTime = dateTime;
 		this.activityCollaborators = new ArrayList<User>();
-		this.isCompleted = false; //uncompleted
-		this.isActive = false; //unactive	
+		this.isCompleted = false; //UNCOMPLETED
+		this.isActive = false; //UNACTIVE
 	}
 	
+	//WHEN RETRIEVED FROM DB(PREVIOUS ISCOMPLETED AND ISACTIVE NEEDED)
 	public Activity(int activityId, String name, String description, String place, String dateTime, boolean isCompleted, boolean isActive){
 		this.activityId = activityId;
 		this.name = name;
@@ -48,8 +42,7 @@ public class Activity implements Serializable{
 		this.isActive = isActive;	
 	}
 	
-	//add & remove
-
+	//ADDERS & REMOVERS
 	public void addAgent(User user) {
 		activityCollaborators.add(user);
 	}
@@ -59,7 +52,6 @@ public class Activity implements Serializable{
 	}
 	
 	//GETTERS
-
 	public int getActivityId() {
 		return activityId;
 	}
@@ -97,7 +89,6 @@ public class Activity implements Serializable{
 	}
 	
 	//SETTERS
-
 	public void setActivityId(int activityId) {
 		this.activityId = activityId;
 	}
@@ -132,7 +123,6 @@ public class Activity implements Serializable{
 
 	public void setActive(boolean isActive) {
 		this.isActive = isActive;
-	}
-	
+	}	
 }
 

@@ -26,12 +26,9 @@ public enum ProjectState implements Serializable{
 			break;
 		default:
 			state = null;
-		}
-		
-		return state;
-		
+		}	
+		return state;		
 	}
-	
 }
 
 

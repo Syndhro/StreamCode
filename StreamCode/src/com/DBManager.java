@@ -31,8 +31,7 @@ public class DBManager implements Serializable{
 	public void connect(){
 		this.connection = null;
 		try {
-		     Class.forName("com.mysql.jdbc.Driver");
-		     
+		     Class.forName("com.mysql.jdbc.Driver");		     
 		     connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/streamdata", credentials.getDbUsername(), credentials.getDbPassword());			      	
 	    }
 	    catch(ClassNotFoundException e) {

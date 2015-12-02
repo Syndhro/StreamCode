@@ -66,7 +66,6 @@ public class CollabActivityPanel extends JPanel {
 		projectInfoValues.add(projectAdmin);
 		add(projectInfoValues);
 		
-	
 	    activitiesPanel = new JPanel();
 	    add(activitiesPanel);
 	    activitiesPanel.setLayout(new BoxLayout(activitiesPanel, BoxLayout.PAGE_AXIS));    

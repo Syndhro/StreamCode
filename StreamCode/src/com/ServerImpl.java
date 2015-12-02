@@ -13,17 +13,14 @@ public class ServerImpl extends UnicastRemoteObject implements Subject, ServerIn
 	private ArrayList<Project> registeredProjects;
 	private ArrayList<Activity> registeredActivities;
 	private ArrayList<User> registeredUsers;
-	private ArrayList<Observer> loggedUsers;
 	private ArrayList<Notification> registeredNotifications;
 	private ArrayList<ClientInterface> onlineClients;
 	private ServerInterfaceObserver serverInterface;
 	
 	//CONSTRUCTORS---------------------------------------------------------------------
-
 	private ServerImpl() throws RemoteException{
 		this.dbManager = DBManager.getInstance();
 		this.notificationFactory = new NotificationSimpleFactory();
-		this.loggedUsers = new ArrayList<Observer>();
 		this.registeredProjects = new ArrayList<Project>();
 		this.registeredActivities = new ArrayList<Activity>();
 		this.registeredUsers = new ArrayList<User>();
@@ -42,7 +39,6 @@ public class ServerImpl extends UnicastRemoteObject implements Subject, ServerIn
 	}
 	
 	//DB RETRIEVING OPERATIONS--------------------------------------------------------------
-	
 	public void retrieveAllProjects(){
 		this.registeredProjects = dbManager.getAllProjects();
 	}
@@ -112,7 +108,6 @@ public class ServerImpl extends UnicastRemoteObject implements Subject, ServerIn
 	};
 	
 	//OBSERVER PATTERN------------------------------------------------------------------------
-	
 	public void registerClient(ClientInterface client) throws RemoteException{
 		onlineClients.add(client);
 	}
@@ -122,21 +117,9 @@ public class ServerImpl extends UnicastRemoteObject implements Subject, ServerIn
 		System.out.println("User with id=" + client.getClientId() + " logged out");
 	}
 
-	public void registerObserver(Observer o) {
-		loggedUsers.add(o);
-	}
-	
-	public void removeObserver(Observer o) {
-		int i = loggedUsers.indexOf(o);
-		if(i >= 0){
-			loggedUsers.remove(i);
-		}
-	}
-	
-	public void notifyObservers() {
-		for (int i=0; i < loggedUsers.size(); i++){
-			loggedUsers.get(i).update();
-		}
+	@Override
+	public void notifyUser(ClientInterface o, Notification n) throws RemoteException {
+		o.getNotification(n);
 	}
 	
 	public void addInterfaceObserver(ServerInterfaceObserver serverInterface){
@@ -200,7 +183,6 @@ public class ServerImpl extends UnicastRemoteObject implements Subject, ServerIn
 	}
 	
 	//ADDERS--------------------------------------------------------------------------------------
-
 	@Override
 	public void registerUser(String username, String password) throws RemoteException {
 		dbManager.addUser(username, password);
@@ -220,7 +202,7 @@ public class ServerImpl extends UnicastRemoteObject implements Subject, ServerIn
 		registeredNotifications.add(notification);
 		if (isClientOnline(userId2)){
 			ClientInterface clientToBeNotified = getClientById(userId2);
-			clientToBeNotified.getNotification(notification);
+			notifyUser(clientToBeNotified, notification);
 			notification.setDelivered(true);
 		}
 		dbManager.addNotification(notification);
@@ -259,12 +241,12 @@ public class ServerImpl extends UnicastRemoteObject implements Subject, ServerIn
 		User user;
 		for(int i = 0; i < userIds.size(); i++){
 			int idTarget = userIds.get(i).intValue();
-			Notification notification = createNotification("project_invite", project.getDescription(), idTarget);
+			Notification notification = createNotification("project_invite", project.getTitle(), idTarget);
 			registeredNotifications.add(notification);
 			user = getUserById(idTarget);
 			if (isClientOnline(idTarget)){
 				ClientInterface clientToBeNotified = getClientById(idTarget);
-				clientToBeNotified.getNotification(notification);
+				notifyUser(clientToBeNotified, notification);
 				notification.setDelivered(true);
 			}
 			project.addCollaborator(user);
@@ -282,11 +264,11 @@ public class ServerImpl extends UnicastRemoteObject implements Subject, ServerIn
 			for (int i = 0; i < project.getCollaborators().size(); i++){
 				user = project.getCollaborators().get(i);
 				int targetId = user.getUserId();
-				Notification notification = createNotification("project_started", project.getDescription(), targetId);
+				Notification notification = createNotification("project_started", project.getTitle(), targetId);
 				registeredNotifications.add(notification);
 				if(isClientOnline(targetId)){
 					clientToBeNotified = getClientById(targetId);
-					clientToBeNotified.getNotification(notification);
+					notifyUser(clientToBeNotified, notification);
 					notification.setDelivered(true);
 				}
 				dbManager.addNotification(notification);
@@ -311,12 +293,12 @@ public class ServerImpl extends UnicastRemoteObject implements Subject, ServerIn
 			user = activity.getActivityCollaborators().get(i);
 			if(user.getUserId()!= userId){
 				int targetId = user.getUserId();
-				Notification notification = createNotification("activity_completed", activity.getDescription(), user.getUserId());
+				Notification notification = createNotification("activity_completed", activity.getName(), user.getUserId());
 				registeredNotifications.add(notification);
 				if(isClientOnline(targetId)){
 					ClientInterface clientToBeNotified = null;
 					clientToBeNotified = getClientById(targetId);
-					clientToBeNotified.getNotification(notification);
+					notifyUser(clientToBeNotified, notification);
 					notification.setDelivered(true);
 				}
 			}
@@ -337,11 +319,11 @@ public class ServerImpl extends UnicastRemoteObject implements Subject, ServerIn
 				User userNextActivity = nextActivity.getActivityCollaborators().get(i);
 				int nextTargetId = userNextActivity.getUserId();
 				if(nextTargetId != userId){
-					Notification nextNotification = createNotification("activity_started", activity.getDescription(), nextTargetId);
+					Notification nextNotification = createNotification("activity_started", activity.getName(), nextTargetId);
 					registeredNotifications.add(nextNotification);
 					if(isClientOnline(nextTargetId)){
 						ClientInterface clientNextActivity = getClientById(nextTargetId);
-						clientNextActivity.getNotification(nextNotification);
+						notifyUser(clientNextActivity, nextNotification);
 						nextNotification.setDelivered(true);
 					}
 					dbManager.addNotification(nextNotification);
@@ -363,11 +345,11 @@ public class ServerImpl extends UnicastRemoteObject implements Subject, ServerIn
 		Activity activity = getActivityById(activityId);
 		User user = getUserById(userId);
 		int targetId = user.getUserId();
-		Notification notification = createNotification("agent_added", activity.getDescription(), userId);
+		Notification notification = createNotification("agent_added", activity.getName(), userId);
 		registeredNotifications.add(notification);
 		if(isClientOnline(targetId)){
 			ClientInterface clientToBeNotified = getClientById(targetId);
-			clientToBeNotified.getNotification(notification);
+			notifyUser(clientToBeNotified, notification);
 			notification.setDelivered(true);
 		}
 		activity.addAgent(user);
@@ -383,8 +365,8 @@ public class ServerImpl extends UnicastRemoteObject implements Subject, ServerIn
 			registeredNotifications.add(notification);
 			try {
 				if(isClientOnline(ids.get(i))){
-					ClientInterface client = getClientById(ids.get(i));				
-					client.getNotification(notification);			
+					ClientInterface clientToBeNotified = getClientById(ids.get(i));				
+					notifyUser(clientToBeNotified, notification);	
 					notification.setDelivered(true);			
 				}
 			} catch (RemoteException e) {
@@ -438,7 +420,7 @@ public class ServerImpl extends UnicastRemoteObject implements Subject, ServerIn
 		if (activity.isActive()){
 			int activityPosition = project.getActivities().indexOf(activity);
 			if(activityPosition != -1){
-				if(activityPosition != (project.getActivities().size() - 1)){ //se è l ultimo elemento della lista
+				if(activityPosition != (project.getActivities().size() - 1)){ //IF LAST ELEMENT OF THE LIST
 					nextActivity = project.getActivities().get(activityPosition+1);
 					nextActivity.setActive(true);
 					dbManager.activeActivity(nextActivity);
@@ -454,7 +436,7 @@ public class ServerImpl extends UnicastRemoteObject implements Subject, ServerIn
 						registeredNotifications.add(nextNotification);
 						if(isClientOnline(nextTargetId)){
 							ClientInterface clientNextActivity = getClientById(nextTargetId);
-							clientNextActivity.getNotification(nextNotification);
+							notifyUser(clientNextActivity, nextNotification);
 							nextNotification.setDelivered(true);
 						}
 						dbManager.addNotification(nextNotification);
@@ -464,9 +446,7 @@ public class ServerImpl extends UnicastRemoteObject implements Subject, ServerIn
 			else{
 				project.setState(ProjectState.COMPLETED);
 				dbManager.completeProject(project);
-				//DA VEDERE STA ROBA QUA
-			}
-			
+			}		
 		}
 		project.getActivities().remove(activity);	
 		dbManager.removeActivity(activity);
@@ -498,7 +478,6 @@ public class ServerImpl extends UnicastRemoteObject implements Subject, ServerIn
 	}
 	
 	//MODIFIERS------------------------------------------------------------------------------------
-	
 	@Override
 	public void modifyProject(int projectId, String title, String description, Category category) throws RemoteException {
 		Project project = getProjectById(projectId);
@@ -518,7 +497,6 @@ public class ServerImpl extends UnicastRemoteObject implements Subject, ServerIn
 	}
 	
 	//GETTERS------------------------------------------------------------------------------------
-	
 	@Override
 	public ArrayList<User> searchUser(String string) throws RemoteException {
 		ArrayList<User> matchedUsers = new ArrayList<User>();
@@ -538,7 +516,6 @@ public class ServerImpl extends UnicastRemoteObject implements Subject, ServerIn
 				return user;
 			}
 		}
-		System.out.println("User not found");
 		return user;
 	}
 	
@@ -550,7 +527,6 @@ public class ServerImpl extends UnicastRemoteObject implements Subject, ServerIn
 				return client;
 			}
 		}
-		System.out.println("User not found");
 		return client;
 	}
 	
@@ -562,7 +538,6 @@ public class ServerImpl extends UnicastRemoteObject implements Subject, ServerIn
 				return project;
 			}
 		}
-		System.out.println("Project not found");
 		return project;
 	}
 	
@@ -582,7 +557,6 @@ public class ServerImpl extends UnicastRemoteObject implements Subject, ServerIn
 				return activity;
 			}
 		}
-		System.out.println("Activity not found");
 		return activity;
 	}
 	
@@ -606,12 +580,14 @@ public class ServerImpl extends UnicastRemoteObject implements Subject, ServerIn
 		return collaborationProject;
 	}
 	
+	@Override
 	public ArrayList<Activity> getMyActivities(int userId) throws RemoteException{
 		ArrayList<Activity> myActivities = new ArrayList<Activity>();
 		myActivities = getUserById(userId).getUserActivities();
 		return myActivities;
 	}
-	public ArrayList<Notification> getNotificationsById(int userId) throws RemoteException{
+	
+	public ArrayList<Notification> getNotificationsById(int userId){
 		ArrayList<Notification> notifications = new ArrayList<Notification>();
 		for(int i = 0; i < registeredNotifications.size(); i++){
 			if(registeredNotifications.get(i).getTargetId() == userId){
@@ -621,7 +597,7 @@ public class ServerImpl extends UnicastRemoteObject implements Subject, ServerIn
 		return notifications;
 	}
 	
-	public ArrayList<Notification> getOfflineNotificationsById(int userId) throws RemoteException{
+	public ArrayList<Notification> getOfflineNotificationsById(int userId){
 		ArrayList<Notification> notDeliveredNotifications = new ArrayList<Notification>();
 		for(int i = 0; i < registeredNotifications.size(); i++){
 			if(registeredNotifications.get(i).getTargetId() == userId && registeredNotifications.get(i).isDelivered() == false){
@@ -670,7 +646,6 @@ public class ServerImpl extends UnicastRemoteObject implements Subject, ServerIn
 	}
 	
 	//TEST PRINT-----------------------------------------------------------------------------------
-	
 	public void stampa()throws RemoteException{
 		for(int i = 0; i < registeredProjects.size(); i++){
 		System.out.println("Project=" + registeredProjects.get(i).getTitle());
@@ -699,7 +674,4 @@ public class ServerImpl extends UnicastRemoteObject implements Subject, ServerIn
 		}
 		System.out.println("----------------------------------------------------------------");
 	}
-	
-	//MAIN
-	
 }

@@ -8,13 +8,20 @@ import java.awt.*;
 
 public class ServerGraphics implements ServerInterfaceObserver{
 
-	private JFrame serverFrame;
-	private JPanel statisticsPanel;
-	private JLabel regUserNumberLabel;
-	private JLabel onlUserNumberLabel;
-	private JLabel actProjLabelNumberLabel;
-	private JLabel complProjNumberLabel;
-	private JLabel totProjNumberLabel;
+	JFrame serverFrame;
+	JPanel statisticsPanel;
+	JLabel regUserNumberLabel;
+	JLabel onlUserNumberLabel;
+	JLabel actProjLabelNumberLabel;
+	JLabel complProjNumberLabel;
+	JLabel totProjNumberLabel;
+	JLabel serverInfoLabel;
+	JLabel space;
+	JLabel regUserLabel;
+	JLabel onlUserLabel;	
+	JLabel actProjLabel;
+	JLabel complProjLabel;
+	JLabel totProjLabel;
 	private static Server server;
 
 	/**
@@ -56,37 +63,37 @@ public class ServerGraphics implements ServerInterfaceObserver{
 		GridLayout panelLayout = new GridLayout(7, 2, 2, 1);
 		statisticsPanel.setLayout(panelLayout);
 		
-		JLabel serverInfoLabel = new JLabel("Server is running!");
+		serverInfoLabel = new JLabel("Server is running!");
 		statisticsPanel.add(serverInfoLabel);
 		
-		JLabel space = new JLabel(" ");
+		space = new JLabel(" ");
 		statisticsPanel.add(space);
 		
-		JLabel regUserLabel = new JLabel("Registered users:");
+		regUserLabel = new JLabel("Registered users:");
 		statisticsPanel.add(regUserLabel);
 		
 		regUserNumberLabel = new JLabel(Integer.toString(server.getServerImpl().getRegisteredUsers().size()));
 		statisticsPanel.add(regUserNumberLabel);
 		
-		JLabel onlUserLabel = new JLabel("Online users:");
+		onlUserLabel = new JLabel("Online users:");
 		statisticsPanel.add(onlUserLabel);
 		
 		onlUserNumberLabel = new JLabel(Integer.toString(server.getServerImpl().getOnlineClients().size()));
 		statisticsPanel.add(onlUserNumberLabel);
 		
-		JLabel actProjLabel = new JLabel("Active Projects:");
+		actProjLabel = new JLabel("Active Projects:");
 		statisticsPanel.add(actProjLabel);
 		
 		actProjLabelNumberLabel = new JLabel(Integer.toString(server.getServerImpl().getActiveProjects().size()));
 		statisticsPanel.add(actProjLabelNumberLabel);
 		
-		JLabel complProjLabel = new JLabel("Completed Projects:");
+		complProjLabel = new JLabel("Completed Projects:");
 		statisticsPanel.add(complProjLabel);
 		
 		complProjNumberLabel = new JLabel(Integer.toString(server.getServerImpl().getCompletedProjects().size()));
 		statisticsPanel.add(complProjNumberLabel);
 		
-		JLabel totProjLabel = new JLabel("Total Projects:");
+		totProjLabel = new JLabel("Total Projects:");
 		statisticsPanel.add(totProjLabel);
 		
 		totProjNumberLabel = new JLabel(Integer.toString(server.getServerImpl().getRegisteredProjects().size()));

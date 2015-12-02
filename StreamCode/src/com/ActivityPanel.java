@@ -33,13 +33,13 @@ public class ActivityPanel extends JPanel {
 	JPanel activitiesPanel;
 	JPanel collaboratorsPanel;
 	JPanel activitySettings;
-	JButton refreshButton = new JButton("Refresh");
-	JButton addActivityButton = new JButton("Add activity");
-	JButton addCollaboratorsButton = new JButton("Invite collaborators");
-	JButton removeProject =  new JButton("Delete Project");
-	JButton modifyProjectInfo = new JButton("Modify Project Info");
-	JButton startButton = new JButton("Start Poject");
-	JButton notifyCollaboratorsButton = new JButton("Notify others :)");
+	JButton refreshButton;
+	JButton addActivityButton;
+	JButton addCollaboratorsButton;
+	JButton removeProject;
+	JButton modifyProjectInfo;
+	JButton startButton;
+	JButton notifyCollaboratorsButton;
 	JLabel projectName;
 	JLabel projectDescription;
 	JLabel projectCategory;
@@ -51,6 +51,15 @@ public class ActivityPanel extends JPanel {
 		this.parentFrame = parentFrame;
 	    setBounds(100, 100, 500, 336);			
 
+	    //INITIALIZATIONS
+	    refreshButton = new JButton("Refresh");
+	    addActivityButton = new JButton("Add activity");
+	    addCollaboratorsButton = new JButton("Invite collaborators");
+	    removeProject =  new JButton("Delete Project");		
+	    modifyProjectInfo = new JButton("Modify Project Info");
+	    startButton = new JButton("Start Poject");
+	    notifyCollaboratorsButton = new JButton("Notify others :)");
+	    		
 	   	//RETRIEVE OBJECTS NEEDED
 		project = client.getManagedProject().get(z);
 		collaborators = project.getCollaborators();
