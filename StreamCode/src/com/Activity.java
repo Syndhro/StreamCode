@@ -15,6 +15,7 @@ public class Activity implements Serializable{
 	private ArrayList<User> activityCollaborators; 
 	private boolean isCompleted;
 	private boolean isActive;
+	private ArrayList<ActivityAttachment> attachments;
 	
 	//CONSTRUCTORS
 	//WHEN CREATED 
@@ -28,6 +29,7 @@ public class Activity implements Serializable{
 		this.activityCollaborators = new ArrayList<User>();
 		this.isCompleted = false; //UNCOMPLETED
 		this.isActive = false; //UNACTIVE
+		this.attachments = new ArrayList<ActivityAttachment>();
 	}
 	
 	//WHEN RETRIEVED FROM DB(PREVIOUS ISCOMPLETED AND ISACTIVE NEEDED)
@@ -40,11 +42,16 @@ public class Activity implements Serializable{
 		this.activityCollaborators = new ArrayList<User>();
 		this.isCompleted = isCompleted;
 		this.isActive = isActive;	
+		this.attachments = new ArrayList<ActivityAttachment>();
 	}
 	
 	//ADDERS & REMOVERS
 	public void addAgent(User user) {
 		activityCollaborators.add(user);
+	}
+	
+	public void addAttachment(ActivityAttachment att){
+		attachments.add(att);
 	}
 	
 	public void removeAgent(User user) {
@@ -78,6 +85,10 @@ public class Activity implements Serializable{
 
 	public ArrayList<User> getActivityCollaborators() {
 		return activityCollaborators;
+	}
+	
+	public ArrayList<ActivityAttachment> getAttachments() {
+		return attachments;
 	}
 
 	public boolean isCompleted() {

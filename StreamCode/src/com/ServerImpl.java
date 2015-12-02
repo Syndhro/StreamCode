@@ -16,6 +16,7 @@ public class ServerImpl extends UnicastRemoteObject implements Subject, ServerIn
 	private ArrayList<Notification> registeredNotifications;
 	private ArrayList<ClientInterface> onlineClients;
 	private ServerInterfaceObserver serverInterface;
+	private ArrayList<ActivityAttachment> registeredAttachment;
 	
 	//CONSTRUCTORS---------------------------------------------------------------------
 	private ServerImpl() throws RemoteException{
@@ -53,6 +54,10 @@ public class ServerImpl extends UnicastRemoteObject implements Subject, ServerIn
 	
 	public void retrieveAllNotifications(){
 		this.registeredNotifications = dbManager.getAllNotifications();
+	}
+	
+	public void retrieveAllAttachment() throws RemoteException{
+		this.registeredAttachment = dbManager.getAllAttachments();
 	}
 	
 	public void linkProjectsToCollaborators() throws RemoteException{		
@@ -208,6 +213,8 @@ public class ServerImpl extends UnicastRemoteObject implements Subject, ServerIn
 		dbManager.addNotification(notification);
 	}
 	
+	
+	
 	@Override
 	public void addProject(String title, String description, Category category, int userId) throws RemoteException {
 		User user = getUserById(userId);
@@ -217,6 +224,17 @@ public class ServerImpl extends UnicastRemoteObject implements Subject, ServerIn
 		dbManager.addProject(project);
 		user.addManagedProject(project);
 		updateInterface();
+	}
+	
+	@Override
+	public void addAttachment(String text, int userId, int activityId) throws RemoteException {
+		User user = getUserById(userId);
+		Activity activity = getActivityById(activityId);
+		int lastAttachmentId = dbManager.getLastAttachmentId();
+		ActivityAttachment attachment = new ActivityAttachment(lastAttachmentId + 1, text, activity, user);	
+		activity.addAttachment(attachment);
+		registeredAttachment.add(attachment);																	  //not all projects are inactive
+		dbManager.addAttachment(attachment);
 	}
 	
 	@Override
@@ -658,35 +676,5 @@ public class ServerImpl extends UnicastRemoteObject implements Subject, ServerIn
 			}
 		}
 		return completedProjects;
-	}
-	
-	//TEST PRINT-----------------------------------------------------------------------------------
-	public void stampa()throws RemoteException{
-		for(int i = 0; i < registeredProjects.size(); i++){
-		System.out.println("Project=" + registeredProjects.get(i).getTitle());
-		System.out.println("Users:"); 
-			for(int j=0; j < registeredProjects.get(i).getCollaborators().size(); j++){
-				System.out.println(registeredProjects.get(i).getCollaborators().get(j).getUsername());
-			}
-		System.out.println("Admin:");	
-		System.out.println(registeredProjects.get(i).getAdmin().getUsername());
-		}
-		System.out.println();
-		for(int i = 0; i < registeredUsers.size(); i++){
-			System.out.println("Users:" + registeredUsers.get(i).getUsername());
-			System.out.println("Projects:");
-			for(int j=0; j < registeredUsers.get(i).getManagedProject().size(); j++){
-				System.out.println(registeredUsers.get(i).getManagedProject().get(j).getTitle());
-			}
-		}
-		System.out.println();
-		for(int i = 0; i < registeredUsers.size(); i++){
-			System.out.println("Users:" + registeredUsers.get(i).getUsername());
-			System.out.println("Activities:");
-			for(int j=0; j < registeredUsers.get(i).getUserActivities().size(); j++){
-				System.out.println(registeredUsers.get(i).getUserActivities().get(j).getName());
-			}
-		}
-		System.out.println("----------------------------------------------------------------");
 	}
 }

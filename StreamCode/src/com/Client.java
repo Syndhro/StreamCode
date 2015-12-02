@@ -63,6 +63,9 @@ public class Client extends UnicastRemoteObject implements ClientInterface{
 		server.addProject(title, description, category , userId);
 	}
 	
+	public void addAttachment(String text, int activityId, int userId) throws RemoteException {
+		server.addAttachment(text, userId, activityId);
+	}
 	
 	public void removeProject(int projectId) throws RemoteException {
 		server.removeProject(projectId);	
@@ -154,10 +157,6 @@ public class Client extends UnicastRemoteObject implements ClientInterface{
 		Project project = null;
 		project = server.getProjectById(projectId);
 		return project;
-	}
-	
-	public void stampa() throws RemoteException {
-		server.stampa();
 	}
 	
 	public ArrayList<Project> getManagedProject(){

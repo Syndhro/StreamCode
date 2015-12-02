@@ -1,6 +1,7 @@
 package com;
 
 import java.io.Serializable;
+import java.rmi.RemoteException;
 import java.sql.*;
 import java.util.ArrayList;
 
@@ -88,6 +89,21 @@ public class DBManager implements Serializable{
 		     statement.setString(6, activity.getDateTime());
 		     statement.setBoolean(7, activity.isActive());
 		     statement.setBoolean(8, activity.isCompleted());
+		     statement.executeUpdate();
+		    }catch(Exception e){
+		    	e.printStackTrace();
+		    }
+	}
+	
+	public void addAttachment(ActivityAttachment activityAttachment) {
+		PreparedStatement statement = null;
+		try {
+			 String query = "INSERT INTO activity_attachment (attachmentId, text, authorId, activityId) VALUES (?,?,?,?)";
+		     statement = (PreparedStatement) connection.prepareStatement(query);         
+		     statement.setInt(1, activityAttachment.getAttachmentId());
+		     statement.setString(2, activityAttachment.getText());
+		     statement.setInt(3, activityAttachment.getAuthor().getUserId());
+		     statement.setInt(4, activityAttachment.getParentActivity().getActivityId());
 		     statement.executeUpdate();
 		    }catch(Exception e){
 		    	e.printStackTrace();
@@ -333,6 +349,22 @@ public class DBManager implements Serializable{
 		return lastNotificationId;
 	}
 	
+	public int getLastAttachmentId(){
+		int lastAttachmentId = 0;
+		Statement statement = null;
+		ResultSet resultSet = null;
+		try{
+			String query = "SELECT MAX(attachmentId) FROM activity_attachment";
+			statement = (Statement) connection.createStatement();
+			resultSet = statement.executeQuery(query);
+			resultSet.next();
+			lastAttachmentId = resultSet.getInt(1);
+		}catch(SQLException e){
+			e.printStackTrace();
+		}
+		return lastAttachmentId;
+	}
+	
 	//get the client id from credentials (only one time) 
 	public int getUserId(String username, String password) {	
 		PreparedStatement statement = null;
@@ -446,6 +478,36 @@ public class DBManager implements Serializable{
 			e.printStackTrace();
 		}			
 		return allActivity;
+	}
+	
+	public ArrayList<ActivityAttachment> getAllAttachments() throws RemoteException {	
+		Statement statement;
+		ResultSet resultSet;
+		ArrayList<ActivityAttachment> allAttachments = new ArrayList<ActivityAttachment>();
+		try{
+			String query = "SELECT * FROM activity_attachment";
+			statement = (Statement) connection.createStatement();
+			resultSet = statement.executeQuery(query);
+			
+			while (resultSet.next()){
+				Activity parentActivity = null;
+				User author = null;
+				int attachmentId = resultSet.getInt(1);
+				String text = resultSet.getString(2);
+				int authorId = resultSet.getInt(3);
+				int activityId = resultSet.getInt(4);
+				ActivityAttachment newAttachment = new ActivityAttachment(attachmentId, text);
+				parentActivity = ServerImpl.getInstance().getActivityById(activityId);
+				author = ServerImpl.getInstance().getUserById(authorId);
+				newAttachment.setParentActivity(parentActivity);
+				newAttachment.setAuthor(author);
+				parentActivity.addAttachment(newAttachment);
+				allAttachments.add(newAttachment);
+			}
+		}catch(SQLException e){
+			e.printStackTrace();
+		}			
+		return allAttachments;
 	}
 	
 	public ArrayList<Notification> getAllNotifications() {	
