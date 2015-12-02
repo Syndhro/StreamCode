@@ -8,6 +8,7 @@ import java.util.ArrayList;
 
 import javax.swing.*;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
 import java.awt.event.ActionEvent;
 
 public class ProjectListFrame extends JFrame {
@@ -39,7 +40,7 @@ public class ProjectListFrame extends JFrame {
 	JLabel activityiesLabel;
 	
 	public ProjectListFrame(Client client) throws RemoteException {
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		setBounds(100, 100, 700, 400);
 		mainPanel = getContentPane();						
 		mainPanel.setLayout(new FlowLayout());	
@@ -293,17 +294,6 @@ public class ProjectListFrame extends JFrame {
 						e.printStackTrace();
 					}
 		        	System.exit(0);
-		        }
-		        else{
-		        	ProjectListFrame projectListFrame = null;
-					try {
-						dispose();
-						projectListFrame = new ProjectListFrame(client);			
-					} catch (RemoteException e1) {			
-						e1.printStackTrace();
-					}
-					projectListFrame.setLocationRelativeTo(null);
-					projectListFrame.setVisible(true);				
 		        }
 		    }
 		});
