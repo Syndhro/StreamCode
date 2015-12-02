@@ -376,6 +376,22 @@ public class ServerImpl extends UnicastRemoteObject implements Subject, ServerIn
 		}
 	}
 	
+	@Override
+	public void notifyAdmin(String message, int adminId){
+		Notification notification = createNotification("broadcast", message, adminId);
+		registeredNotifications.add(notification);
+		try {
+			if(isClientOnline(adminId)){
+				ClientInterface clientToBeNotified = getClientById(adminId);				
+				notifyUser(clientToBeNotified, notification);
+				notification.setDelivered(true);			
+			}
+		} catch (RemoteException e) {
+			e.printStackTrace();
+		}			
+		dbManager.addNotification(notification);			
+	}
+	
 	//REMOVERS-----------------------------------------------------------------------------------
 
 	@Override
@@ -473,8 +489,7 @@ public class ServerImpl extends UnicastRemoteObject implements Subject, ServerIn
 		User user = getUserById(userId);
 		activity.getActivityCollaborators().remove(user);
 		user.getUserActivities().remove(activity);
-		dbManager.removeActivityMembership(user.getUserId(), activity.getActivityId());
-		
+		dbManager.removeActivityMembership(user.getUserId(), activity.getActivityId());	
 	}
 	
 	//MODIFIERS------------------------------------------------------------------------------------

@@ -15,6 +15,7 @@ public class Client extends UnicastRemoteObject implements ClientInterface{
 	Registry registry;
 	static ServerInterface server;
 	private int myUserId;
+	private String myUsername;
 	
 	public Client()throws RemoteException{};
 	
@@ -46,6 +47,7 @@ public class Client extends UnicastRemoteObject implements ClientInterface{
 	
 	public void login(String username, String password) throws RemoteException {
 		myUserId = server.login(username, password, (ClientInterface) this);
+		myUsername = username;
 	}
 	
 	public int check(String username, String password) throws RemoteException{
@@ -144,6 +146,10 @@ public class Client extends UnicastRemoteObject implements ClientInterface{
 		return userFriends;
 	}
 	
+	public String getMyUsername(){
+		return myUsername;
+	}
+	
 	public Project getProjectById(int projectId) throws RemoteException{
 		Project project = null;
 		project = server.getProjectById(projectId);
@@ -199,6 +205,14 @@ public class Client extends UnicastRemoteObject implements ClientInterface{
 	public void sendBroadcast(String message, ArrayList<Integer> ids){
 		try {
 			server.sendBroadcast(message, ids);
+		} catch (RemoteException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void notifyAdmin(String message, int adminId){
+		try {
+			server.notifyAdmin(message, adminId);
 		} catch (RemoteException e) {
 			e.printStackTrace();
 		}

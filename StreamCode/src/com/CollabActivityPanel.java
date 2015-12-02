@@ -20,6 +20,8 @@ public class CollabActivityPanel extends JPanel {
 	ProjectListFrame parentFrame;
 	CollabActivityPanel thisPanel; 
 	Project project;
+	Activity activity;
+	int myId;
 	ArrayList<Activity> activities;
 	ArrayList<User> collaborators;
 	ArrayList<JButton> activitiesButtons;
@@ -32,7 +34,6 @@ public class CollabActivityPanel extends JPanel {
 	JLabel projectDescription;
 	JLabel projectCategory;
 	JLabel projectAdmin;
-	int myId;
 	
 	public CollabActivityPanel(int k, ProjectListFrame parentFrame, Client client) throws RemoteException {
 		
@@ -45,7 +46,7 @@ public class CollabActivityPanel extends JPanel {
 		project = client.getCollaborationProject().get(k);		
 		activities = project.getActivities();
 		collaborators = project.getCollaborators();
-	      
+		 
 	    projectName = new JLabel(project.getTitle());
 		projectDescription = new JLabel(project.getDescription());
 		projectCategory = new JLabel(project.getCategory().toString());
@@ -92,11 +93,12 @@ public class CollabActivityPanel extends JPanel {
 				public void actionPerformed(ActionEvent e) {
 					
 					int x = activitiesButtons.indexOf(e.getSource());
-					Activity activity = project.getActivities().get(x);
+					activity = project.getActivities().get(x);
 					JLabel activityName = new JLabel(activity.getName());
 					JLabel activityDescription = new JLabel(activity.getDescription());
 					JLabel activityPlace = new JLabel(activity.getPlace());
 					JButton completeActivityButton = new JButton("Complete");
+					JButton refuseActivity = new JButton("Refuse");
 					
 					JPanel activityInfoValues = new JPanel();
 					activityInfoValues.setLayout(new BoxLayout(activityInfoValues, BoxLayout.PAGE_AXIS));
@@ -107,16 +109,20 @@ public class CollabActivityPanel extends JPanel {
 					activityInfoValues.add(activityDescription);
 					activityInfoValues.add(new JLabel(" "),"span, grow");
 					activityInfoValues.add(new JLabel("Place: ")); 
-					activityInfoValues.add(activityPlace);	
+					activityInfoValues.add(activityPlace);
+					
 					for(int i = 0; i < activity.getActivityCollaborators().size();i++){
 						if (activity.getActivityCollaborators().get(i).getUserId() == myId){
 							activityInfoValues.add(completeActivityButton);
+							activityInfoValues.add(refuseActivity);
 						}	
 					}
 				
-					if(!activity.isActive() || activity.isCompleted())
-					{
+					if(!activity.isActive() || activity.isCompleted()){
 						completeActivityButton.setEnabled(false);
+					}
+					if(activity.isCompleted()){
+						refuseActivity.setEnabled(false);
 					}
 					completeActivityButton.addActionListener(new ActionListener(){
 						@Override
@@ -132,7 +138,20 @@ public class CollabActivityPanel extends JPanel {
 						}
 						
 					});
-				
+
+					refuseActivity.addActionListener(new ActionListener(){
+						@Override
+						public void actionPerformed(ActionEvent e) {
+							int result = JOptionPane.showConfirmDialog(parentFrame, "Are you sure do you want to refuse the assignment?");
+							if(result == JOptionPane.OK_OPTION){
+								try {
+									client.removeAgent(activity.getActivityId(), myId);
+								} catch (RemoteException e1) {
+									e1.printStackTrace();
+								}
+							}		
+						}		
+					});
 					
 					//ACTIVITY COLLABORATORS
 					JPanel activityCollaboratorsPanel = new JPanel();
