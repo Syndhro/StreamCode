@@ -117,6 +117,7 @@ public class ServerImpl extends UnicastRemoteObject implements Subject, ServerIn
 		retrieveAllProjects();
 		retrieveAllActivities();
 		retrieveAllNotifications();
+		retrieveAllAttachment();
 		
 		linkProjectsToCollaborators();
 		linkProjectsToAdmins();
