@@ -297,6 +297,19 @@ public class DBManager implements Serializable{
 		}
 	}
 
+	//remove attachment
+	public void removeAttachment(int activityAttachmentId) {
+		PreparedStatement statement = null;
+		try {
+			 String query = "DELETE FROM activity_attachment WHERE attachmentId=?";
+		     statement = (PreparedStatement) connection.prepareStatement(query);         
+		     statement.setInt(1, activityAttachmentId);
+		     statement.executeUpdate();
+		    }catch(Exception e){
+		    	e.printStackTrace();
+		    }
+	}
+	
 	//getting the following id in the project table for the newcoming project
 	public int getLastProjectId(){
 		int lastProjectId = 0;

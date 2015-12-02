@@ -92,6 +92,9 @@ public class Client extends UnicastRemoteObject implements ClientInterface{
 		server.removeFriend(userId1, userId2);
 	}
 
+	public void removeAttachment(int attachmentId, int activityId) throws RemoteException {
+		server.removeAttachment(attachmentId, activityId);
+	}
 
 	public ArrayList<User> searchUser(String string) throws RemoteException {
 		ArrayList<User> searched = new ArrayList<User>();

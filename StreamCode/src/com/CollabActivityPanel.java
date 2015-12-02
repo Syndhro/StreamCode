@@ -99,6 +99,7 @@ public class CollabActivityPanel extends JPanel {
 					JLabel activityPlace = new JLabel(activity.getPlace());
 					JButton completeActivityButton = new JButton("Complete");
 					JButton refuseActivity = new JButton("Refuse");
+					JButton viewNotesButton = new JButton("View Notes");
 					
 					JPanel activityInfoValues = new JPanel();
 					activityInfoValues.setLayout(new BoxLayout(activityInfoValues, BoxLayout.PAGE_AXIS));
@@ -110,6 +111,7 @@ public class CollabActivityPanel extends JPanel {
 					activityInfoValues.add(new JLabel(" "),"span, grow");
 					activityInfoValues.add(new JLabel("Place: ")); 
 					activityInfoValues.add(activityPlace);
+					activityInfoValues.add(viewNotesButton);
 					
 					for(int i = 0; i < activity.getActivityCollaborators().size();i++){
 						if (activity.getActivityCollaborators().get(i).getUserId() == myId){
@@ -153,6 +155,16 @@ public class CollabActivityPanel extends JPanel {
 						}		
 					});
 					
+					//NOTES
+					viewNotesButton.addActionListener(new ActionListener(){
+						@Override
+						public void actionPerformed(ActionEvent e) {
+							NotesView notesView = new NotesView(k, x, client);
+							JOptionPane.showConfirmDialog(thisPanel, notesView, "Notes", JOptionPane.CLOSED_OPTION);
+						}
+						
+					});
+								
 					//ACTIVITY COLLABORATORS
 					JPanel activityCollaboratorsPanel = new JPanel();
 					activityCollaboratorsPanel. setLayout(new BoxLayout(activityCollaboratorsPanel, BoxLayout.PAGE_AXIS));

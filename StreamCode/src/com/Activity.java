@@ -58,6 +58,9 @@ public class Activity implements Serializable{
 		activityCollaborators.remove(user);
 	}
 	
+	public void removeAttachment(ActivityAttachment attachment){
+		attachments.remove(attachment);
+	}
 	//GETTERS
 	public int getActivityId() {
 		return activityId;

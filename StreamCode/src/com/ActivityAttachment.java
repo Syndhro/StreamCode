@@ -1,7 +1,10 @@
 package com;
 
-public class ActivityAttachment {
+import java.io.Serializable;
+
+public class ActivityAttachment implements Serializable{
 	
+	private static final long serialVersionUID = 1L;
 	public int attachmentId;
 	public String text;
 	public User author;
@@ -10,6 +13,8 @@ public class ActivityAttachment {
 	public ActivityAttachment(int id, String text, Activity parentActivity, User author){
 		this.text = text;
 		this.author = author;
+		this.parentActivity = parentActivity;
+		this.attachmentId = id;
 	}
 	
 	public ActivityAttachment(int id, String text){

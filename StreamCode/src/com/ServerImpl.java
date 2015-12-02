@@ -16,7 +16,7 @@ public class ServerImpl extends UnicastRemoteObject implements Subject, ServerIn
 	private ArrayList<Notification> registeredNotifications;
 	private ArrayList<ClientInterface> onlineClients;
 	private ServerInterfaceObserver serverInterface;
-	private ArrayList<ActivityAttachment> registeredAttachment;
+	private ArrayList<ActivityAttachment> registeredAttachments;
 	
 	//CONSTRUCTORS---------------------------------------------------------------------
 	private ServerImpl() throws RemoteException{
@@ -25,6 +25,7 @@ public class ServerImpl extends UnicastRemoteObject implements Subject, ServerIn
 		this.registeredProjects = new ArrayList<Project>();
 		this.registeredActivities = new ArrayList<Activity>();
 		this.registeredUsers = new ArrayList<User>();
+		this.registeredAttachments = new ArrayList<ActivityAttachment>();
 		this.onlineClients = new ArrayList<ClientInterface>();
 	}
 	
@@ -57,7 +58,7 @@ public class ServerImpl extends UnicastRemoteObject implements Subject, ServerIn
 	}
 	
 	public void retrieveAllAttachment() throws RemoteException{
-		this.registeredAttachment = dbManager.getAllAttachments();
+		this.registeredAttachments = dbManager.getAllAttachments();
 	}
 	
 	public void linkProjectsToCollaborators() throws RemoteException{		
@@ -233,7 +234,7 @@ public class ServerImpl extends UnicastRemoteObject implements Subject, ServerIn
 		int lastAttachmentId = dbManager.getLastAttachmentId();
 		ActivityAttachment attachment = new ActivityAttachment(lastAttachmentId + 1, text, activity, user);	
 		activity.addAttachment(attachment);
-		registeredAttachment.add(attachment);																	  //not all projects are inactive
+		registeredAttachments.add(attachment);																	  //not all projects are inactive
 		dbManager.addAttachment(attachment);
 	}
 	
@@ -510,6 +511,15 @@ public class ServerImpl extends UnicastRemoteObject implements Subject, ServerIn
 		dbManager.removeActivityMembership(user.getUserId(), activity.getActivityId());	
 	}
 	
+	@Override
+	public void removeAttachment(int attachmentId, int activityId){
+		Activity activity = getActivityById(activityId);
+		ActivityAttachment attachment = getAttachmentById(attachmentId);
+		activity.removeAttachment(attachment);
+		registeredAttachments.remove(attachment);
+		dbManager.removeAttachment(attachmentId);
+	}
+	
 	//MODIFIERS------------------------------------------------------------------------------------
 	@Override
 	public void modifyProject(int projectId, String title, String description, Category category) throws RemoteException {
@@ -591,6 +601,17 @@ public class ServerImpl extends UnicastRemoteObject implements Subject, ServerIn
 			}
 		}
 		return activity;
+	}
+	
+	public ActivityAttachment getAttachmentById(int attachmentId){
+		ActivityAttachment attachment = null;
+		for(int i = 0; i < registeredAttachments.size(); i++){
+			if(registeredAttachments.get(i).getAttachmentId() == attachmentId){
+				attachment = registeredAttachments.get(i);
+				return attachment;
+			}
+		}
+		return attachment;
 	}
 	
 	public ArrayList<Project> getManagedProject(int userId) throws RemoteException{
