@@ -99,7 +99,7 @@ public class CollabActivityPanel extends JPanel {
 					JLabel activityPlace = new JLabel(activity.getPlace());
 					JButton completeActivityButton = new JButton("Complete");
 					JButton refuseActivity = new JButton("Refuse");
-					JButton viewNotesButton = new JButton("View Notes");
+					JButton viewNotesButton = new JButton("View notes");
 					
 					JPanel activityInfoValues = new JPanel();
 					activityInfoValues.setLayout(new BoxLayout(activityInfoValues, BoxLayout.PAGE_AXIS));

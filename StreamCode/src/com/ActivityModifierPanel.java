@@ -34,6 +34,7 @@ public class ActivityModifierPanel extends JPanel {
 	JButton completeActivity;
 	JButton removeActivityButton;
 	JButton addCollaboratorsButton;
+	JButton viewNotesButton;
 	
 	public ActivityModifierPanel(int projectIndex, int activityIndex, JPanel previousPanel, ProjectListFrame parentFrame, Client client) {
 		
@@ -45,6 +46,8 @@ public class ActivityModifierPanel extends JPanel {
 	    completeActivity = new JButton("Complete");
 	    removeActivityButton = new JButton("Remove Activity");
 	    addCollaboratorsButton = new JButton("Invite collaborators");
+	    viewNotesButton = new JButton("View notes");
+	    add(viewNotesButton);
 	    
 	    //RETRIEVING NEEDED OBJECTS
 	    project = client.getManagedProject().get(projectIndex);
@@ -245,6 +248,15 @@ public class ActivityModifierPanel extends JPanel {
 						}	
 					}
 			}
+		});
+	  //NOTES
+		viewNotesButton.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				AdminNotesView notesView = new AdminNotesView(projectIndex, activityIndex, client);
+				JOptionPane.showConfirmDialog(thisPanel, notesView, "Notes", JOptionPane.CLOSED_OPTION);
+			}
+			
 		});
 	}
 	
