@@ -33,7 +33,7 @@ public class Activity implements Serializable{
 	}
 	
 	//WHEN RETRIEVED FROM DB(PREVIOUS ISCOMPLETED AND ISACTIVE NEEDED)
-	public Activity(int activityId, String name, String description, String place, Date date, boolean isCompleted, boolean isActive){
+	public Activity(int activityId, String name, String description, String place, int day, int month, int year, boolean isCompleted, boolean isActive){
 		this.activityId = activityId;
 		this.name = name;
 		this.description = description;
@@ -42,7 +42,7 @@ public class Activity implements Serializable{
 		this.isCompleted = isCompleted;
 		this.isActive = isActive;	
 		this.attachments = new ArrayList<ActivityAttachment>();
-		this.date = date;
+		this.date = new Date(day, month, year);
 	}
 
 	//ADDERS & REMOVERS
@@ -58,8 +58,8 @@ public class Activity implements Serializable{
 		activityCollaborators.remove(user);
 	}
 	
-	public void removeAttachment(ActivityAttachment attachment){
-		attachments.remove(attachment);
+	public void removeAttachment(ActivityAttachment att){
+		attachments.remove(att);
 	}
 	
 	//GETTERS

@@ -13,8 +13,8 @@ public interface ServerInterface extends Remote {
 	public abstract void addProject(String title, String description, Category category, int userId) throws RemoteException;
 	public abstract void modifyProject(int projectId, String title, String description, Category category) throws RemoteException;
 	public abstract void removeProject(int projectId) throws RemoteException;
-	public abstract void addActivity(int projectId, String name, String description, String place, String dateTime) throws RemoteException;
-	public abstract void modifyActivity(int activityId, String name, String description, String place, String dateTime) throws RemoteException;
+	public abstract void addActivity(int projectId, String name, String description, String place, int day, int month, int year) throws RemoteException;
+	public abstract void modifyActivity(int activityId, String name, String description, String place, int day, int month, int year) throws RemoteException;
 	public abstract void addAttachment(String text, int userId, int activityId) throws RemoteException;
 	public abstract void removeActivity(int projectId, int activityId, int userId) throws RemoteException;
 	public abstract void addFriend(int userId1, int userId2) throws RemoteException;

@@ -6,6 +6,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
+import java.util.Properties;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -16,6 +17,11 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
+
+import org.jdatepicker.impl.JDatePanelImpl;
+import org.jdatepicker.impl.JDatePickerImpl;
+import org.jdatepicker.impl.UtilDateModel;
+
 
 public class ActivityPanel extends JPanel {
 
@@ -191,7 +197,15 @@ public class ActivityPanel extends JPanel {
 				JTextField activityName = new JTextField(15);
 				JTextField activityDescription = new JTextField(40);
 				JTextField activityPlace = new JTextField(15);
-		
+				UtilDateModel model = new UtilDateModel();
+				Properties p = new Properties();
+				p.put("text.today", "Today");
+				p.put("text.month", "Month");
+				p.put("text.year", "Year");
+				JDatePanelImpl datePanel = new JDatePanelImpl(model, p);	
+				JDatePickerImpl datePicker = new JDatePickerImpl(datePanel, new DateLabelFormatter());
+
+			
 				JPanel activityValues = new JPanel();
 				activityValues.setLayout(new BoxLayout(activityValues, BoxLayout.PAGE_AXIS));
 				activityValues.add(new JLabel("Insert name: "));
@@ -201,17 +215,25 @@ public class ActivityPanel extends JPanel {
 				activityValues.add(activityDescription);
 				activityValues.add(new JLabel(" "),"span, grow");
 				activityValues.add(new JLabel("Insert place: "));
-				activityValues.add(activityPlace);
-				activityValues.setVisible(true);
+				activityValues.add(activityPlace);				 
+				activityValues.add(new JLabel(" "),"span, grow");
+				activityValues.add(new JLabel("Insert Date: ")); 
+				activityValues.add(datePicker);
+				activityValues.setVisible(true);		
+				int day;
+				int month;
+				int year;
 
 				int result = JOptionPane.showConfirmDialog(parentFrame, activityValues, "Please Enter Activity Values", JOptionPane.OK_CANCEL_OPTION);
 				if (result == JOptionPane.OK_OPTION){
 					if(!activityName.getText().equals("")){
 						try{
-						
+							day = datePicker.getModel().getDay();
+							month = datePicker.getModel().getMonth() + 1; //months are from 0 to 11
+							year = datePicker.getModel().getYear();
 							Window w = SwingUtilities.getWindowAncestor(thisPanel);	
 							w.setVisible(false);									
-							client.addActivity(project.getProjectId(), activityName.getText(), activityDescription.getText(), activityPlace.getText(), "Ora_attuale");				
+							client.addActivity(project.getProjectId(), activityName.getText(), activityDescription.getText(), activityPlace.getText(), day, month, year);				
 							ActivityPanel newactivityPanel = new ActivityPanel(z, parentFrame, client);
 							JOptionPane.showConfirmDialog(parentFrame, newactivityPanel,"Activities", JOptionPane.CLOSED_OPTION);			
 						}catch(RemoteException e2) {

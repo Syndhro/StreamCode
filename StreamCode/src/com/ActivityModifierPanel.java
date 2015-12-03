@@ -6,6 +6,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
+import java.util.Properties;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -15,6 +16,10 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
+
+import org.jdatepicker.impl.JDatePanelImpl;
+import org.jdatepicker.impl.JDatePickerImpl;
+import org.jdatepicker.impl.UtilDateModel;
 
 public class ActivityModifierPanel extends JPanel {
 	
@@ -31,6 +36,7 @@ public class ActivityModifierPanel extends JPanel {
 	JLabel activityName;
 	JLabel activityDescription;
 	JLabel activityPlace;
+	JLabel activityDate;
 	JButton completeActivity;
 	JButton removeActivityButton;
 	JButton addCollaboratorsButton;
@@ -91,6 +97,7 @@ public class ActivityModifierPanel extends JPanel {
 		activityName = new JLabel(activity.getName());
 		activityDescription = new JLabel(activity.getDescription());
 		activityPlace = new JLabel(activity.getPlace());
+		JLabel activityDate = new JLabel(activity.getDate().getDay()+ "/" + activity.getDate().getMonth() + "/" + activity.getDate().getYear());
 	
 		activityValues = new JPanel();
 		activityValues.setLayout(new BoxLayout(activityValues, BoxLayout.PAGE_AXIS));
@@ -102,6 +109,9 @@ public class ActivityModifierPanel extends JPanel {
 		activityValues.add(new JLabel(" "),"span, grow");
 		activityValues.add(new JLabel("Place: ")); 
 		activityValues.add(activityPlace);
+		activityValues.add(new JLabel(" "),"span, grow");
+		activityValues.add(new JLabel("Date: ")); 
+		activityValues.add(activityDate);
 		activityValues.add(completeActivity);
 		add(activityValues);
 		
@@ -136,6 +146,14 @@ public class ActivityModifierPanel extends JPanel {
 				JTextField activityName2 = new JTextField(15);
 				JTextField activityDescription2 = new JTextField(40);
 				JTextField activityPlace2 = new JTextField(15);
+				UtilDateModel model = new UtilDateModel();
+				Properties p = new Properties();
+				p.put("text.today", "Today");
+				p.put("text.month", "Month");
+				p.put("text.year", "Year");
+				JDatePanelImpl datePanel = new JDatePanelImpl(model, p);	
+				JDatePickerImpl datePicker = new JDatePickerImpl(datePanel, new DateLabelFormatter());
+
 						
 				JPanel activityValues = new JPanel();
 				activityValues.setLayout(new BoxLayout(activityValues, BoxLayout.PAGE_AXIS));
@@ -147,12 +165,22 @@ public class ActivityModifierPanel extends JPanel {
 				activityValues.add(new JLabel(" "),"span, grow");
 				activityValues.add(new JLabel("Insert place: ")); 
 				activityValues.add(activityPlace2);
+				activityValues.add(new JLabel(" "),"span, grow");
+				activityValues.add(new JLabel("Insert Date: ")); 
+				activityValues.add(datePicker);
 				activityValues.setVisible(true);
+				int day;
+				int month;
+				int year;
 				
 				int result = JOptionPane.showConfirmDialog(thisPanel, activityValues, "Modify Activity Values", JOptionPane.OK_CANCEL_OPTION);
 				if (result == JOptionPane.OK_OPTION){	
 						try {
-							client.modifyActivity(activity.getActivityId(), activityName2.getText(), activityDescription2.getText(), activityPlace2.getText(), "Ora attuale");									
+							
+							day = datePicker.getModel().getDay();
+							month = datePicker.getModel().getMonth();
+							year = datePicker.getModel().getYear();
+							client.modifyActivity(activity.getActivityId(), activityName2.getText(), activityDescription2.getText(), activityPlace2.getText(), day, month, year);									
 							Window w = SwingUtilities.getWindowAncestor(thisPanel);	
 							w.setVisible(false);
 							Window w2 = SwingUtilities.getWindowAncestor(w);

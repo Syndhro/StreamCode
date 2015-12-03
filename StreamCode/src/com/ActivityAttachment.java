@@ -21,7 +21,8 @@ public class ActivityAttachment implements Serializable{
 		this.attachmentId = id;
 		this.text = text;
 	}
-
+	
+	//GETTERS
 	public int getAttachmentId() {
 		return attachmentId;
 	}
@@ -38,6 +39,7 @@ public class ActivityAttachment implements Serializable{
 		return parentActivity;
 	}
 
+	//SETTERS
 	public void setId(int id) {
 		this.attachmentId = id;
 	}

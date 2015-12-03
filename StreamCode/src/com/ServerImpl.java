@@ -252,10 +252,11 @@ public class ServerImpl extends UnicastRemoteObject implements Subject, ServerIn
 	}
 	
 	@Override
-	public void addActivity(int projectId, String name, String description, String place, Date date) throws RemoteException {
+	public void addActivity(int projectId, String name, String description, String place, int day, int month, int year) throws RemoteException {
 		Project project = getProjectById(projectId);
 		int id = dbManager.getLastActivityId();
-		Activity activity = new Activity(id+1, project, name, description, place, dateTime);
+		Date date = new Date(day, month, year);
+		Activity activity = new Activity(id+1, project, name, description, place, date);
 		project.addActivity(activity);
 		registeredActivities.add(activity);
 		dbManager.addActivity(activity);
@@ -540,16 +541,17 @@ public class ServerImpl extends UnicastRemoteObject implements Subject, ServerIn
 		project.setTitle(title);
 		project.setDescription(description);
 		project.setCategory(category);
+		dbManager.modifyProject(project);
 	}
 
 	@Override
-	public void modifyActivity(int activityId, String name, String description, String place, String dateTime) throws RemoteException {
+	public void modifyActivity(int activityId, String name, String description, String place, int day, int month, int year) throws RemoteException {
 		Activity activity = getActivityById(activityId);
 		activity.setName(name);
 		activity.setDescription(description);
 		activity.setPlace(place);
-		activity.setDateTime(dateTime);
-		
+		activity.setDate(new Date(day, month, year));
+		dbManager.modifyActivity(activity);
 	}
 	
 	//GETTERS------------------------------------------------------------------------------------

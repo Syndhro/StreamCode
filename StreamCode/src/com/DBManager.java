@@ -79,16 +79,18 @@ public class DBManager implements Serializable{
 	public void addActivity(Activity activity) {
 		PreparedStatement statement = null;
 		try {
-			 String query = "INSERT INTO activity (activityId, projectId, name, description, place, dateTime, isActive, isCompleted) VALUES (?,?,?,?,?,?,?,?)";
+			 String query = "INSERT INTO activity (activityId, projectId, name, description, place, day, month, year, isActive, isCompleted) VALUES (?,?,?,?,?,?,?,?,?,?)";
 		     statement = (PreparedStatement) connection.prepareStatement(query);         
 		     statement.setInt(1, activity.getActivityId());
 		     statement.setInt(2, activity.getParentProject().getProjectId());
 		     statement.setString(3, activity.getName());
 		     statement.setString(4, activity.getDescription());
 		     statement.setString(5, activity.getPlace());
-		     statement.setString(6, activity.getDateTime());
-		     statement.setBoolean(7, activity.isActive());
-		     statement.setBoolean(8, activity.isCompleted());
+		     statement.setInt(6, activity.getDate().getDay());
+		     statement.setInt(7, activity.getDate().getMonth());
+		     statement.setInt(8, activity.getDate().getYear());
+		     statement.setBoolean(9, activity.isActive());
+		     statement.setBoolean(10, activity.isCompleted());
 		     statement.executeUpdate();
 		    }catch(Exception e){
 		    	e.printStackTrace();
@@ -473,10 +475,12 @@ public class DBManager implements Serializable{
 				String name = resultSet.getString(3);
 				String descr = resultSet.getString(4);
 				String place = resultSet.getString(5);
-				String dateTime = resultSet.getString(6);
-				boolean completed = resultSet.getBoolean(7);
-				boolean active = resultSet.getBoolean(8);
-				Activity newActivity = new Activity(activityId, name, descr, place, dateTime, active, completed);
+				int day = resultSet.getInt(6);
+				int month = resultSet.getInt(7);
+				int year = resultSet.getInt(8);
+				boolean completed = resultSet.getBoolean(9);
+				boolean active = resultSet.getBoolean(10);
+				Activity newActivity = new Activity(activityId, name, descr, place, day, month, year, active, completed);
 				for(int i = 0; i < ServerImpl.getInstance().getRegisteredProjects().size(); i++){
 					int id = ServerImpl.getInstance().getRegisteredProjects().get(i).getProjectId();
 					if(id == projectId){
@@ -646,6 +650,39 @@ public class DBManager implements Serializable{
 		return notificationIds;
 	}
 	
+	public void modifyProject(Project project){
+		PreparedStatement statement = null;
+		String query = "UPDATE project SET title = ?, description = ?, category = ? WHERE projectId = ?";
+		try{
+			statement = (PreparedStatement) connection.prepareStatement(query);
+			statement.setString(1, project.getTitle());
+			statement.setString(2, project.getDescription());
+			statement.setString(3, project.getCategory().toString().toLowerCase());
+			statement.setInt(4, project.getProjectId());
+			statement.executeUpdate();
+		}catch(SQLException e){
+			e.printStackTrace();
+		}
+	}
+	
+	public void modifyActivity(Activity activity){
+		PreparedStatement statement = null;
+		String query = "UPDATE activity SET name = ?, description = ?, place = ?, day = ?, month = ?, year = ? WHERE activityId = ?";
+		try{
+			statement = (PreparedStatement) connection.prepareStatement(query);
+			statement.setString(1, activity.getName());
+			statement.setString(2, activity.getDescription());
+			statement.setString(3, activity.getPlace());
+			statement.setInt(4, activity.getDate().getDay());
+			statement.setInt(5, activity.getDate().getMonth());
+			statement.setInt(6, activity.getDate().getYear());
+			statement.setInt(7, activity.getActivityId());
+			statement.executeUpdate();
+		}catch(SQLException e){
+			e.printStackTrace();
+		}
+	}
+	
 	public void modifyNotifications(ArrayList<Notification> deliveredNotifications){
 		PreparedStatement statement = null;
 		String query = "UPDATE notification SET isDelivered = 1 WHERE notificationId = ?";
@@ -663,6 +700,7 @@ public class DBManager implements Serializable{
 			}
 		}
 	}
+	
 	public void startProject(Project project){
 		PreparedStatement statement = null;
 		String query = "UPDATE project SET state = 'active' WHERE projectId = ?";

@@ -13,7 +13,7 @@ public class Client extends UnicastRemoteObject implements ClientInterface{
 	
 	private static final long serialVersionUID = 1L;
 	Registry registry;
-	static ServerInterface server;
+	private ServerInterface server;
 	private int myUserId;
 	private String myUsername;
 	
@@ -44,7 +44,6 @@ public class Client extends UnicastRemoteObject implements ClientInterface{
 		server.unregisterUser(userId, password, this);
 	}
 	
-	
 	public void login(String username, String password) throws RemoteException {
 		myUserId = server.login(username, password, (ClientInterface) this);
 		myUsername = username;
@@ -72,9 +71,9 @@ public class Client extends UnicastRemoteObject implements ClientInterface{
 	}
 
 
-	public void addActivity(int projectId, String name, String description, String place, String dateTime)
+	public void addActivity(int projectId, String name, String description, String place, int day, int month, int year)
 		throws RemoteException {
-		server.addActivity(projectId, name, description, place, dateTime);
+		server.addActivity(projectId, name, description, place, day, month, year);
 	}
 
 
@@ -130,8 +129,8 @@ public class Client extends UnicastRemoteObject implements ClientInterface{
 		server.modifyProject(projectId, title, description, category);
 	}
 	
-	public void modifyActivity(int activityId, String name, String description, String place, String dateTime) throws RemoteException {
-		server.modifyActivity(activityId, name, description, place, dateTime);
+	public void modifyActivity(int activityId, String name, String description, String place, int day, int month, int year) throws RemoteException {
+		server.modifyActivity(activityId, name, description, place, day, month, year);
 	}
 
 	public void completeActivity(int activityId, int userId) throws RemoteException {

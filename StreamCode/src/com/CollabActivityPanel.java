@@ -97,6 +97,7 @@ public class CollabActivityPanel extends JPanel {
 					JLabel activityName = new JLabel(activity.getName());
 					JLabel activityDescription = new JLabel(activity.getDescription());
 					JLabel activityPlace = new JLabel(activity.getPlace());
+					JLabel activityDate = new JLabel(activity.getDate().getDay()+ "/" + activity.getDate().getMonth() + "/" + activity.getDate().getYear());
 					JButton completeActivityButton = new JButton("Complete");
 					JButton refuseActivity = new JButton("Refuse");
 					JButton viewNotesButton = new JButton("View notes");
@@ -111,6 +112,10 @@ public class CollabActivityPanel extends JPanel {
 					activityInfoValues.add(new JLabel(" "),"span, grow");
 					activityInfoValues.add(new JLabel("Place: ")); 
 					activityInfoValues.add(activityPlace);
+					activityInfoValues.add(new JLabel(" "),"span, grow");
+					activityInfoValues.add(new JLabel("Date: ")); 
+					activityInfoValues.add(activityDate);
+					
 					activityInfoValues.add(viewNotesButton);
 					
 					for(int i = 0; i < activity.getActivityCollaborators().size();i++){

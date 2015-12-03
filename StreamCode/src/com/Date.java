@@ -1,11 +1,19 @@
 package com;
 
-public class Date{
+import java.io.Serializable;
 
+public class Date implements Serializable{
+
+	private static final long serialVersionUID = 1L;
 	private int day;
 	private int month;
 	private int year;
 	
+	public Date(int day, int month, int year){
+		this.day = day;
+		this.month = month;
+		this.year = year;
+	}
 	public int getDay() {
 		return day;
 	}
