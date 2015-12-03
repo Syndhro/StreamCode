@@ -11,7 +11,7 @@ public class Activity implements Serializable{
 	private String name;
 	private String description;
 	private String place;
-	private String dateTime;
+	private Date date;
 	private ArrayList<User> activityCollaborators; 
 	private boolean isCompleted;
 	private boolean isActive;
@@ -19,32 +19,32 @@ public class Activity implements Serializable{
 	
 	//CONSTRUCTORS
 	//WHEN CREATED 
-	public Activity(int activityId, Project parentProject, String name, String description, String place, String dateTime){
+	public Activity(int activityId, Project parentProject, String name, String description, String place, Date date){
 		this.activityId = activityId;
 		this.parentProject = parentProject;
 		this.name = name;
 		this.description = description;
 		this.place = place;
-		this.dateTime = dateTime;
 		this.activityCollaborators = new ArrayList<User>();
 		this.isCompleted = false; //UNCOMPLETED
 		this.isActive = false; //UNACTIVE
 		this.attachments = new ArrayList<ActivityAttachment>();
+		this.date = date;
 	}
 	
 	//WHEN RETRIEVED FROM DB(PREVIOUS ISCOMPLETED AND ISACTIVE NEEDED)
-	public Activity(int activityId, String name, String description, String place, String dateTime, boolean isCompleted, boolean isActive){
+	public Activity(int activityId, String name, String description, String place, Date date, boolean isCompleted, boolean isActive){
 		this.activityId = activityId;
 		this.name = name;
 		this.description = description;
 		this.place = place;
-		this.dateTime = dateTime;
 		this.activityCollaborators = new ArrayList<User>();
 		this.isCompleted = isCompleted;
 		this.isActive = isActive;	
 		this.attachments = new ArrayList<ActivityAttachment>();
+		this.date = date;
 	}
-	
+
 	//ADDERS & REMOVERS
 	public void addAgent(User user) {
 		activityCollaborators.add(user);
@@ -61,6 +61,7 @@ public class Activity implements Serializable{
 	public void removeAttachment(ActivityAttachment attachment){
 		attachments.remove(attachment);
 	}
+	
 	//GETTERS
 	public int getActivityId() {
 		return activityId;
@@ -80,10 +81,6 @@ public class Activity implements Serializable{
 
 	public String getPlace() {
 		return place;
-	}
-
-	public String getDateTime() {
-		return dateTime;
 	}
 
 	public ArrayList<User> getActivityCollaborators() {
@@ -123,10 +120,6 @@ public class Activity implements Serializable{
 		this.place = place;
 	}
 
-	public void setDateTime(String dateTime) {
-		this.dateTime = dateTime;
-	}
-
 	public void setActivityCollaborators(ArrayList<User> activityCollaborators) {
 		this.activityCollaborators = activityCollaborators;
 	}
@@ -137,6 +130,14 @@ public class Activity implements Serializable{
 
 	public void setActive(boolean isActive) {
 		this.isActive = isActive;
-	}	
+	}
+
+	public Date getDate() {
+		return date;
+	}
+
+	public void setDate(Date date) {
+		this.date = date;
+	}
 }
 

@@ -252,7 +252,7 @@ public class ServerImpl extends UnicastRemoteObject implements Subject, ServerIn
 	}
 	
 	@Override
-	public void addActivity(int projectId, String name, String description, String place, String dateTime) throws RemoteException {
+	public void addActivity(int projectId, String name, String description, String place, Date date) throws RemoteException {
 		Project project = getProjectById(projectId);
 		int id = dbManager.getLastActivityId();
 		Activity activity = new Activity(id+1, project, name, description, place, dateTime);
