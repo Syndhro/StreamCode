@@ -26,6 +26,7 @@ public class ProjectListFrame extends JFrame {
 	JButton friendsButton;
 	JButton addFriendButton;
 	JButton addProjectButton;
+	JButton unregisterButton;
 	JPanel managedProjectPanel;
 	JPanel collaborationProjectPanel;
 	JPanel notificationsPanel;
@@ -52,6 +53,7 @@ public class ProjectListFrame extends JFrame {
 		friendsButton = new JButton("See your friends :)");
 		addFriendButton = new JButton("Add Friend");
 		addProjectButton = new JButton("Add project");
+		unregisterButton = new JButton("Unregister");
 		
 		//RETRIEVE NEEDED OBJECTS
 		managedProjects = client.getManagedProject();
@@ -91,8 +93,6 @@ public class ProjectListFrame extends JFrame {
 		activitiesPanel.add(myActivitiesArea);
 		JScrollPane scrollActivities = new JScrollPane (activitiesPanel, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
 		mainPanel.add(scrollActivities);
-		
-		mainPanel.add(friendsButton);	
 		
 		//MANAGED PROJECTS---------------------------------------------------------------------------------------------
 		for(int i = 0; i < managedProjects.size(); i++){
@@ -295,6 +295,26 @@ public class ProjectListFrame extends JFrame {
 		        	System.exit(0);
 		        }
 		    }
+		});		
+		mainPanel.add(friendsButton);
+		mainPanel.add(unregisterButton);
+		
+		//UNREGISTER PROCESS
+		unregisterButton.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (JOptionPane.showConfirmDialog(thisFrame, 
+					"Are you sure do you want to unregister from service?", "Really?The account will be deactivated", 
+			        JOptionPane.YES_NO_OPTION,
+			        JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION){
+					try {
+						client.unregisterUser();
+					} catch (RemoteException ev) {
+						ev.printStackTrace();
+					}
+		        	System.exit(0);
+		        }
+			}			
 		});
 	}
 }
