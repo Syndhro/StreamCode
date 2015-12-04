@@ -175,7 +175,14 @@ public class ClientGUI {
 					
 					if (rPassword.equals(rConfPassword)){
 						try{
-							client.registerUser(rUsername, rPassword);
+							int verifier = client.check(rUsername, rPassword);
+							if(verifier == -1){
+								client.registerUser(rUsername, rPassword);
+								JOptionPane.showMessageDialog(loginFrame, "Successfully Registered!");
+							}
+							else{
+								JOptionPane.showMessageDialog(loginFrame, "Username already exists");
+							}
 						}catch(RemoteException exception){
 							exception.printStackTrace();
 						}
