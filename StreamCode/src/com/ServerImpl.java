@@ -485,6 +485,15 @@ public class ServerImpl extends UnicastRemoteObject implements Subject, ServerIn
 		for(int i = 0; i < project.getCollaborators().size(); i++){
 			project.getCollaborators().get(i).getCollaborationProject().remove(project);
 		}
+		ArrayList<Activity> activityToBeDeleted = new ArrayList<Activity>();
+		for(int i = 0; i < registeredActivities.size(); i++){
+			if (registeredActivities.get(i).getParentProject().getProjectId() == projectId){
+				activityToBeDeleted.add(registeredActivities.get(i));
+			}
+		}
+		for(int i = 0; i < activityToBeDeleted.size(); i++){
+			registeredActivities.remove(activityToBeDeleted.get(i));
+		}
 		dbManager.removeProject(project);
 		registeredProjects.remove(project);
 		updateInterface();
