@@ -174,13 +174,39 @@ public class DBManager implements Serializable{
 	}
 
 	//remove user from database into unregistration process(only one time)
-	public void removeUser(String username, String password) {
+	public void removeUser(User user) {
 		PreparedStatement statement = null;
 		try{
-			String query = "DELETE FROM user WHERE user.username=? AND user.password=?";
+			String query = "DELETE FROM user WHERE userId = ?";
 			statement = (PreparedStatement) connection.prepareStatement(query);
-			statement.setString(1, username);
-			statement.setString(2, password);
+			statement.setInt(1, user.getUserId());
+			statement.executeUpdate();
+			
+			query = "DELETE FROM project WHERE adminId = ?";
+			statement = (PreparedStatement) connection.prepareStatement(query);
+			statement.setInt(1, user.getUserId());
+			statement.executeUpdate();
+			
+			query = "DELETE FROM project_membership WHERE userId = ?";
+			statement = (PreparedStatement) connection.prepareStatement(query);
+			statement.setInt(1, user.getUserId());
+			statement.executeUpdate();
+			
+			query = "DELETE FROM activity_membership WHERE userId = ?";
+			statement = (PreparedStatement) connection.prepareStatement(query);
+			statement.setInt(1, user.getUserId());
+			statement.executeUpdate();
+			
+			query = "DELETE FROM friendship WHERE userId1 = ? OR userId2 = ?";
+			statement = (PreparedStatement) connection.prepareStatement(query);
+			statement.setInt(1, user.getUserId());
+			statement.setInt(2, user.getUserId());
+			statement.executeUpdate();
+			
+			query = "DELETE FROM notification WHERE targetId = ?";
+			statement = (PreparedStatement) connection.prepareStatement(query);
+			statement.setInt(1, user.getUserId());
+			statement.setInt(2, user.getUserId());
 			statement.executeUpdate();
 		}catch(SQLException e){ 
 			e.printStackTrace();

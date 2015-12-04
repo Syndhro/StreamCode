@@ -428,12 +428,32 @@ public class ServerImpl extends UnicastRemoteObject implements Subject, ServerIn
 	//REMOVERS-----------------------------------------------------------------------------------
 
 	@Override
-	public void unregisterUser(int userId, String password, ClientInterface client) throws RemoteException {
+	public void unregisterUser(ClientInterface client) throws RemoteException {
 		logout(client);
-		User user = getUserById(userId);
-		dbManager.removeUser(user.getUsername(), password);
+		User user = getUserById(client.getClientId());
+		dbManager.removeUser(user);
+		
+		ArrayList<Project> projectToBeDeleted = new ArrayList<Project>();
+		
+		for(int i = 0; i < registeredProjects.size(); i++){
+			for(int j = 0; j < registeredProjects.get(i).getActivities().size(); j++){
+				registeredProjects.get(i).getActivities().get(j).removeAgent(user);
+			}
+			registeredProjects.get(i).removeCollaborator(user);
+			if (registeredProjects.get(i).getAdmin().getUserId() == client.getClientId()){
+				projectToBeDeleted.add(registeredProjects.get(i));
+			}
+		}
+		for(int i = 0; i < projectToBeDeleted.size(); i++){
+			registeredProjects.remove(projectToBeDeleted.get(i));
+		}
+		projectToBeDeleted.clear();
+		
+		for(int i = 0; i < registeredUsers.size(); i++){
+			registeredUsers.get(i).getUserFriends().remove(user);
+		}
+		
 		registeredUsers.remove(user);
-		updateInterface();
 	}
 	
 	@Override

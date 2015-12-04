@@ -40,8 +40,8 @@ public class Client extends UnicastRemoteObject implements ClientInterface{
 	}
 	
 	
-	public void unregisterUser(int userId, String password) throws RemoteException {
-		server.unregisterUser(userId, password, this);
+	public void unregisterUser() throws RemoteException {
+		server.unregisterUser(this);
 	}
 	
 	public void login(String username, String password) throws RemoteException {
