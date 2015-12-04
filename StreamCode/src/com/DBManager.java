@@ -176,11 +176,20 @@ public class DBManager implements Serializable{
 	//remove user from database into unregistration process(only one time)
 	public void removeUser(User user) {
 		PreparedStatement statement = null;
+		ResultSet resultSet = null;
 		try{
 			String query = "DELETE FROM user WHERE userId = ?";
 			statement = (PreparedStatement) connection.prepareStatement(query);
 			statement.setInt(1, user.getUserId());
 			statement.executeUpdate();
+			
+			query = "SELECT * FROM project WHERE adminId = ?";
+			statement = (PreparedStatement) connection.prepareStatement(query);
+			statement.setInt(1, user.getUserId());
+			resultSet = statement.executeQuery();
+			while(resultSet.next()){
+				removeAllByProjectId(resultSet.getInt(1));
+			}
 			
 			query = "DELETE FROM project WHERE adminId = ?";
 			statement = (PreparedStatement) connection.prepareStatement(query);
@@ -207,15 +216,61 @@ public class DBManager implements Serializable{
 			statement = (PreparedStatement) connection.prepareStatement(query);
 			statement.setInt(1, user.getUserId());
 			statement.executeUpdate();
+			
+			query = "DELETE FROM activity_attachment WHERE authorId = ?";
+			statement = (PreparedStatement) connection.prepareStatement(query);
+			statement.setInt(1, user.getUserId());
+			statement.executeUpdate();
+			
 		}catch(SQLException e){ 
 			e.printStackTrace();
 		}
 	}
 	
-	public void removeProjectAndActivityByUserId(int userId){
+	public void removeAllByProjectId(int projectId){
 		
-		
-		
+		PreparedStatement statement = null;
+		ResultSet resultSet = null;
+		try{
+			
+			String query = "SELECT * FROM activity WHERE projectId = ?";
+			statement = (PreparedStatement) connection.prepareStatement(query);
+			statement.setInt(1, projectId);
+			resultSet = statement.executeQuery();
+			while(resultSet.next()){
+				removeAllByActivityId(resultSet.getInt(1));
+			}
+			
+			query = "DELETE FROM project_membership WHERE projectId = ?";
+			statement = (PreparedStatement) connection.prepareStatement(query);
+			statement.setInt(1, projectId);
+			statement.executeUpdate();
+			
+			query = "DELETE FROM activity WHERE projectId = ?";
+			statement = (PreparedStatement) connection.prepareStatement(query);
+			statement.setInt(1, projectId);
+			statement.executeUpdate();
+		}catch(SQLException e){
+			e.printStackTrace();
+		}
+	}
+	
+	public void removeAllByActivityId(int activityId){
+		PreparedStatement statement = null;
+		try{		
+			String query = "DELETE FROM activity_membership WHERE activityId = ?";
+			statement = (PreparedStatement) connection.prepareStatement(query);
+			statement.setInt(1, activityId);
+			statement.executeUpdate();
+			
+			query = "DELETE FROM activity_attachment WHERE activityId = ?";
+			statement = (PreparedStatement) connection.prepareStatement(query);
+			statement.setInt(1, activityId);
+			statement.executeUpdate();
+			
+		}catch(SQLException e){
+			e.printStackTrace();
+		}
 	}
 	
 	//remove project from database passing the object from where I call the function

@@ -434,10 +434,22 @@ public class ServerImpl extends UnicastRemoteObject implements Subject, ServerIn
 		dbManager.removeUser(user);
 		
 		ArrayList<Project> projectToBeDeleted = new ArrayList<Project>();
+		ArrayList<ActivityAttachment> attachmentToBeDeleted = new ArrayList<ActivityAttachment>();
 		
 		for(int i = 0; i < registeredProjects.size(); i++){
 			for(int j = 0; j < registeredProjects.get(i).getActivities().size(); j++){
 				registeredProjects.get(i).getActivities().get(j).removeAgent(user);
+				attachmentToBeDeleted = new ArrayList<ActivityAttachment>();
+				for(int k = 0; k < registeredProjects.get(i).getActivities().get(j).getAttachments().size(); k++){
+					if(registeredProjects.get(i).getActivities().get(j).getAttachments().get(k).getAuthor().getUserId() == client.getClientId()){
+						attachmentToBeDeleted.add(registeredProjects.get(i).getActivities().get(j).getAttachments().get(k));
+					}
+				}
+				
+				for(int k = 0; k < attachmentToBeDeleted.size(); k++){
+					registeredProjects.get(i).getActivities().get(j).removeAttachment(attachmentToBeDeleted.get(k));
+					registeredAttachments.remove(attachmentToBeDeleted);
+				}
 			}
 			registeredProjects.get(i).removeCollaborator(user);
 			if (registeredProjects.get(i).getAdmin().getUserId() == client.getClientId()){
@@ -454,6 +466,8 @@ public class ServerImpl extends UnicastRemoteObject implements Subject, ServerIn
 		}
 		
 		registeredUsers.remove(user);
+		
+		updateInterface();
 	}
 	
 	@Override
