@@ -206,12 +206,18 @@ public class DBManager implements Serializable{
 			query = "DELETE FROM notification WHERE targetId = ?";
 			statement = (PreparedStatement) connection.prepareStatement(query);
 			statement.setInt(1, user.getUserId());
-			statement.setInt(2, user.getUserId());
 			statement.executeUpdate();
 		}catch(SQLException e){ 
 			e.printStackTrace();
 		}
 	}
+	
+	public void removeProjectAndActivityByUserId(int userId){
+		
+		
+		
+	}
+	
 	//remove project from database passing the object from where I call the function
 	public void removeProject(Project project) {
 		PreparedStatement statement = null;

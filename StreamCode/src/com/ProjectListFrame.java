@@ -312,7 +312,9 @@ public class ProjectListFrame extends JFrame {
 					} catch (RemoteException ev) {
 						ev.printStackTrace();
 					}
-		        	System.exit(0);
+					System.exit(0);
+		        	ClientGUI newGUI = new ClientGUI();
+		        	newGUI.main(new String[2]);
 		        }
 			}			
 		});
