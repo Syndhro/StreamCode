@@ -427,8 +427,10 @@ public class DBManager implements Serializable{
 			String query = "SELECT MAX(activityId) FROM activity";
 			statement = (Statement) connection.createStatement();
 			resultSet = statement.executeQuery(query);
-			resultSet.next();
-			lastActivityId = resultSet.getInt(1);
+			if(resultSet.next())		
+				lastActivityId = resultSet.getInt(1);
+			else 
+				lastActivityId = 0;
 		}catch(SQLException e){
 			e.printStackTrace();
 		}
@@ -443,8 +445,10 @@ public class DBManager implements Serializable{
 			String query = "SELECT MAX(notificationId) FROM notification";
 			statement = (Statement) connection.createStatement();
 			resultSet = statement.executeQuery(query);
-			resultSet.next();
-			lastNotificationId = resultSet.getInt(1);
+			if(resultSet.next())		
+				lastNotificationId = resultSet.getInt(1);
+			else 
+				lastNotificationId = 0;
 		}catch(SQLException e){
 			e.printStackTrace();
 		}
@@ -459,8 +463,10 @@ public class DBManager implements Serializable{
 			String query = "SELECT MAX(attachmentId) FROM activity_attachment";
 			statement = (Statement) connection.createStatement();
 			resultSet = statement.executeQuery(query);
-			resultSet.next();
-			lastAttachmentId = resultSet.getInt(1);
+			if(resultSet.next())		
+				lastAttachmentId = resultSet.getInt(1);
+			else 
+				lastAttachmentId = 0;
 		}catch(SQLException e){
 			e.printStackTrace();
 		}
@@ -568,14 +574,14 @@ public class DBManager implements Serializable{
 				boolean completed = resultSet.getBoolean(9);
 				boolean active = resultSet.getBoolean(10);
 				Activity newActivity = new Activity(activityId, name, descr, place, day, month, year, active, completed);
-				for(int i = 0; i < ServerImpl.getInstance().getRegisteredProjects().size(); i++){
-					int id = ServerImpl.getInstance().getRegisteredProjects().get(i).getProjectId();
-					if(id == projectId){
-						parentProject = ServerImpl.getInstance().getRegisteredProjects().get(i);
-						parentProject.addActivity(newActivity);
-						newActivity.setParentProject(parentProject);
-					}
+				try {
+					parentProject = ServerImpl.getInstance().getProjectById(projectId);
+				} catch (RemoteException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
 				}
+				parentProject.addActivity(newActivity);
+				newActivity.setParentProject(parentProject);
 				allActivity.add(newActivity);
 			}
 		}catch(SQLException e){
