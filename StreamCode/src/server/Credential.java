@@ -1,18 +1,12 @@
 package server;
 
-import java.io.Serializable;
-
-public class Credential implements Serializable{
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
+public class Credential {
 	final String dbUsername;
 	final String dbPassword;
 	
 	public Credential(){
 		dbUsername = "root";
-		dbPassword = "93Matrix";
+		dbPassword = "informatica";
 	}
 	
 	public String getDbUsername(){
