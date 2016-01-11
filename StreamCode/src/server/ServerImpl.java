@@ -649,7 +649,7 @@ public class ServerImpl extends UnicastRemoteObject implements Subject, ServerIn
 	}
 	
 	@Override
-	public ArrayList<User> getUserFriend(int userId) throws RemoteException {
+	public ArrayList<User> getUserFriends(int userId) throws RemoteException {
 		User user = getUserById(userId);
 		ArrayList<User> userFriends = new ArrayList<User>();
 		userFriends = user.getUserFriends();

@@ -152,7 +152,7 @@ public class Client extends UnicastRemoteObject implements ClientInterface{
 	public ArrayList<User> getUserFriends(){
 		ArrayList<User> userFriends = new ArrayList<User>();
 		try{
-			userFriends = server.getUserFriend(myUserId);
+			userFriends = server.getUserFriends(myUserId);
 		}catch(RemoteException e){
 			e.printStackTrace();
 		}
